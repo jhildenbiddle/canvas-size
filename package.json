@@ -24,6 +24,9 @@
     "test",
     "width"
   ],
+  "files": [
+    "dist"
+  ],
   "main": "dist/canvas-size.js",
   "module": "dist/canvas-size.esm.js",
   "unpkg": "dist/canvas-size.min.js",
