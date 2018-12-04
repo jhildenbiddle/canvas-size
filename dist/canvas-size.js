@@ -23,33 +23,37 @@
         };
         return _extends.apply(this, arguments);
     }
+    function _toConsumableArray(arr) {
+        return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+    }
+    function _arrayWithoutHoles(arr) {
+        if (Array.isArray(arr)) {
+            for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+            return arr2;
+        }
+    }
+    function _iterableToArray(iter) {
+        if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+    }
+    function _nonIterableSpread() {
+        throw new TypeError("Invalid attempt to spread non-iterable instance");
+    }
     var cvs = document ? document.createElement("canvas") : null;
     var ctx = cvs && cvs.getContext ? cvs.getContext("2d") : null;
     var defaults = {
+        max: null,
+        min: 1,
+        sizes: [],
         step: 1024,
         onError: Function.prototype,
         onSuccess: Function.prototype
     };
-    function canvasLoop() {
-        var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-        var _settings = arguments.length > 1 ? arguments[1] : undefined;
-        var settings = _settings || _extends({}, defaults, options);
-        var testPass = canvasTest(settings.maxHeight, settings.maxWidth);
-        if (testPass) {
-            settings.onSuccess(settings.maxHeight, settings.maxWidth);
-        } else {
-            var isLargerThanMin = settings.maxHeight > settings.minHeight || settings.maxWidth > settings.minWidth;
-            settings.onError(settings.maxHeight, settings.maxWidth);
-            if (isLargerThanMin) {
-                settings.maxWidth = Math.max(settings.maxWidth - settings.step, settings.minWidth);
-                settings.maxHeight = Math.max(settings.maxHeight - settings.step, settings.minHeight);
-                setTimeout(function() {
-                    canvasLoop(null, settings);
-                }, 0);
-            }
-        }
-    }
-    function canvasTest(height, width) {
+    var testSizes = {
+        area: [ 16384, 14188, 11402, 10836, 11180, 8192, 4096, defaults.min ],
+        height: [ 8388607, 32767, 16384, 8192, 4096, defaults.min ],
+        width: [ 4194303, 32767, 16384, 8192, 4096, defaults.min ]
+    };
+    function canvasTest(width, height) {
         var w = 1;
         var h = 1;
         var x = width - w;
@@ -63,48 +67,103 @@
             return false;
         }
     }
+    function canvasTestLoop(settings) {
+        var sizes = settings.sizes.shift();
+        var width = sizes[0];
+        var height = sizes[1];
+        var testPass = canvasTest(width, height);
+        if (testPass) {
+            settings.onSuccess(width, height);
+        } else {
+            settings.onError(width, height);
+            if (settings.sizes.length) {
+                setTimeout(function() {
+                    canvasTestLoop(settings);
+                }, 0);
+            }
+        }
+    }
+    function getMaxSizes(settings) {
+        var isArea = settings.width === settings.height;
+        var isWidth = settings.height === 1;
+        var isHeight = settings.width === 1;
+        var sizes = [];
+        if (!settings.width || !settings.height) {
+            settings.sizes.forEach(function(testSize) {
+                var width = isArea || isWidth ? testSize : 1;
+                var height = isArea || isHeight ? testSize : 1;
+                sizes.push([ width, height ]);
+            });
+        } else {
+            var testMin = settings.min || defaults.min;
+            var testStep = settings.step || defaults.step;
+            var testSize = Math.max(settings.width, settings.height);
+            while (testSize > testMin) {
+                var width = isArea || isWidth ? testSize : 1;
+                var height = isArea || isHeight ? testSize : 1;
+                sizes.push([ width, height ]);
+                testSize -= testStep;
+            }
+            sizes.push([ testMin, testMin ]);
+        }
+        return sizes;
+    }
     var canvasSize = {
         maxArea: function maxArea() {
             var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-            var settings = _extends({}, defaults, options, {
-                minHeight: options.min || 1,
-                maxHeight: options.max || 16384,
-                minWidth: options.min || 1,
-                maxWidth: options.max || 16384
+            var sizes = getMaxSizes({
+                width: options.max,
+                height: options.max,
+                min: options.min,
+                step: options.step,
+                sizes: _toConsumableArray(testSizes.area)
             });
-            canvasLoop(settings);
+            var settings = _extends({}, defaults, options, {
+                sizes: sizes
+            });
+            canvasTestLoop(settings);
         },
         maxHeight: function maxHeight() {
             var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-            var settings = _extends({}, defaults, options, {
-                minHeight: options.min || 1,
-                maxHeight: options.max || 32767,
-                minWidth: 1,
-                maxWidth: 1
+            var sizes = getMaxSizes({
+                width: 1,
+                height: options.max,
+                min: options.min,
+                step: options.step,
+                sizes: _toConsumableArray(testSizes.height)
             });
-            canvasLoop(settings);
+            var settings = _extends({}, defaults, options, {
+                sizes: sizes
+            });
+            canvasTestLoop(settings);
         },
         maxWidth: function maxWidth() {
             var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-            var settings = _extends({}, defaults, options, {
-                minHeight: 1,
-                maxHeight: 1,
-                minWidth: options.min || 1,
-                maxWidth: options.max || 32767
+            var sizes = getMaxSizes({
+                width: options.max,
+                height: 1,
+                min: options.min,
+                step: options.step,
+                sizes: _toConsumableArray(testSizes.width)
             });
-            canvasLoop(settings);
+            var settings = _extends({}, defaults, options, {
+                sizes: sizes
+            });
+            canvasTestLoop(settings);
         },
         test: function test() {
             var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-            var settings = _extends({}, defaults, options, {
-                height: options.height || 1,
-                width: options.width || 1
-            });
-            var testPass = canvasTest(settings.height, settings.width);
-            if (testPass) {
-                settings.onSuccess(settings.height, settings.width);
+            var settings = _extends({}, defaults, options);
+            if (settings.sizes.length) {
+                settings.sizes = _toConsumableArray(options.sizes);
+                canvasTestLoop(settings);
             } else {
-                settings.onError(settings.height, settings.width);
+                var testPass = canvasTest(settings.width, settings.height);
+                if (testPass) {
+                    settings.onSuccess(settings.height, settings.width);
+                } else {
+                    settings.onError(settings.height, settings.width);
+                }
             }
         }
     };

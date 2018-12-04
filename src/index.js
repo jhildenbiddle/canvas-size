@@ -3,62 +3,86 @@
 const cvs      = document ? document.createElement('canvas') : null;
 const ctx      = cvs && cvs.getContext ? cvs.getContext('2d') : null;
 const defaults = {
-    step: 1024,
+    max  : null,
+    min  : 1,
+    sizes: [],
+    step : 1024,
     // Callbacks
     onError  : Function.prototype,
     onSuccess: Function.prototype
+};
+const testSizes = {
+    area: [
+        // Chrome 70 (Mac, Win)
+        // Chrome 68 (Android 4.4)
+        // Edge 17 (Win)
+        // Safari 7-12 (Mac)
+        16384,
+        // Chrome 68 (Android 7.1-9)
+        14188,
+        // Chrome 68 (Android 5),
+        11402,
+        // Chrome 68 (Android 6)
+        10836,
+        // Firefox 63 (Mac, Win)
+        11180,
+        // IE 9-11 (Win)
+        8192,
+        // IE Mobile (Windows Phone 8.x)
+        // Safari (iOS 9 - 12)
+        4096,
+        // Failed
+        defaults.min
+    ],
+    height: [
+        // Safari 7-12 (Mac)
+        // Safari (iOS 9-12)
+        8388607,
+        // Chrome 70 (Mac, Win)
+        // Chrome 68 (Android 4.4-9)
+        // Firefox 63 (Mac, Win)
+        32767,
+        // IE11
+        // Edge 17 (Win)
+        16384,
+        // IE 9-10 (Win)
+        8192,
+        // IE Mobile (Windows Phone 8.x)
+        4096,
+        // Failed
+        defaults.min
+    ],
+    width: [
+        // Safari 7-12 (Mac)
+        // Safari (iOS 9-12)
+        4194303,
+        // Chrome 70 (Mac, Win)
+        // Chrome 68 (Android 4.4-9)
+        // Firefox 63 (Mac, Win)
+        32767,
+        // IE11
+        // Edge 17 (Win)
+        16384,
+        // IE 9-10 (Win)
+        8192,
+        // IE Mobile (Windows Phone 8.x)
+        4096,
+        // Failed
+        defaults.min
+    ]
 };
 
 
 // Functions (Private)
 // =============================================================================
 /**
- * Tests ability to read pixel data from canvases of various dimensions by
- * decreasing canvas height and/or width until a success test occurs.
- *
- * @param {object} options
- * @param {number} options.minHeight
- * @param {number} options.maxHeight
- * @param {number} options.minWidth
- * @param {number} options.maxWidth
- * @param {number} options.step
- * @param {function} options.onError
- * @param {function} options.onSuccess
- * @param {function} [_settings]
- */
-function canvasLoop(options = {}, _settings) {
-    const settings = _settings || Object.assign({}, defaults, options);
-    const testPass = canvasTest(settings.maxHeight, settings.maxWidth);
-
-    if (testPass) {
-        settings.onSuccess(settings.maxHeight, settings.maxWidth);
-    }
-    else {
-        const isLargerThanMin = settings.maxHeight > settings.minHeight || settings.maxWidth > settings.minWidth;
-
-        settings.onError(settings.maxHeight, settings.maxWidth);
-
-        // Decrease value(s) by step amount and test again
-        if (isLargerThanMin) {
-            settings.maxWidth  = Math.max(settings.maxWidth - settings.step, settings.minWidth);
-            settings.maxHeight = Math.max(settings.maxHeight - settings.step, settings.minHeight);
-
-            // Test again with decreased values
-            setTimeout(function(){
-                canvasLoop(null, settings);
-            }, 0);
-        }
-    }
-}
-
-/**
  * Tests ability to read pixel data from canvas of specified dimensions.
  *
- * @param {number} height
  * @param {number} width
+ * @param {number} height
  * @returns {boolean}
  */
-function canvasTest(height, width) {
+function canvasTest(width, height) {
     // Define test rectangle dimensions and coordinates
     const w = 1;
     const h = 1;
@@ -79,8 +103,83 @@ function canvasTest(height, width) {
     }
 }
 
+/**
+ * Tests ability to read pixel data from canvases of various dimensions by
+ * decreasing canvas height and/or width until a success test occurs.
+ *
+ * @param {object} settings
+ * @param {number[][]} settings.sizes
+ * @param {function} settings.onError
+ * @param {function} settings.onSuccess
+ */
+function canvasTestLoop(settings) {
+    const sizes    = settings.sizes.shift();
+    const width    = sizes[0];
+    const height   = sizes[1];
+    const testPass = canvasTest(width, height);
 
-// Export
+    if (testPass) {
+        settings.onSuccess(width, height);
+    }
+    else {
+        settings.onError(width, height);
+
+        if (settings.sizes.length) {
+            setTimeout(function(){
+                canvasTestLoop(settings);
+            }, 0);
+        }
+    }
+}
+
+/**
+ *
+ *
+ * @param {object} settings
+ * @param {number} settings.width
+ * @param {number} settings.height
+ * @param {number} settings.min
+ * @param {number} settings.step
+ * @param {number[][]} settings.sizes
+ * @returns
+ */
+function getMaxSizes(settings) {
+    const isArea   = settings.width === settings.height;
+    const isWidth  = settings.height === 1;
+    const isHeight = settings.width === 1;
+    const sizes    = [];
+
+    // Use settings.sizes
+    if (!settings.width || !settings.height) {
+        settings.sizes.forEach(testSize => {
+            const width  = isArea || isWidth ? testSize : 1;
+            const height = isArea || isHeight ? testSize : 1;
+
+            sizes.push([width, height]);
+        });
+    }
+    // Generate sizes from width, height, and step
+    else {
+        const testMin  = settings.min || defaults.min;
+        const testStep = settings.step || defaults.step;
+        let   testSize = Math.max(settings.width, settings.height);
+
+        while (testSize > testMin) {
+            const width  = isArea || isWidth ? testSize : 1;
+            const height = isArea || isHeight ? testSize : 1;
+
+            sizes.push([width, height]);
+            testSize -= testStep;
+        }
+
+        sizes.push([testMin, testMin]);
+    }
+
+    return sizes;
+}
+
+
+// Methods
 // =============================================================================
 const canvasSize = {
     /**
@@ -89,21 +188,23 @@ const canvasSize = {
      * `min` value is reached.
      *
      * @param {object} [options]
+     * @param {number} [options.max]
      * @param {number} [options.min=1]
-     * @param {number} [options.max=16384]
      * @param {number} [options.step=1024]
      * @param {function} [options.onError]
      * @param {function} [options.onSuccess]
      */
     maxArea(options = {}) {
-        const settings = Object.assign({}, defaults, options, {
-            minHeight: options.min || 1,
-            maxHeight: options.max || 16384,
-            minWidth : options.min || 1,
-            maxWidth : options.max || 16384
+        const sizes = getMaxSizes({
+            width : options.max,
+            height: options.max,
+            min   : options.min,
+            step  : options.step,
+            sizes : [...testSizes.area]
         });
+        const settings = Object.assign({}, defaults, options, { sizes });
 
-        canvasLoop(settings);
+        canvasTestLoop(settings);
     },
 
     /**
@@ -112,21 +213,23 @@ const canvasSize = {
      * `min` value is reached.
      *
      * @param {object} [options]
+     * @param {number} [options.max]
      * @param {number} [options.min=1]
-     * @param {number} [options.max=32767]
      * @param {number} [options.step=1024]
      * @param {function} [options.onError]
      * @param {function} [options.onSuccess]
      */
     maxHeight(options = {}) {
-        const settings = Object.assign({}, defaults, options, {
-            minHeight: options.min || 1,
-            maxHeight: options.max || 32767,
-            minWidth : 1,
-            maxWidth : 1
+        const sizes = getMaxSizes({
+            width : 1,
+            height: options.max,
+            min   : options.min,
+            step  : options.step,
+            sizes : [...testSizes.height]
         });
+        const settings = Object.assign({}, defaults, options, { sizes });
 
-        canvasLoop(settings);
+        canvasTestLoop(settings);
     },
 
     /**
@@ -135,46 +238,56 @@ const canvasSize = {
      * `min` value is reached.
      *
      * @param {object} [options]
+     * @param {number} [options.max]
      * @param {number} [options.min=1]
-     * @param {number} [options.max=32767]
      * @param {number} [options.step=1024]
      * @param {function} [options.onError]
      * @param {function} [options.onSuccess]
      */
     maxWidth(options = {}) {
-        const settings = Object.assign({}, defaults, options, {
-            minHeight: 1,
-            maxHeight: 1,
-            minWidth : options.min || 1,
-            maxWidth : options.max || 32767
+        const sizes = getMaxSizes({
+            width : options.max,
+            height: 1,
+            min   : options.min,
+            step  : options.step,
+            sizes : [...testSizes.width]
         });
+        const settings = Object.assign({}, defaults, options, { sizes });
 
-        canvasLoop(settings);
+        canvasTestLoop(settings);
     },
 
     /**
      * Tests ability to read pixel data from canvas of specified dimensions.
      *
      * @param {object} [options]
-     * @param {number} [options.height=1]
-     * @param {number} [options.width=1]
+     * @param {number} [options.height]
+     * @param {number} [options.width]
+     * @param {number[][]} [options.sizes=[]]
      * @param {function} [options.onError]
      * @param {function} [options.onSuccess]
      */
     test(options = {}) {
-        const settings = Object.assign({}, defaults, options, {
-            height: options.height || 1,
-            width : options.width || 1
-        });
-        const testPass = canvasTest(settings.height, settings.width);
+        const settings = Object.assign({}, defaults, options);
 
-        if (testPass) {
-            settings.onSuccess(settings.height, settings.width);
+        if (settings.sizes.length) {
+            settings.sizes = [...options.sizes];
+            canvasTestLoop(settings);
         }
         else {
-            settings.onError(settings.height, settings.width);
+            const testPass = canvasTest(settings.width, settings.height);
+
+            if (testPass) {
+                settings.onSuccess(settings.height, settings.width);
+            }
+            else {
+                settings.onError(settings.height, settings.width);
+            }
         }
     }
 };
 
+
+// Exports
+// =============================================================================
 export default canvasSize;

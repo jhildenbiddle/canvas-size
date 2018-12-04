@@ -10,32 +10,21 @@ const cvs = document ? document.createElement("canvas") : null;
 const ctx = cvs && cvs.getContext ? cvs.getContext("2d") : null;
 
 const defaults = {
+    max: null,
+    min: 1,
+    sizes: [],
     step: 1024,
     onError: Function.prototype,
     onSuccess: Function.prototype
 };
 
-function canvasLoop() {
-    let options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-    let _settings = arguments.length > 1 ? arguments[1] : undefined;
-    const settings = _settings || Object.assign({}, defaults, options);
-    const testPass = canvasTest(settings.maxHeight, settings.maxWidth);
-    if (testPass) {
-        settings.onSuccess(settings.maxHeight, settings.maxWidth);
-    } else {
-        const isLargerThanMin = settings.maxHeight > settings.minHeight || settings.maxWidth > settings.minWidth;
-        settings.onError(settings.maxHeight, settings.maxWidth);
-        if (isLargerThanMin) {
-            settings.maxWidth = Math.max(settings.maxWidth - settings.step, settings.minWidth);
-            settings.maxHeight = Math.max(settings.maxHeight - settings.step, settings.minHeight);
-            setTimeout(function() {
-                canvasLoop(null, settings);
-            }, 0);
-        }
-    }
-}
+const testSizes = {
+    area: [ 16384, 14188, 11402, 10836, 11180, 8192, 4096, defaults.min ],
+    height: [ 8388607, 32767, 16384, 8192, 4096, defaults.min ],
+    width: [ 4194303, 32767, 16384, 8192, 4096, defaults.min ]
+};
 
-function canvasTest(height, width) {
+function canvasTest(width, height) {
     const w = 1;
     const h = 1;
     const x = width - w;
@@ -50,48 +39,105 @@ function canvasTest(height, width) {
     }
 }
 
+function canvasTestLoop(settings) {
+    const sizes = settings.sizes.shift();
+    const width = sizes[0];
+    const height = sizes[1];
+    const testPass = canvasTest(width, height);
+    if (testPass) {
+        settings.onSuccess(width, height);
+    } else {
+        settings.onError(width, height);
+        if (settings.sizes.length) {
+            setTimeout(function() {
+                canvasTestLoop(settings);
+            }, 0);
+        }
+    }
+}
+
+function getMaxSizes(settings) {
+    const isArea = settings.width === settings.height;
+    const isWidth = settings.height === 1;
+    const isHeight = settings.width === 1;
+    const sizes = [];
+    if (!settings.width || !settings.height) {
+        settings.sizes.forEach(testSize => {
+            const width = isArea || isWidth ? testSize : 1;
+            const height = isArea || isHeight ? testSize : 1;
+            sizes.push([ width, height ]);
+        });
+    } else {
+        const testMin = settings.min || defaults.min;
+        const testStep = settings.step || defaults.step;
+        let testSize = Math.max(settings.width, settings.height);
+        while (testSize > testMin) {
+            const width = isArea || isWidth ? testSize : 1;
+            const height = isArea || isHeight ? testSize : 1;
+            sizes.push([ width, height ]);
+            testSize -= testStep;
+        }
+        sizes.push([ testMin, testMin ]);
+    }
+    return sizes;
+}
+
 const canvasSize = {
     maxArea() {
         let options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-        const settings = Object.assign({}, defaults, options, {
-            minHeight: options.min || 1,
-            maxHeight: options.max || 16384,
-            minWidth: options.min || 1,
-            maxWidth: options.max || 16384
+        const sizes = getMaxSizes({
+            width: options.max,
+            height: options.max,
+            min: options.min,
+            step: options.step,
+            sizes: [ ...testSizes.area ]
         });
-        canvasLoop(settings);
+        const settings = Object.assign({}, defaults, options, {
+            sizes: sizes
+        });
+        canvasTestLoop(settings);
     },
     maxHeight() {
         let options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-        const settings = Object.assign({}, defaults, options, {
-            minHeight: options.min || 1,
-            maxHeight: options.max || 32767,
-            minWidth: 1,
-            maxWidth: 1
+        const sizes = getMaxSizes({
+            width: 1,
+            height: options.max,
+            min: options.min,
+            step: options.step,
+            sizes: [ ...testSizes.height ]
         });
-        canvasLoop(settings);
+        const settings = Object.assign({}, defaults, options, {
+            sizes: sizes
+        });
+        canvasTestLoop(settings);
     },
     maxWidth() {
         let options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-        const settings = Object.assign({}, defaults, options, {
-            minHeight: 1,
-            maxHeight: 1,
-            minWidth: options.min || 1,
-            maxWidth: options.max || 32767
+        const sizes = getMaxSizes({
+            width: options.max,
+            height: 1,
+            min: options.min,
+            step: options.step,
+            sizes: [ ...testSizes.width ]
         });
-        canvasLoop(settings);
+        const settings = Object.assign({}, defaults, options, {
+            sizes: sizes
+        });
+        canvasTestLoop(settings);
     },
     test() {
         let options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-        const settings = Object.assign({}, defaults, options, {
-            height: options.height || 1,
-            width: options.width || 1
-        });
-        const testPass = canvasTest(settings.height, settings.width);
-        if (testPass) {
-            settings.onSuccess(settings.height, settings.width);
+        const settings = Object.assign({}, defaults, options);
+        if (settings.sizes.length) {
+            settings.sizes = [ ...options.sizes ];
+            canvasTestLoop(settings);
         } else {
-            settings.onError(settings.height, settings.width);
+            const testPass = canvasTest(settings.width, settings.height);
+            if (testPass) {
+                settings.onSuccess(settings.height, settings.width);
+            } else {
+                settings.onError(settings.height, settings.width);
+            }
         }
     }
 };
