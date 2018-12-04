@@ -107,12 +107,13 @@ const remoteConfig = Object.assign({}, localConfig, {
             platform   : 'Windows 10',
             version    : '30'
         },
-        sl_ie_11: {
-            base       : 'SauceLabs',
-            browserName: 'Internet Explorer',
-            platform   : 'Windows 10',
-            version    : '11.0'
-        },
+        // Disabling IE11 due to VM issues that cause tests to fail
+        // sl_ie_11: {
+        //     base       : 'SauceLabs',
+        //     browserName: 'Internet Explorer',
+        //     platform   : 'Windows 10',
+        //     version    : '11.0'
+        // },
         sl_ie_10: {
             base       : 'SauceLabs',
             browserName: 'Internet Explorer',
