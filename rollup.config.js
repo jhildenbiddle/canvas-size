@@ -33,7 +33,7 @@ const pluginSettings = {
     eslint: {
         exclude       : ['node_modules/**', './package.json'],
         throwOnWarning: false,
-        throwOnError  : false
+        throwOnError  : true
     },
     babel: {
         es5: {
