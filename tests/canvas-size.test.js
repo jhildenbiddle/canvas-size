@@ -164,20 +164,22 @@ describe('canvasSize', function() {
     describe('test()', function() {
         const title = this.title;
 
-        it('triggers onError callback (width & height)', function(done) {
-            const testWidth  = 1000000;
-            const testHeight = testWidth;
-
-            canvasSize.test({
-                width : testWidth,
-                height: testHeight,
-                onError(width, height) {
-                    handleError(title, width, height);
-                    expect(width).to.equal(testWidth);
-                    expect(height).to.equal(testHeight);
-                    done();
-                }
+        it('returns true for for valid width / height', function() {
+            const testResult = canvasSize.test({
+                width : 1,
+                height: 1
             });
+
+            expect(testResult).to.equal(true);
+        });
+
+        it('returns false for for valid width / height', function() {
+            const testResult = canvasSize.test({
+                width : 1000000,
+                height: 1000000
+            });
+
+            expect(testResult).to.equal(false);
         });
 
         it('triggers onError callback (sizes)', function(done) {
@@ -198,26 +200,6 @@ describe('canvasSize', function() {
                         expect(testArr).to.deep.equal(testSizes);
                         done();
                     }
-                }
-            });
-        });
-
-        it('triggers onSuccess callback (width & height)', function(done) {
-            const testContext = this;
-            const testWidth   = 1;
-            const testHeight  = testWidth;
-
-            canvasSize.test({
-                width : testWidth,
-                height: testHeight,
-                onError(width, height) {
-                    handleError(title, width, height, testContext);
-                },
-                onSuccess(width, height) {
-                    handleSuccess(title, width, height);
-                    expect(width).to.equal(testWidth);
-                    expect(height).to.equal(testHeight);
-                    done();
                 }
             });
         });

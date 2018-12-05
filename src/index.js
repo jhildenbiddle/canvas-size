@@ -76,7 +76,7 @@ const testSizes = {
 // Functions (Private)
 // =============================================================================
 /**
- * Tests ability to read pixel data from canvas of specified dimensions.
+ * Tests ability to read pixel data from a canvas at a specified dimension.
  *
  * @param {number} width
  * @param {number} height
@@ -104,8 +104,8 @@ function canvasTest(width, height) {
 }
 
 /**
- * Tests ability to read pixel data from canvases of various dimensions by
- * decreasing canvas height and/or width until a success test occurs.
+ * Tests ability to read pixel data from canvas elements of various dimensions
+ * by decreasing canvas height and/or width until a test succeeds.
  *
  * @param {object} settings
  * @param {number[][]} settings.sizes
@@ -133,17 +133,18 @@ function canvasTestLoop(settings) {
 }
 
 /**
+ * Creates a 2d array of canvas dimensions either from the default testSizes
+ * object or the width/height/min/step values provided.
  *
- *
- * @param {object} settings
- * @param {number} settings.width
- * @param {number} settings.height
- * @param {number} settings.min
- * @param {number} settings.step
- * @param {number[][]} settings.sizes
- * @returns
+ * @param   {object} settings
+ * @param   {number} settings.width
+ * @param   {number} settings.height
+ * @param   {number} settings.min
+ * @param   {number} settings.step
+ * @param   {number[][]} settings.sizes
+ * @returns {number[][]}
  */
-function getMaxSizes(settings) {
+function createSizesArray(settings) {
     const isArea   = settings.width === settings.height;
     const isWidth  = settings.height === 1;
     const isHeight = settings.width === 1;
@@ -183,9 +184,9 @@ function getMaxSizes(settings) {
 // =============================================================================
 const canvasSize = {
     /**
-     * Determines maximum canvas area. Tests begins with the `max` value which
-     * is then reduced by the `step` value until a successful test pass or the
-     * `min` value is reached.
+     * Determines maximum area of an HTML canvas element. When `max` is
+     * unspecified, an optimized test will be performed using known maximum
+     * values from a variety of browsers and platforms.
      *
      * @param {object} [options]
      * @param {number} [options.max]
@@ -195,7 +196,7 @@ const canvasSize = {
      * @param {function} [options.onSuccess]
      */
     maxArea(options = {}) {
-        const sizes = getMaxSizes({
+        const sizes = createSizesArray({
             width : options.max,
             height: options.max,
             min   : options.min,
@@ -208,9 +209,9 @@ const canvasSize = {
     },
 
     /**
-     * Determines maximum canvas height. Tests begins with the `max` value which
-     * is then reduced by the `step` value until a successful test pass or the
-     * `min` value is reached.
+     * Determines maximum height of an HTML canvas element. When `max` is
+     * unspecified, an optimized test will be performed using known maximum
+     * values from a variety of browsers and platforms.
      *
      * @param {object} [options]
      * @param {number} [options.max]
@@ -220,7 +221,7 @@ const canvasSize = {
      * @param {function} [options.onSuccess]
      */
     maxHeight(options = {}) {
-        const sizes = getMaxSizes({
+        const sizes = createSizesArray({
             width : 1,
             height: options.max,
             min   : options.min,
@@ -233,9 +234,9 @@ const canvasSize = {
     },
 
     /**
-     * Determines maximum canvas width. Tests begins with the `max` value which
-     * is then reduced by the `step` value until a successful test pass or the
-     * `min` value is reached.
+     * Determines maximum width of an HTML canvas element. When `max` is
+     * unspecified, an optimized test will be performed using known maximum
+     * values from a variety of browsers and platforms.
      *
      * @param {object} [options]
      * @param {number} [options.max]
@@ -245,7 +246,7 @@ const canvasSize = {
      * @param {function} [options.onSuccess]
      */
     maxWidth(options = {}) {
-        const sizes = getMaxSizes({
+        const sizes = createSizesArray({
             width : options.max,
             height: 1,
             min   : options.min,
@@ -258,14 +259,15 @@ const canvasSize = {
     },
 
     /**
-     * Tests ability to read pixel data from canvas of specified dimensions.
+     * Tests ability to read pixel data from canvas of specified dimension(s).
      *
      * @param {object} [options]
-     * @param {number} [options.height]
      * @param {number} [options.width]
-     * @param {number[][]} [options.sizes=[]]
+     * @param {number} [options.height]
+     * @param {number[][]} [options.sizes]
      * @param {function} [options.onError]
      * @param {function} [options.onSuccess]
+     * @returns {boolean} Returns boolean when width/heigt is set (not sizes)
      */
     test(options = {}) {
         const settings = Object.assign({}, defaults, options);
@@ -277,12 +279,7 @@ const canvasSize = {
         else {
             const testPass = canvasTest(settings.width, settings.height);
 
-            if (testPass) {
-                settings.onSuccess(settings.height, settings.width);
-            }
-            else {
-                settings.onError(settings.height, settings.width);
-            }
+            return testPass;
         }
     }
 };

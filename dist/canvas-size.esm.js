@@ -56,7 +56,7 @@ function canvasTestLoop(settings) {
     }
 }
 
-function getMaxSizes(settings) {
+function createSizesArray(settings) {
     const isArea = settings.width === settings.height;
     const isWidth = settings.height === 1;
     const isHeight = settings.width === 1;
@@ -85,7 +85,7 @@ function getMaxSizes(settings) {
 const canvasSize = {
     maxArea() {
         let options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-        const sizes = getMaxSizes({
+        const sizes = createSizesArray({
             width: options.max,
             height: options.max,
             min: options.min,
@@ -99,7 +99,7 @@ const canvasSize = {
     },
     maxHeight() {
         let options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-        const sizes = getMaxSizes({
+        const sizes = createSizesArray({
             width: 1,
             height: options.max,
             min: options.min,
@@ -113,7 +113,7 @@ const canvasSize = {
     },
     maxWidth() {
         let options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-        const sizes = getMaxSizes({
+        const sizes = createSizesArray({
             width: options.max,
             height: 1,
             min: options.min,
@@ -133,11 +133,7 @@ const canvasSize = {
             canvasTestLoop(settings);
         } else {
             const testPass = canvasTest(settings.width, settings.height);
-            if (testPass) {
-                settings.onSuccess(settings.height, settings.width);
-            } else {
-                settings.onError(settings.height, settings.width);
-            }
+            return testPass;
         }
     }
 };

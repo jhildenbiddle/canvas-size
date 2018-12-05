@@ -83,7 +83,7 @@
             }
         }
     }
-    function getMaxSizes(settings) {
+    function createSizesArray(settings) {
         var isArea = settings.width === settings.height;
         var isWidth = settings.height === 1;
         var isHeight = settings.width === 1;
@@ -111,7 +111,7 @@
     var canvasSize = {
         maxArea: function maxArea() {
             var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-            var sizes = getMaxSizes({
+            var sizes = createSizesArray({
                 width: options.max,
                 height: options.max,
                 min: options.min,
@@ -125,7 +125,7 @@
         },
         maxHeight: function maxHeight() {
             var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-            var sizes = getMaxSizes({
+            var sizes = createSizesArray({
                 width: 1,
                 height: options.max,
                 min: options.min,
@@ -139,7 +139,7 @@
         },
         maxWidth: function maxWidth() {
             var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-            var sizes = getMaxSizes({
+            var sizes = createSizesArray({
                 width: options.max,
                 height: 1,
                 min: options.min,
@@ -159,11 +159,7 @@
                 canvasTestLoop(settings);
             } else {
                 var testPass = canvasTest(settings.width, settings.height);
-                if (testPass) {
-                    settings.onSuccess(settings.height, settings.width);
-                } else {
-                    settings.onError(settings.height, settings.width);
-                }
+                return testPass;
             }
         }
     };
