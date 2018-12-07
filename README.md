@@ -51,7 +51,17 @@ git clone https://github.com/jhildenbiddle/canvas-size.git
 CDN ([unpkg.com](https://unpkg.com/) shown, also on [jsdelivr.net](https://www.jsdelivr.com/package/npm/canvas-size)):
 
 ```html
+// ES5
 <script src="https://unpkg.com/canvas-size@1"></script>
+```
+
+```html
+// ES6 Module
+<script type="module">
+  import canvasSize from 'https://unpkg.com/canvas-size@1/dist/canvas-size.esm.min.js';
+  
+  // Do stuff...
+</script>
 ```
 
 ## Methods
