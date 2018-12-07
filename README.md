@@ -15,7 +15,7 @@ The [HTML canvas](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canv
 
 This micro-library provides the maximum area, height, and width of an HTML canvas element supported by the client as well as the ability to test custom canvas dimensions. By collecting this information *before* a new canvas element is created, applications are able to reliably set canvas dimensions within the size limitations of each browser/platform combination.
 
-- Demo
+- [Demo](https://stackblitz.com/edit/canvas-size?file=index.js) (StackBlitz)
 
 ------
 
@@ -223,14 +223,14 @@ canvasSize.test({
    If/when support for [OffscreenCanvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas) is added to the library, this will no longer be an issue for modern browsers as all canvas work will be handled by a [Service Worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) on a separate thread. Until then, consider the following options:
 
    * Display a progress indicator to inform users that the application is in a working state.
+   * Call the library when tests are least likely to affect the overall user experience.
    * [Cache test results on the client](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs/Client-side_storage) so that tests only need to be performed once per browser.
-   * Call the library when a brief period of unresponsiveness is least likely to affect the overall user experience.
 
 1. **Virtual environments may produce inconsistent results**
 
-   This is a result of the "virtualized" hardware used in these environments.
+   Tests conducted on virtual machines may produce results that differ from actual hardware. This is to be expected, as the virtualized hardware used in these environments can impose its own unique size limitations.
 
-   Tests conducted on local and cloud-based virtual machines may produce results that differ from actual hardware, and canvas dimensions that work without issue on actual hardware may fail in a virtualized environment. These issues are caused by the virtualized hardware imposing its own set of unique size limitations and requires your application to adjust accordingly.
+   In some virtualized environments (mostly with older browsers and operating systems), canvas-size may produce inconsistent results or fail all tests when calling `maxArea()`, `maxHeight()`, `maxWidth()`, and `test()` using `options.sizes`. This is a result of the virtual GPU failing after a test canvas exceeds the browser's size limitations, causing all subsequent tests to fail even for canvas dimensions that are actually supported by the browser. In these scenarios, avoid iterating over canvas dimensions that exceed the browser's size limitations, and instead specify dimensions that are known to be supported by the browser. Supported dimensions can be detected manually by calling `test()` using `options.width` and `options.height`.
 
 ## Contact
 
