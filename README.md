@@ -17,7 +17,6 @@ This micro-library provides the maximum area, height, and width of an HTML canva
 
 ------
 
-- [Description](#description)
 - [Features](#features)
 - [Installation](#installation)
 - [Methods](#methods)
