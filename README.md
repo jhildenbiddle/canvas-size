@@ -15,14 +15,14 @@ The [HTML canvas](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canv
 
 This micro-library provides the maximum area, height, and width of an HTML canvas element supported by the client as well as the ability to test custom canvas dimensions. By collecting this information *before* a new canvas element is created, applications are able to reliably set canvas dimensions within the size limitations of each browser/platform combination.
 
-- [Demo](https://stackblitz.com/edit/canvas-size?file=index.js) (StackBlitz)
-
 ------
 
+- [Description](#description)
 - [Features](#features)
 - [Installation](#installation)
 - [Methods](#methods)
-- [Test Results](#testresults)
+- [Test Results](#test-results)
+- [Known Issues](#known-issues)
 - [Contact](#contact)
 - [License](#license)
 
