@@ -7,13 +7,13 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/jhildenbiddle/canvas-size/blob/master/LICENSE)
 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2Fjhildenbiddle%2Fcanvas-size&hashtags=canvas,developers,frontend,javascript)
 
-Determine the maximum size of HTML canvas elements and support for specified canvas dimensions.
+Determine the maximum size of an HTML canvas element and support for custom canvas dimensions.
 
 ## Description
 
-The [HTML canvas](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas) element is [widely supported](http://caniuse.com/#feat=canvas) by modern and legacy browsers, but each browser and platform combination imposes [unique size limitations](#testresults) that will render a canvas unusable when exceeded. Unfortunately, browsers do not provide a way to determine what their limitations are, nor do they provide any kind of feedback after an unusable canvas has been created. This makes working with large canvas elements a challenge, especially for applications that support a variety of browsers and platforms.
+The [HTML canvas](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas) element is [widely supported](http://caniuse.com/#feat=canvas) by modern and legacy browsers, but each browser and platform combination imposes [unique size limitations](#test-results) that will render a canvas unusable when exceeded. Unfortunately, browsers do not provide a way to determine what their limitations are, nor do they provide any kind of feedback after an unusable canvas has been created. This makes working with large canvas elements a challenge, especially for applications that support a variety of browsers and platforms.
 
-This micro-library provides the maximum area, height, and width of an HTML canvas element supported by the client as well as the ability to test custom canvas dimensions. By collecting this information *before* a new canvas element is created, applications are able to reliably set canvas dimensions within the size limitations of each browser/platform combination.
+This micro-library provides the maximum area, height, and width of an HTML canvas element supported by the browser as well as the ability to test custom canvas dimensions. By collecting this information *before* a new canvas element is created, applications are able to reliably set canvas dimensions within the size limitations of each browser/platform.
 
 ------
 
@@ -30,7 +30,7 @@ This micro-library provides the maximum area, height, and width of an HTML canva
 ## Features
 
 - Determine the maximum area, height, and width of a canvas element
-- Test specific canvas element dimensions
+- Test support for custom canvas element dimensions
 - UMD and ES6 module available
 - Lightweight (< 1k min+gzip) and dependency-free
 
@@ -59,7 +59,7 @@ CDN ([unpkg.com](https://unpkg.com/) shown, also on [jsdelivr.net](https://www.j
 // ES6 Module
 <script type="module">
   import canvasSize from 'https://unpkg.com/canvas-size@1/dist/canvas-size.esm.min.js';
-  
+
   // Do stuff...
 </script>
 ```
@@ -74,31 +74,31 @@ CDN ([unpkg.com](https://unpkg.com/) shown, also on [jsdelivr.net](https://www.j
 
 Determines the maximum area/height/width of an HTML canvas element on the client.
 
-When `options.max` is unspecified, an optimized test will be performed using known maximum area/height/width values from a variety of browsers and platforms (see [Test Results](#testresults) for details). This will return the maximum canvas size for all major browsers in the shortest amount of time.
+When `options.max` is unspecified, an optimized test will be performed using known maximum area/height/width values from previously tested browsers and platforms (see [Test Results](#test-results) for details). This will return the maximum canvas area/height/width for all major browsers in the shortest amount of time.
 
-When `options.max` is specified, the value will be used for the initial area/height/width test and then reduced by the `options.step` value for each subsequent test until a successful test pass. This is useful for determining the maximum area/height/width of a canvas element for browser/platform combination not listed in the [Test Results](#testresults) section. Note that lower `options.step` values will provide more accurate results, but will require more time to complete due the increased number of tests that will run.
+When `options.max` is specified, the value will be used for the initial area/height/width test, then reduced by the `options.step` value for each subsequent test until a successful test pass. This is useful for determining the maximum area/height/width of a canvas element for browser/platform combination not listed in the [Test Results](#test-results) section. Note that lower `options.step` values will provide more accurate results, but will require more time to complete due the increased number of tests that will run.
 
 **Options**
 
-- **max**: Maximum canvas area (max*max), height, or width to test.
+- **max**: Maximum canvas height/width to test (area = max * max)
   - Type: `number`
   - Default: *See description above*
-- **min**: Minimum canvas area (min*min), height, or width to test.
+- **min**: Minimum canvas height/width to test (area = max * max)
   - Type: `number`
   - Default: `1`
-- **step**: Value to subtract from test height/width after each failed test.
+- **step**: Value to subtract from test height/width after each failed test
   - Type: `number`
   - Default: `1024`
-- **onError**: Callback invoked after each unsuccessful test.
+- **onError**: Callback invoked after each unsuccessful test
   - Type: `function`
   - Arguments:
-    1. **width**: Width of canvas element (will be`1` for `maxHeight()`).
-    1. **height**: Height of canvas element (will be `1` for `maxWidth()`).
-- **onSuccess**: Callback invoked after each successful test.
+    1. **width**: Width of canvas element (will be`1` for `maxHeight()`)
+    1. **height**: Height of canvas element (will be `1` for `maxWidth()`)
+- **onSuccess**: Callback invoked after each successful test
   - Type: `function`
   - Arguments:
-    1. **width**: Width of canvas element (will be`1` for `maxHeight()`).
-    1. **height**: Height of canvas element (will be `1` for `maxWidth()`).
+    1. **width**: Width of canvas element (will be`1` for `maxHeight()`)
+    1. **height**: Height of canvas element (will be `1` for `maxWidth()`)
 
 **Examples**
 
@@ -139,22 +139,22 @@ Determines if the dimension(s) specified exceed the HTML canvas size limitations
 
 To test a single dimension, use `options.width` and `options.height`. Callbacks are ignored when testing a single dimension, and a `boolean` is returned to indicate if the dimensions are within the browser's size limitations.
 
-To test multiple dimensions, use `options.sizes` to provide an `array` of `[width, height]` combinations to be tested (see examples below). Callbacks are invoked after each test.
+To test multiple dimensions, use `options.sizes` to provide an `array` of `[width, height]` combinations to be tested (see example below). Callbacks are invoked after each test.
 
 **Options**
 
-- **width**: Width of the canvas to test.
+- **width**: Width of the canvas to test
   - Type: `number`
-- **height**: Height of the canvas to test.
+- **height**: Height of the canvas to test
   - Type: `number`
-- **sizes**: A two-dimensional array of canvas dimensions to test.
+- **sizes**: A two-dimensional array of canvas dimensions to test
   - Type: `array` (see examples below)
-- **onError**: Callback invoked after each unsuccessful test.
+- **onError**: Callback invoked after each unsuccessful test
   - Type: `function`
   - Arguments:
     1. **width**: width of canvas element
     1. **height**: height of canvas element
-- **onSuccess**: Callback invoked after each successful test.
+- **onSuccess**: Callback invoked after each successful test
   - Type: `function`
   - Arguments:
     1. **width**: width of canvas element
@@ -162,7 +162,7 @@ To test multiple dimensions, use `options.sizes` to provide an `array` of `[widt
 
 **Returns**
 
-* `boolean` when testing single dimension using `options.width` and `options.height`
+* `boolean` when testing single dimension using `options.width` and `options.height`. Returns `true` if the dimensions are within the browser's size limitations or `false` when exceeded.
 
 **Examples**
 
@@ -231,9 +231,9 @@ canvasSize.test({
 
    If/when support for [OffscreenCanvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas) is added to the library, this will no longer be an issue for modern browsers as all canvas work will be handled by a [Service Worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) on a separate thread. Until then, consider the following options:
 
-   * Display a progress indicator to inform users that the application is in a working state.
-   * Call the library when tests are least likely to affect the overall user experience.
-   * [Cache test results on the client](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs/Client-side_storage) so that tests only need to be performed once per browser.
+   - Display a progress indicator to inform users that the application is in a working state.
+   - Call the library when tests are least likely to affect the overall user experience.
+   - [Cache test results on the client](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs/Client-side_storage) so that tests only need to be performed once per browser.
 
 1. **Virtual environments may produce inconsistent results**
 

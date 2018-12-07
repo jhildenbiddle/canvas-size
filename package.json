@@ -1,7 +1,7 @@
 {
   "name": "canvas-size",
   "version": "0.0.0",
-  "description": "Determine the maximum size of HTML canvas elements and support for custom canvas dimensions.",
+  "description": "Determine the maximum size of an HTML canvas element and support for custom canvas dimensions.",
   "author": "John Hildenbiddle <http://hildenbiddle.com>",
   "license": "MIT",
   "homepage": "https://github.com/jhildenbiddle/canvas-size",
