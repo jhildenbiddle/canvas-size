@@ -59,7 +59,7 @@ CDN ([unpkg.com](https://unpkg.com/) shown, also on [jsdelivr.net](https://www.j
 
 ### maxArea()
 
-### maxHeight()†
+### maxHeight()
 
 ### maxWidth()
 
@@ -98,10 +98,10 @@ The following examples use `canvasSize.maxArea()`. Usage for `maxHeight()` and `
 ```javascript
 // Default (optimized sizes)
 canvasSize.maxArea({
-  onError(width, height) {
+  onError: function(width, height) {
     console.log('Error:', width, height);
   },
-  onSuccess(width, height) {
+  onSuccess: function(width, height) {
     console.log('Success:', width, height);
   }
 });
@@ -111,13 +111,13 @@ canvasSize.maxArea({
   max : 16384,
   min : 1,     // default
   step: 1024,  // default
-  onError(width, height) {
+  onError: function(width, height) {
     // 1: 16384,16384 (max)
     // 2: 15360,15360 (max - 1024)
     // 3: 14336,14336 (max - 2048)
     console.log('Error:', width, height);
   },
-  onSuccess(width, height) {
+  onSuccess: function(width, height) {
     // 4: 13312,13312 (max - 3072)
     console.log('Success:', width, height);
   }
@@ -159,7 +159,7 @@ To test multiple dimensions, use `options.sizes` to provide an `array` of `[widt
 
 ```javascript
 // Single dimension
-const result = canvasSize.test({
+var result = canvasSize.test({
   height: 16384,
   width : 16384
 });
@@ -173,12 +173,12 @@ canvasSize.test({
     [8192, 8192],
     [4096, 4096]
   ],
-  onError(width, height) {
+  onError: function(width, height) {
     // 1: 16384,16384
     // 2: 8192,8192
     console.log('Error:', width, height);
   },
-  onSuccess(width, height) {
+  onSuccess: function(width, height) {
     // 3: 4096,4096
     console.log('Success:', width, height);
   }
