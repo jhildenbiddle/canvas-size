@@ -9,6 +9,8 @@
 
 Determine the maximum size of an HTML canvas element and support for custom canvas dimensions.
 
+* [Demo](https://jsbin.com/cacatohire/2/edit?js,console,output) (JSBin)
+
 ## Description
 
 The [HTML canvas](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas) element is [widely supported](http://caniuse.com/#feat=canvas) by modern and legacy browsers, but each browser and platform combination imposes [unique size limitations](#test-results) that will render a canvas unusable when exceeded. Unfortunately, browsers do not provide a way to determine what their limitations are, nor do they provide any kind of feedback after an unusable canvas has been created. This makes working with large canvas elements a challenge, especially for applications that support a variety of browsers and platforms.
@@ -33,6 +35,12 @@ This micro-library provides the maximum area, height, and width of an HTML canva
 - Test support for custom canvas element dimensions
 - UMD and ES6 module available
 - Lightweight (< 1k min+gzip) and dependency-free
+
+**Browser Support**
+
+| IE   | Edge | Chrome | Firefox | Safari |
+| ---- | ---- | ------ | ------- | ------ |
+| 9+   | 12+  | 4+     | 3.6+    | 4+     |
 
 ## Installation
 
