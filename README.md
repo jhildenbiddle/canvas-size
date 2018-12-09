@@ -9,7 +9,7 @@
 
 Determine the maximum size of an HTML canvas element and support for custom canvas dimensions.
 
-* [Demo](https://jsbin.com/cacatohire/2/edit?js,console,output) (JSBin)
+- [Demo](https://jsbin.com/cacatohire/2/edit?js,console,output) (JSBin)
 
 ## Description
 
@@ -170,7 +170,7 @@ To test multiple dimensions, use `options.sizes` to provide an `array` of `[widt
 
 **Returns**
 
-* `boolean` when testing single dimension using `options.width` and `options.height`. Returns `true` if the dimensions are within the browser's size limitations or `false` when exceeded.
+- `boolean` when testing single dimension using `options.width` and `options.height`. Returns `true` if the dimensions are within the browser's size limitations or `false` when exceeded.
 
 **Examples**
 
