@@ -1,7 +1,7 @@
 # canvas-size
 
 [![NPM](https://img.shields.io/npm/v/canvas-size.svg?style=flat-square)](https://www.npmjs.com/package/canvas-size)
-[![Build Status](https://img.shields.io/travis/jhildenbiddle/canvas-size.svg?style=flat-square)](https://travis-ci.org/jhildenbiddle/canvas-size)
+[![Build Status](https://img.shields.io/travis/jhildenbiddle/canvas-size/master.svg?style=flat-square)](https://travis-ci.org/jhildenbiddle/canvas-size)
 [![Codacy](https://img.shields.io/codacy/grade/d5203341ed494f6c9b877d93e0daf458.svg?style=flat-square)](https://www.codacy.com/app/jhildenbiddle/canvas-size?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jhildenbiddle/canvas-size&amp;utm_campaign=Badge_Grade)
 [![Codecov](https://img.shields.io/codecov/c/github/jhildenbiddle/canvas-size.svg?style=flat-square)](https://codecov.io/gh/jhildenbiddle/canvas-size)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/jhildenbiddle/canvas-size/blob/master/LICENSE)
