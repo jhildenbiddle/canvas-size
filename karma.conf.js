@@ -163,6 +163,13 @@ module.exports = function(config) {
 
         // Remove text-summary reporter
         testConfig.coverageReporter.reporters = testConfig.coverageReporter.reporters.filter(obj => obj.type !== 'text-summary');
+
+        // Travis-specific settings
+        if ('TRAVIS' in process.env) {
+            // Use custom hostname to prevent Safari disconnects
+            // https://support.saucelabs.com/hc/en-us/articles/115010079868-Issues-with-Safari-and-Karma-Test-Runner
+            testConfig.hostname = 'travis.dev';
+        }
     }
     else {
         // eslint-disable-next-line
