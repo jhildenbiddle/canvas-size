@@ -74,12 +74,7 @@ const localConfig = {
     colors     : true,
     autoWatch  : false,
     singleRun  : true,
-    concurrency: Infinity,
-    // Avoid DISCONNECTED messages
-    browserDisconnectTimeout  : 10000,     // default 2000
-    browserDisconnectTolerance: 1,         // default 0
-    browserNoActivityTimeout  : 4*60*1000, //default 10000
-    captureTimeout            : 4*60*1000  //default 60000
+    concurrency: Infinity
 };
 
 
@@ -139,9 +134,11 @@ const remoteConfig = Object.assign({}, localConfig, {
     },
     // SauceLab settings
     sauceLabs: {
-        username : saucelabs.username || process.env.SAUCE_USERNAME,
-        accessKey: saucelabs.accessKey || process.env.SAUCE_ACCESS_KEY,
-        testName : `${pkg.name} (karma)`
+        username         : saucelabs.username || process.env.SAUCE_USERNAME,
+        accessKey        : saucelabs.accessKey || process.env.SAUCE_ACCESS_KEY,
+        testName         : `${pkg.name} (karma)`,
+        recordScreenshots: false,
+        recordVideo      : false
     }
 });
 
