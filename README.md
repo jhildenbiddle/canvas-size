@@ -7,7 +7,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/jhildenbiddle/canvas-size/blob/master/LICENSE)
 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2Fjhildenbiddle%2Fcanvas-size&hashtags=canvas,developers,frontend,javascript)
 
-Determine the maximum size of an HTML canvas element and support for custom canvas dimensions.
+Determine the maximum size of an HTML canvas element and test support for custom canvas dimensions.
 
 - [Demo](https://jsbin.com/cacatohire/2/edit?js,console,output) (JSBin)
 
@@ -259,4 +259,4 @@ canvasSize.test({
 
 This project is licensed under the MIT License. See the [MIT LICENSE](https://github.com/jhildenbiddle/canvas-size/blob/master/LICENSE) for details.
 
-Copyright (c) 2018 John Hildenbiddle ([@jhildenbiddle](https://twitter.com/jhildenbiddle))
+Copyright (c) John Hildenbiddle ([@jhildenbiddle](https://twitter.com/jhildenbiddle))

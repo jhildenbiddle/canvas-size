@@ -14,6 +14,10 @@ import { terser } from 'rollup-plugin-terser';
 
 // Settings
 // =============================================================================
+// Copyright
+const currentYear  = (new Date()).getFullYear();
+const releaseYear  = 2015;
+
 // Output
 const entryFile  = path.resolve(__dirname, 'src', 'index.js');
 const outputFile = path.resolve(__dirname, 'dist', `${pkg.name}.js`);
@@ -24,7 +28,7 @@ const bannerData = [
     `${pkg.name}`,
     `v${pkg.version}`,
     `${pkg.homepage}`,
-    `(c) ${(new Date()).getFullYear()} ${pkg.author}`,
+    `(c) ${releaseYear}${currentYear === releaseYear ? '' : '-' + currentYear} ${pkg.author}`,
     `${pkg.license} license`
 ];
 
