@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.0.3
+
+*2019-01-08*
+
+- Update unit test configuration (Karma & Travis)
+- Update dependencies
+
 ## 1.0.2
 
 *2018-12-23*
