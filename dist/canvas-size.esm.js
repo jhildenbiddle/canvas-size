@@ -5,10 +5,6 @@
  * (c) 2015-2019 John Hildenbiddle <http://hildenbiddle.com>
  * MIT license
  */
-const cvs = document ? document.createElement("canvas") : null;
-
-const ctx = cvs && cvs.getContext ? cvs.getContext("2d") : null;
-
 const defaults = {
     max: null,
     min: 1,
@@ -25,6 +21,8 @@ const testSizes = {
 };
 
 function canvasTest(width, height) {
+    const cvs = document ? document.createElement("canvas") : null;
+    const ctx = cvs && cvs.getContext ? cvs.getContext("2d") : null;
     const w = 1;
     const h = 1;
     const x = width - w;

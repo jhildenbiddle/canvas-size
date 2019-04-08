@@ -1,7 +1,5 @@
 // Constants & Variables
 // =============================================================================
-const cvs      = document ? document.createElement('canvas') : null;
-const ctx      = cvs && cvs.getContext ? cvs.getContext('2d') : null;
 const defaults = {
     max  : null,
     min  : 1,
@@ -83,11 +81,12 @@ const testSizes = {
  * @returns {boolean}
  */
 function canvasTest(width, height) {
-    // Define test rectangle dimensions and coordinates
-    const w = 1;
-    const h = 1;
-    const x = width - w;  // Right edge
-    const y = height - h; // Bottom edge
+    const cvs = document ? document.createElement('canvas') : null;
+    const ctx = cvs && cvs.getContext ? cvs.getContext('2d') : null;
+    const w   = 1;
+    const h   = 1;
+    const x   = width - w;  // Right edge
+    const y   = height - h; // Bottom edge
 
     try {
         // Set sized canvas dimensions and draw test rectangle

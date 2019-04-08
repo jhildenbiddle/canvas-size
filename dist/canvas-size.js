@@ -39,8 +39,6 @@
     function _nonIterableSpread() {
         throw new TypeError("Invalid attempt to spread non-iterable instance");
     }
-    var cvs = document ? document.createElement("canvas") : null;
-    var ctx = cvs && cvs.getContext ? cvs.getContext("2d") : null;
     var defaults = {
         max: null,
         min: 1,
@@ -55,6 +53,8 @@
         width: [ 4194303, 32767, 16384, 8192, 4096, defaults.min ]
     };
     function canvasTest(width, height) {
+        var cvs = document ? document.createElement("canvas") : null;
+        var ctx = cvs && cvs.getContext ? cvs.getContext("2d") : null;
         var w = 1;
         var h = 1;
         var x = width - w;
