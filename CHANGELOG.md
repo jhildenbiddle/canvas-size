@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.4
+
+*2019-04-08*
+
+- Fix memory consumption
+
 ## 1.0.3
 
 *2019-01-08*
