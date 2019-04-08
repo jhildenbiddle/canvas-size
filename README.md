@@ -204,18 +204,18 @@ canvasSize.test({
 
 ## Test Results
 
+Tests conducted using [BrowserStack](https://www.browserstack.com/) virtualized device are denoted with an asterisk (`*`). Results from these tests may vary from actual hardware.
+
 ### Desktop
 
 | Browser (OS)            | Max Width | Max Height |          Max Area (Test Size) |
 | ----------------------- | --------: | ---------: | ----------------------------: |
 | Chrome 70 (Mac, Win*)   |    32,767 |     32,767 | 268,435,456 (16,384 x 16,384) |
 | Edge 17 *               |    16,384 |     16,384 | 268,435,456 (16,384 x 16,384) |
-| Firefox 63 (Mac, Win *) |    32,767 |     32,767 | 124,992,400 (11,180 x 11,180) |
+| Firefox 63 (Mac, Win*)  |    32,767 |     32,767 | 124,992,400 (11,180 x 11,180) |
 | IE 11 *                 |    16,384 |     16,384 |    67,108,864 (8,192 x 8,192) |
 | IE 9 - 10 *             |     8,192 |      8,192 |    67,108,864 (8,192 x 8,192) |
 | Safari 7 - 12           | 4,194,303 |  8,388,607 | 268,435,456 (16,384 x 16,384) |
-
-\* Tests conducted using [BrowserStack](https://www.browserstack.com/) virtualized device. Results from actual hardware may vary.
 
 ### Mobile
 
@@ -228,8 +228,6 @@ canvasSize.test({
 | Chrome 68 (Android 4.4) *     |    32,767 |     32,767 | 268,435,456 (16,384 x 16,384) |
 | IE (Windows Phone 8.x)        |     4,096 |      4,096 |    16,777,216 (4,096 x 4,096) |
 | Safari (iOS 9 - 12)           | 4,194,303 |  8,388,607 |    16,777,216 (4,096 x 4,096) |
-
-\* Tests conducted using [BrowserStack](https://www.browserstack.com/) virtualized device. Results from actual hardware may vary.
 
 ## Known Issues
 
