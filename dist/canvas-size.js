@@ -2,13 +2,13 @@
  * canvas-size
  * v1.0.4
  * https://github.com/jhildenbiddle/canvas-size
- * (c) 2015-2019 John Hildenbiddle <http://hildenbiddle.com>
+ * (c) 2015-2020 John Hildenbiddle <http://hildenbiddle.com>
  * MIT license
  */
 (function(global, factory) {
     typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = global || self, 
     global.canvasSize = factory());
-})(this, function() {
+})(this, (function() {
     "use strict";
     function _extends() {
         _extends = Object.assign || function(target) {
@@ -25,19 +25,29 @@
         return _extends.apply(this, arguments);
     }
     function _toConsumableArray(arr) {
-        return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+        return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
     }
     function _arrayWithoutHoles(arr) {
-        if (Array.isArray(arr)) {
-            for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-            return arr2;
-        }
+        if (Array.isArray(arr)) return _arrayLikeToArray(arr);
     }
     function _iterableToArray(iter) {
-        if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+        if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+    }
+    function _unsupportedIterableToArray(o, minLen) {
+        if (!o) return;
+        if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+        var n = Object.prototype.toString.call(o).slice(8, -1);
+        if (n === "Object" && o.constructor) n = o.constructor.name;
+        if (n === "Map" || n === "Set") return Array.from(o);
+        if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+    }
+    function _arrayLikeToArray(arr, len) {
+        if (len == null || len > arr.length) len = arr.length;
+        for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+        return arr2;
     }
     function _nonIterableSpread() {
-        throw new TypeError("Invalid attempt to spread non-iterable instance");
+        throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
     }
     var defaults = {
         max: null,
@@ -78,9 +88,9 @@
         } else {
             settings.onError(width, height);
             if (settings.sizes.length) {
-                setTimeout(function() {
+                setTimeout((function() {
                     canvasTestLoop(settings);
-                }, 0);
+                }), 0);
             }
         }
     }
@@ -90,11 +100,11 @@
         var isHeight = settings.width === 1;
         var sizes = [];
         if (!settings.width || !settings.height) {
-            settings.sizes.forEach(function(testSize) {
+            settings.sizes.forEach((function(testSize) {
                 var width = isArea || isWidth ? testSize : 1;
                 var height = isArea || isHeight ? testSize : 1;
                 sizes.push([ width, height ]);
-            });
+            }));
         } else {
             var testMin = settings.min || defaults.min;
             var testStep = settings.step || defaults.step;
@@ -165,5 +175,5 @@
         }
     };
     return canvasSize;
-});
+}));
 //# sourceMappingURL=canvas-size.js.map
