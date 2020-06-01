@@ -1,16 +1,21 @@
+import { canvasTest, canvasTestPromise } from './canvas-test.js';
+
 // Constants & Variables
 // =============================================================================
 const defaults = {
-    max  : null,
-    min  : 1,
-    sizes: [],
-    step : 1024,
+    max       : null,
+    min       : 1,
+    sizes     : [],
+    step      : 1024,
+    usePromise: false,
     // Callbacks
-    onError  : Function.prototype,
-    onSuccess: Function.prototype
+    onError   : Function.prototype,
+    onSuccess : Function.prototype
 };
 const testSizes = {
     area: [
+        // Future Browsers?
+        32767,
         // Chrome 70 (Mac, Win)
         // Chrome 68 (Android 4.4)
         // Edge 17 (Win)
@@ -36,6 +41,8 @@ const testSizes = {
         // Safari 7-12 (Mac)
         // Safari (iOS 9-12)
         8388607,
+        // Chrome 83 (Mac, Win)
+        65535,
         // Chrome 70 (Mac, Win)
         // Chrome 68 (Android 4.4-9)
         // Firefox 63 (Mac, Win)
@@ -54,6 +61,8 @@ const testSizes = {
         // Safari 7-12 (Mac)
         // Safari (iOS 9-12)
         4194303,
+        // Chrome 83 (Mac, Win)
+        65535,
         // Chrome 70 (Mac, Win)
         // Chrome 68 (Android 4.4-9)
         // Firefox 63 (Mac, Win)
@@ -73,64 +82,6 @@ const testSizes = {
 
 // Functions (Private)
 // =============================================================================
-/**
- * Tests ability to read pixel data from a canvas at a specified dimension.
- *
- * @param {number} width
- * @param {number} height
- * @returns {boolean}
- */
-function canvasTest(width, height) {
-    const cvs = document ? document.createElement('canvas') : null;
-    const ctx = cvs && cvs.getContext ? cvs.getContext('2d') : null;
-    const w   = 1;
-    const h   = 1;
-    const x   = width - w;  // Right edge
-    const y   = height - h; // Bottom edge
-
-    try {
-        // Set sized canvas dimensions and draw test rectangle
-        cvs.width = width;
-        cvs.height = height;
-        ctx.fillRect(x, y, w, h);
-
-        // Verify test rectangle image data (Pass = 255, Fail = 0)
-        return Boolean(ctx.getImageData(x, y, w, h).data[3]);
-    }
-    catch(e){
-        return false;
-    }
-}
-
-/**
- * Tests ability to read pixel data from canvas elements of various dimensions
- * by decreasing canvas height and/or width until a test succeeds.
- *
- * @param {object} settings
- * @param {number[][]} settings.sizes
- * @param {function} settings.onError
- * @param {function} settings.onSuccess
- */
-function canvasTestLoop(settings) {
-    const sizes    = settings.sizes.shift();
-    const width    = sizes[0];
-    const height   = sizes[1];
-    const testPass = canvasTest(width, height);
-
-    if (testPass) {
-        settings.onSuccess(width, height);
-    }
-    else {
-        settings.onError(width, height);
-
-        if (settings.sizes.length) {
-            setTimeout(function(){
-                canvasTestLoop(settings);
-            }, 0);
-        }
-    }
-}
-
 /**
  * Creates a 2d array of canvas dimensions either from the default testSizes
  * object or the width/height/min/step values provided.
@@ -164,15 +115,13 @@ function createSizesArray(settings) {
         const testStep = settings.step || defaults.step;
         let   testSize = Math.max(settings.width, settings.height);
 
-        while (testSize > testMin) {
+        while (testSize >= testMin) {
             const width  = isArea || isWidth ? testSize : 1;
             const height = isArea || isHeight ? testSize : 1;
 
             sizes.push([width, height]);
             testSize -= testStep;
         }
-
-        sizes.push([testMin, testMin]);
     }
 
     return sizes;
@@ -191,6 +140,7 @@ const canvasSize = {
      * @param {number} [options.max]
      * @param {number} [options.min=1]
      * @param {number} [options.step=1024]
+     * @param {boolean} [options.usePromise=false]
      * @param {function} [options.onError]
      * @param {function} [options.onSuccess]
      */
@@ -204,7 +154,12 @@ const canvasSize = {
         });
         const settings = Object.assign({}, defaults, options, { sizes });
 
-        canvasTestLoop(settings);
+        if (settings.usePromise) {
+            return canvasTestPromise(settings);
+        }
+        else {
+            canvasTest(settings);
+        }
     },
 
     /**
@@ -216,6 +171,7 @@ const canvasSize = {
      * @param {number} [options.max]
      * @param {number} [options.min=1]
      * @param {number} [options.step=1024]
+     * @param {boolean} [options.usePromise=false]
      * @param {function} [options.onError]
      * @param {function} [options.onSuccess]
      */
@@ -229,7 +185,12 @@ const canvasSize = {
         });
         const settings = Object.assign({}, defaults, options, { sizes });
 
-        canvasTestLoop(settings);
+        if (settings.usePromise) {
+            return canvasTestPromise(settings);
+        }
+        else {
+            canvasTest(settings);
+        }
     },
 
     /**
@@ -241,6 +202,7 @@ const canvasSize = {
      * @param {number} [options.max]
      * @param {number} [options.min=1]
      * @param {number} [options.step=1024]
+     * @param {boolean} [options.usePromise=false]
      * @param {function} [options.onError]
      * @param {function} [options.onSuccess]
      */
@@ -254,7 +216,12 @@ const canvasSize = {
         });
         const settings = Object.assign({}, defaults, options, { sizes });
 
-        canvasTestLoop(settings);
+        if (settings.usePromise) {
+            return canvasTestPromise(settings);
+        }
+        else {
+            canvasTest(settings);
+        }
     },
 
     /**
@@ -264,21 +231,25 @@ const canvasSize = {
      * @param {number} [options.width]
      * @param {number} [options.height]
      * @param {number[][]} [options.sizes]
+     * @param {boolean} [options.usePromise=false]
      * @param {function} [options.onError]
      * @param {function} [options.onSuccess]
-     * @returns {boolean} Returns boolean when width/heigt is set (not sizes)
      */
     test(options = {}) {
         const settings = Object.assign({}, defaults, options);
 
-        if (settings.sizes.length) {
-            settings.sizes = [...options.sizes];
-            canvasTestLoop(settings);
+        // Prevent mutation of sizes array if referencing user array
+        settings.sizes = [...settings.sizes];
+
+        if (settings.width && settings.height) {
+            settings.sizes = [[settings.width, settings.height]];
+        }
+
+        if (settings.usePromise) {
+            return canvasTestPromise(settings);
         }
         else {
-            const testPass = canvasTest(settings.width, settings.height);
-
-            return testPass;
+            return canvasTest(settings);
         }
     }
 };

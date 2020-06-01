@@ -6,7 +6,8 @@ import { expect } from 'chai';
 
 // Constants & Variables
 // =============================================================================
-const hideConsoleMsgs = false;
+const hasPromiseSupport = Boolean(window.Promise);
+const hideConsoleMsgs   = true;
 
 
 // Functions
@@ -41,8 +42,6 @@ function handleSuccess(title, width, height, context) {
 // Suite
 // =============================================================================
 describe('canvasSize', function() {
-    this.timeout(10000);
-
     // maxArea()
     // -------------------------------------------------------------------------
     describe('maxArea()', function() {
@@ -164,7 +163,7 @@ describe('canvasSize', function() {
     describe('test()', function() {
         const title = this.title;
 
-        it('returns true for for valid width / height', function() {
+        it('returns true for valid width / height', function() {
             const testResult = canvasSize.test({
                 width : 1,
                 height: 1
@@ -173,7 +172,7 @@ describe('canvasSize', function() {
             expect(testResult).to.equal(true);
         });
 
-        it('returns false for for valid width / height', function() {
+        it('returns false for invalid width / height', function() {
             const testResult = canvasSize.test({
                 width : 1000000,
                 height: 1000000
@@ -228,4 +227,97 @@ describe('canvasSize', function() {
             });
         });
     });
+
+    // Promises
+    // -------------------------------------------------------------------------
+    if (hasPromiseSupport) {
+        describe('Promises', function() {
+            it('test() invokes promise.then() for valid width / height', function(done) {
+                let onError   = 0;
+                let onSuccess = 0;
+
+                // When testing a single dimension using width and height
+                // properties there is no need to use a promise. This is being
+                // done for testing purposes only.
+                canvasSize.test({
+                    width     : 1,
+                    height    : 1,
+                    sizes     : [[2,2], [3,3]], // Should be ignored
+                    usePromise: true,
+                    onError(width, height, benchmark) {
+                        onError++;
+                    },
+                    onSuccess(width, height, benchmark) {
+                        onSuccess++;
+                    }
+                })
+                .then(({ width, height, benchmark }) => {
+                    expect(onError, 'triggers onError').to.equal(0);
+                    expect(onSuccess, 'trigers onSuccess').to.equal(1);
+                    expect(width, 'returns width').to.equal(1);
+                    expect(height, 'returns height').to.equal(1);
+                    expect(benchmark, 'returns benchmark').to.be.finite;
+                    done();
+                });
+            });
+
+            it('test() invokes promise.catch() for invalid width / height', function(done) {
+                const testSize = 1000000;
+
+                let onError    = 0;
+                let onSuccess  = 0;
+
+                // When testing a single dimension using width and height
+                // properties there is no need to use a promise. This is being
+                // done for testing purposes only.
+                canvasSize.test({
+                    width     : testSize,
+                    height    : testSize,
+                    sizes     : [[2,2], [3,3]], // Should be ignored
+                    usePromise: true,
+                    onError(width, height, benchmark) {
+                        onError++;
+                    },
+                    onSuccess(width, height, benchmark) {
+                        onSuccess++;
+                    }
+                })
+                .catch(({ width, height, benchmark }) => {
+                    expect(onError, 'triggers onError').to.equal(1);
+                    expect(onSuccess, 'trigers onSuccess').to.equal(0);
+                    expect(width, 'returns width').to.equal(testSize);
+                    expect(height, 'returns height').to.equal(testSize);
+                    expect(benchmark, 'returns benchmark').to.be.finite;
+                    done();
+                });
+            });
+
+            ['maxArea', 'maxWidth', 'maxHeight'].forEach(method => {
+                it(`${method}() invokes promise.then() for valid width / height`, function(done) {
+                    let onError   = 0;
+                    let onSuccess = 0;
+
+                    canvasSize[method]({
+                        max       : 1000000,
+                        step      : 999999,
+                        usePromise: true,
+                        onError(width, height, benchmark) {
+                            onError++;
+                        },
+                        onSuccess(width, height, benchmark) {
+                            onSuccess++;
+                        }
+                    })
+                    .then(({ width, height, benchmark }) => {
+                        expect(onError, 'triggers onError').to.equal(1);
+                        expect(onSuccess, 'trigers onSuccess').to.equal(1);
+                        expect(width, 'returns width').to.equal(1);
+                        expect(height, 'returns height').to.equal(1);
+                        expect(benchmark, 'returns benchmark').to.be.finite;
+                        done();
+                    });
+                });
+            });
+        });
+    }
 });
