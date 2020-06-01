@@ -18,7 +18,7 @@ module.exports = {
         "curly"                      : ["error"],
         "dot-notation"               : ["error"],
         "eqeqeq"                     : ["error"],
-        "indent"                     : ["error", 4],
+        "indent"                     : ["error", 4, { "MemberExpression": 0 }],
         "linebreak-style"            : ["error", "unix"],
         "no-console"                 : ["warn"],
         "no-floating-decimal"        : ["error"],
