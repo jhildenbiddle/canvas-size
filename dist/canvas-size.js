@@ -109,13 +109,7 @@
         } else {
             settings.onError(width, height, benchmark);
             if (settings.sizes.length) {
-                if (window.requestAnimationFrame) {
-                    window.requestAnimationFrame((function() {
-                        canvasTest(settings);
-                    }));
-                } else {
-                    canvasTest(settings);
-                }
+                canvasTest(settings);
             }
         }
         return isTestPass;

@@ -36,13 +36,7 @@ function canvasTest(settings) {
     } else {
         settings.onError(width, height, benchmark);
         if (settings.sizes.length) {
-            if (window.requestAnimationFrame) {
-                window.requestAnimationFrame(() => {
-                    canvasTest(settings);
-                });
-            } else {
-                canvasTest(settings);
-            }
+            canvasTest(settings);
         }
     }
     return isTestPass;
