@@ -11,7 +11,7 @@
 Determine the maximum size of an HTML canvas element and test support for custom canvas dimensions.
 
 - [Demo](https://on690.csb.app/) for modern browsers (CodeSandbox)
-- [Demo](https://jsbin.com/cacatohire/2/edit?js,output) for legacy browsers (JSBin)
+- [Demo](https://jsbin.com/megedep/1/edit?js,output) for legacy browsers (JSBin)
 
 ## Features
 
@@ -271,27 +271,27 @@ Tests conducted using [BrowserStack](https://www.browserstack.com/) virtualized 
 
 ### Desktop
 
-| Browser (OS)            | Max Width | Max Height |          Max Area (Test Size) |
+| Browser (OS)            | Max Width | Max Height |          Max Area (Total) |
 | ----------------------- | --------: | ---------: | ----------------------------: |
-| Chrome 83 (Mac, Win *)  |    65,535 |     65,535 | 268,435,456 (16,384 x 16,384) |
-| Chrome 70 (Mac, Win *)  |    32,767 |     32,767 | 268,435,456 (16,384 x 16,384) |
-| Edge 17 *               |    16,384 |     16,384 | 268,435,456 (16,384 x 16,384) |
-| Firefox 63 (Mac, Win *) |    32,767 |     32,767 | 124,992,400 (11,180 x 11,180) |
-| IE 11 *                 |    16,384 |     16,384 |    67,108,864 (8,192 x 8,192) |
-| IE 9 - 10 *             |     8,192 |      8,192 |    67,108,864 (8,192 x 8,192) |
-| Safari 7 - 12           | 4,194,303 |  8,388,607 | 268,435,456 (16,384 x 16,384) |
+| Chrome 83 (Mac, Win *)  |    65,535 |     65,535 | 16,384 x 16,384 (268,435,456) |
+| Chrome 70 (Mac, Win *)  |    32,767 |     32,767 | 16,384 x 16,384 (268,435,456) |
+| Edge 17 *               |    16,384 |     16,384 | 16,384 x 16,384 (268,435,456) |
+| Firefox 63 (Mac, Win *) |    32,767 |     32,767 | 11,180 x 11,180 (124,992,400) |
+| IE 11 *                 |    16,384 |     16,384 |   8,192 x 8,192  (67,108,864) |
+| IE 9 - 10 *             |     8,192 |      8,192 |   8,192 x 8,192  (67,108,864) |
+| Safari 7 - 12           | 4,194,303 |  8,388,607 | 16,384 x 16,384 (268,435,456) |
 
 ### Mobile
 
-| Browser (OS)                  | Max Width | Max Height |          Max Area (Test Size) |
+| Browser (OS)                  | Max Width | Max Height |          Max Area (Total) |
 | ----------------------------- | --------: | ---------: | ----------------------------: |
-| Chrome 68 (Android 9) *       |    32,767 |     32,767 | 201,299,344 (14,188 x 14,188) |
-| Chrome 68 (Android 7.1 - 8) * |    32,767 |     32,767 | 201,299,344 (14,188 x 14,188) |
-| Chrome 68 (Android 6)         |    32,767 |     32,767 | 117,418,896 (10,836 x 10,836) |
-| Chrome 68 (Android 5) *       |    32,767 |     32,767 | 130,005,604 (11,402 x 11,402) |
-| Chrome 68 (Android 4.4) *     |    32,767 |     32,767 | 268,435,456 (16,384 x 16,384) |
-| IE (Windows Phone 8.x)        |     4,096 |      4,096 |    16,777,216 (4,096 x 4,096) |
-| Safari (iOS 9 - 12)           | 4,194,303 |  8,388,607 |    16,777,216 (4,096 x 4,096) |
+| Chrome 68 (Android 9) *       |    32,767 |     32,767 | 14,188 x 14,188 (201,299,344) |
+| Chrome 68 (Android 7.1 - 8) * |    32,767 |     32,767 | 14,188 x 14,188 (201,299,344) |
+| Chrome 68 (Android 6)         |    32,767 |     32,767 | 10,836 x 10,836 (117,418,896) |
+| Chrome 68 (Android 5) *       |    32,767 |     32,767 | 11,402 x 11,402 (130,005,604) |
+| Chrome 68 (Android 4.4) *     |    32,767 |     32,767 | 16,384 x 16,384 (268,435,456) |
+| IE (Windows Phone 8.x)        |     4,096 |      4,096 |  4,096 x  4,096  (16,777,216) |
+| Safari (iOS 9 - 12)           | 4,194,303 |  8,388,607 |  4,096 x  4,096  (16,777,216) |
 
 ## Known Issues
 
