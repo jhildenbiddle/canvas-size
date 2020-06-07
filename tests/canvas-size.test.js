@@ -6,8 +6,9 @@ import { expect } from 'chai';
 
 // Constants & Variables
 // =============================================================================
-const hasPromiseSupport = Boolean(window.Promise);
-const hideConsoleMsgs   = true;
+const hasPromiseSupport         = Boolean(window.Promise);
+const hasOffscreenCanvasSupport = 'OffscreenCanvas' in window;
+const hideConsoleMsgs           = true;
 
 
 // Functions
@@ -206,8 +207,8 @@ describe('canvasSize', function() {
         it('triggers onSuccess callback (sizes)', function(done) {
             const testContext = this;
             const testSizes   = [
-                [3000000, 3000000],
                 [2000000, 2000000],
+                [1000000, 1000000],
                 [1, 1]
             ];
 
@@ -231,7 +232,7 @@ describe('canvasSize', function() {
     // Promises
     // -------------------------------------------------------------------------
     if (hasPromiseSupport) {
-        describe('Promises', function() {
+        describe('Promise', function() {
             it('test() invokes promise.then() for valid width / height', function(done) {
                 let onError   = 0;
                 let onSuccess = 0;
@@ -315,6 +316,92 @@ describe('canvasSize', function() {
                         expect(height, 'returns height').to.equal(1);
                         expect(benchmark, 'returns benchmark').to.be.finite;
                         done();
+                    });
+                });
+            });
+        });
+    }
+
+    // Workers
+    // -------------------------------------------------------------------------
+    if (hasOffscreenCanvasSupport) {
+        describe('Worker', function() {
+            it('posts message for test() valid width / height', function(done) {
+                let onError   = 0;
+                let onSuccess = 0;
+
+                canvasSize.test({
+                    width     : 1,
+                    height    : 1,
+                    sizes     : [[2,2], [3,3]], // Should be ignored
+                    useWorker : true,
+                    onError(width, height, benchmark) {
+                        onError++;
+                    },
+                    onSuccess(width, height, benchmark) {
+                        onSuccess++;
+
+                        expect(onError, 'triggers onError').to.equal(0);
+                        expect(onSuccess, 'trigers onSuccess').to.equal(1);
+                        expect(width, 'returns width').to.equal(1);
+                        expect(height, 'returns height').to.equal(1);
+                        expect(benchmark, 'returns benchmark').to.be.finite;
+                        done();
+                    }
+                });
+            });
+
+            it('posts message for test() invalid width / height', function(done) {
+                const testSize = 16385; // Chrome maxArea w/h + 1
+
+                let onError   = 0;
+                let onSuccess = 0;
+
+                canvasSize.test({
+                    width    : testSize,
+                    height   : testSize,
+                    sizes    : [[2,2], [3,3]], // Should be ignored
+                    useWorker: true,
+                    onError(width, height, benchmark) {
+                        onError++;
+
+                        expect(onError, 'triggers onError').to.equal(1);
+                        expect(onSuccess, 'trigers onSuccess').to.equal(0);
+                        expect(width, 'returns width').to.equal(testSize);
+                        expect(height, 'returns height').to.equal(testSize);
+                        expect(benchmark, 'returns benchmark').to.be.finite;
+                        done();
+                    },
+                    onSuccess(width, height, benchmark) {
+                        onSuccess++;
+                    }
+                });
+            });
+
+            ['maxArea', 'maxHeight', 'maxWidth'].forEach(method => {
+                it(`posts message for ${method}() for valid width / height`, function(done) {
+                    const testSize = method === 'maxArea' ? 16385 : 9999999;
+
+                    let onError   = 0;
+                    let onSuccess = 0;
+
+                    canvasSize[method]({
+                        max      : testSize,
+                        step     : testSize - 1,
+                        useWorker: true,
+                        onError(width, height, benchmark) {
+                            onError++;
+                        },
+                        onSuccess(width, height, benchmark) {
+                            onSuccess++;
+
+                            expect(onError, 'triggers onError').to.equal(1);
+                            expect(onSuccess, 'trigers onSuccess').to.equal(1);
+                            expect(width, 'returns width').to.be.finite;
+                            expect(height, 'returns height').to.be.finite;
+                            expect(benchmark, 'returns benchmark').to.be.finite;
+                            done();
+                        }
                     });
                 });
             });

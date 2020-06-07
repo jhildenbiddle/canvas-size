@@ -1,4 +1,4 @@
-import { canvasTest, canvasTestPromise } from './canvas-test.js';
+import canvasTest from './canvas-test';
 
 // Constants & Variables
 // =============================================================================
@@ -8,6 +8,7 @@ const defaults = {
     sizes     : [],
     step      : 1024,
     usePromise: false,
+    useWorker : false,
     // Callbacks
     onError   : Function.prototype,
     onSuccess : Function.prototype
@@ -78,6 +79,12 @@ const testSizes = {
         defaults.min
     ]
 };
+const workerJobs = {
+    // jobID: {
+    //     onError: fn(),
+    //     onSuccess: fn()
+    // }
+};
 
 
 // Functions (Private)
@@ -127,6 +134,91 @@ function createSizesArray(settings) {
     return sizes;
 }
 
+/**
+ * Handles calls from maxArea(), maxHeight(), maxWidth(), and test() methods.
+ *
+ * @param {object} settings
+ * @param {number[][]} settings.sizes
+ * @param {function} settings.onError
+ * @param {function} settings.onSuccess
+ */
+function handleMethod(settings) {
+    const hasCanvasSupport = window && window.HTMLCanvasElement;
+    const jobID            = Date.now();
+
+    /* istanbul ignore if */
+    if (!hasCanvasSupport) {
+        return false;
+    }
+
+    // Web Worker
+    if (settings.useWorker && window && ('OffscreenCanvas' in window)) {
+        const js = `
+            ${canvasTest.toString()}
+            onmessage = function(e) {
+                canvasTest(e.data);
+            };
+        `;
+        const blob    = new Blob([js], { type: 'application/javascript' });
+        const blobURL = URL.createObjectURL(blob);
+        const worker  = new Worker(blobURL);
+        const { onError, onSuccess, ...workerSettings } = settings;
+
+        URL.revokeObjectURL(blobURL);
+
+        // Store callbacks in workerJobs object
+        workerJobs[jobID] = { onError, onSuccess };
+
+        // Listen for messages from worker
+        worker.onmessage = function(e) {
+            const { width, height, benchmark, isTestPass } = e.data;
+
+            if (isTestPass) {
+                workerJobs[jobID].onSuccess(width, height, benchmark);
+
+                delete workerJobs[jobID];
+            }
+            else {
+                workerJobs[jobID].onError(width, height, benchmark);
+            }
+        };
+
+        // Send message to work
+        worker.postMessage(workerSettings);
+    }
+    // Promise
+    else if (settings.usePromise) {
+        return new Promise((resolve, reject) => {
+            // Modify callbacks resolve/reject Promise
+            const newSettings = Object.assign({}, settings, {
+                onError(width, height, benchmark) {
+                    /* istanbul ignore else */
+                    if (settings.onError) {
+                        settings.onError(width, height, benchmark);
+                    }
+                    if (settings.sizes.length === 0) {
+                        reject({ width, height, benchmark });
+                    }
+                },
+                onSuccess(width, height, benchmark) {
+                    /* istanbul ignore else */
+                    if (settings.onSuccess) {
+                        settings.onSuccess(width, height, benchmark);
+                    }
+
+                    resolve({ width, height, benchmark });
+                }
+            });
+
+            canvasTest(newSettings);
+        });
+    }
+    // Standard Callbacks
+    else {
+        return canvasTest(settings);
+    }
+}
+
 
 // Methods
 // =============================================================================
@@ -154,12 +246,7 @@ const canvasSize = {
         });
         const settings = Object.assign({}, defaults, options, { sizes });
 
-        if (settings.usePromise) {
-            return canvasTestPromise(settings);
-        }
-        else {
-            canvasTest(settings);
-        }
+        return handleMethod(settings);
     },
 
     /**
@@ -185,12 +272,7 @@ const canvasSize = {
         });
         const settings = Object.assign({}, defaults, options, { sizes });
 
-        if (settings.usePromise) {
-            return canvasTestPromise(settings);
-        }
-        else {
-            canvasTest(settings);
-        }
+        return handleMethod(settings);
     },
 
     /**
@@ -216,12 +298,7 @@ const canvasSize = {
         });
         const settings = Object.assign({}, defaults, options, { sizes });
 
-        if (settings.usePromise) {
-            return canvasTestPromise(settings);
-        }
-        else {
-            canvasTest(settings);
-        }
+        return handleMethod(settings);
     },
 
     /**
@@ -245,12 +322,7 @@ const canvasSize = {
             settings.sizes = [[settings.width, settings.height]];
         }
 
-        if (settings.usePromise) {
-            return canvasTestPromise(settings);
-        }
-        else {
-            return canvasTest(settings);
-        }
+        return handleMethod(settings);
     }
 };
 

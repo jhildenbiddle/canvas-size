@@ -1,18 +1,16 @@
-const hasCanvasSupport = window && window.HTMLCanvasElement;
-
-let cropCvs, cropCtx, testCvs, testCtx;
-
-/* istanbul ignore else */
-if (hasCanvasSupport) {
-    cropCvs = document.createElement('canvas');
-    cropCtx = cropCvs.getContext('2d');
-    testCvs = document.createElement('canvas');
-    testCtx = testCvs.getContext('2d');
-}
+/* eslint-env browser, worker */
 
 /**
  * Tests ability to read pixel data from canvas elements of various dimensions
  * by decreasing canvas height and/or width until a test succeeds.
+ *
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * IMPORTANT: ONLY USE ES5 CODE IN THIS FUNCTION (I.E. NO BABEL TRANSPILATION)
+ *            This function will be used both on the main thread and as part of
+ *            an inline web worker. If this code is transpiled from ES6+ to ES5,
+ *            the main thread will have access to Babel's helper functions but
+ *            the web worker scope will.
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *
  * @param {object} settings
  * @param {number[][]} settings.sizes
@@ -20,33 +18,56 @@ if (hasCanvasSupport) {
  * @param {function} settings.onSuccess
  */
 function canvasTest(settings) {
-    /* istanbul ignore if */
-    if (!hasCanvasSupport) {
-        return false;
+    const size     = settings.sizes.shift();
+    const width    = size[0];
+    const height   = size[1];
+    const fill     = [width - 1, height - 1, 1, 1]; // x, y, width, height
+    const job      = Date.now();
+    const isWorker = typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope;
+
+    let cropCvs, testCvs;
+
+    if (isWorker) {
+        cropCvs = new OffscreenCanvas(1, 1);
+        testCvs = new OffscreenCanvas(width, height);
+    }
+    else {
+        cropCvs = document.createElement('canvas');
+        cropCvs.width = 1;
+        cropCvs.height = 1;
+        testCvs = document.createElement('canvas');
+        testCvs.width = width;
+        testCvs.height = height;
     }
 
-    const [width, height] = settings.sizes.shift();
-    const fill = [width - 1, height - 1, 1, 1]; // x, y, width, height
-    const job = Date.now();
+    const cropCtx = cropCvs.getContext('2d');
+    const testCtx = testCvs.getContext('2d');
 
-    // Size (which resets) test canvas and render test pixel
-    testCvs.width = width;
-    testCvs.height = height;
     testCtx.fillRect.apply(testCtx, fill);
 
-    // Size (which resets) crop canvas
-    cropCvs.width = 1;
-    cropCvs.height = 1;
-    // Render the test pixel in the bottom=right corner of the
+    // Render the test pixel in the bottom-right corner of the
     // test canvas in the top-left of the 1x1 crop canvas. This
     // dramatically reducing the time for getImageData to complete.
-    cropCtx.drawImage(testCvs, 0 - (width - 1), 0 - (height - 1));
+    cropCtx.drawImage(testCvs, width - 1, width - 1, 1, 1, 0, 0, 1, 1);
 
     // Verify image data (Pass = 255, Fail = 0)
-    const isTestPass = Boolean(cropCtx.getImageData(0, 0, 1, 1).data[3]);
-    const benchmark = Date.now() - job; // milliseconds
+    const isTestPass = cropCtx.getImageData(0, 0, 1, 1).data[3] !== 0;
+    const benchmark  = Date.now() - job; // milliseconds
 
-    if (isTestPass) {
+    // Running in a web worker
+    if (isWorker) {
+        postMessage({
+            width,
+            height,
+            benchmark,
+            isTestPass
+        });
+
+        if (!isTestPass && settings.sizes.length) {
+            canvasTest(settings);
+        }
+    }
+    else if (isTestPass) {
         settings.onSuccess(width, height, benchmark);
     }
     else {
@@ -60,40 +81,4 @@ function canvasTest(settings) {
     return isTestPass;
 }
 
-/**
- * Promise-based version of canvasTest()
- *
- * @param   {object} settings
- * @param   {number[][]} settings.sizes
- * @param   {function} settings.onError
- * @param   {function} settings.onSuccess
- * @returns {object} Promise
- */
-function canvasTestPromise(settings) {
-    return new Promise((resolve, reject) => {
-        // Modify callbacks resolve/reject Promise
-        const newSettings = Object.assign({}, settings, {
-            onError(width, height, benchmark) {
-                /* istanbul ignore else */
-                if (settings.onError) {
-                    settings.onError(width, height, benchmark);
-                }
-                if (settings.sizes.length === 0) {
-                    reject({ width, height, benchmark });
-                }
-            },
-            onSuccess(width, height, benchmark) {
-                /* istanbul ignore else */
-                if (settings.onSuccess) {
-                    settings.onSuccess(width, height, benchmark);
-                }
-
-                resolve({ width, height, benchmark });
-            }
-        });
-
-        canvasTest(newSettings);
-    });
-}
-
-export { canvasTest, canvasTestPromise };
+export default canvasTest;
