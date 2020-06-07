@@ -1,3 +1,5 @@
+/* eslint-env node */
+
 // Dependencies
 // =============================================================================
 const pkg       = require('./package');
@@ -45,7 +47,7 @@ const settings = {
                                     ]
                                 ],
                                 plugins: [
-                                    ['istanbul', { exclude: 'tests/*' }]
+                                    ['istanbul', { include: 'src/*' }]
                                 ]
                             },
                         }
