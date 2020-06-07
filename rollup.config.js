@@ -42,6 +42,7 @@ const pluginSettings = {
     babel: {
         es5: {
             plugins: [
+                '@babel/plugin-proposal-object-rest-spread',
                 '@babel/plugin-transform-object-assign'
             ]
         },
