@@ -86,7 +86,7 @@ const settings = {
     captureTimeout            : 1000*60, // default 60000
     client: {
         mocha: {
-            timeout: 1000*20 // default 2000
+            timeout: 1000*10 // default 2000
         }
     }
 };
