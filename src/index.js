@@ -143,16 +143,20 @@ function createSizesArray(settings) {
  * @param {function} settings.onSuccess
  */
 function handleMethod(settings) {
-    const hasCanvasSupport = window && window.HTMLCanvasElement;
-    const jobID            = Date.now();
+    const hasCanvasSupport          = window && 'HTMLCanvasElement' in window;
+    const hasOffscreenCanvasSupport = window && 'OffscreenCanvas' in window;
+    const jobID                     = Date.now();
+    const { onError, onSuccess, ...settingsWithoutCallbacks } = settings;
+
+    let worker  = null;
 
     /* istanbul ignore if */
     if (!hasCanvasSupport) {
         return false;
     }
 
-    // Web Worker
-    if (settings.useWorker && window && ('OffscreenCanvas' in window)) {
+    // Create web worker
+    if (settings.useWorker && hasOffscreenCanvasSupport) {
         const js = `
             ${canvasTest.toString()}
             onmessage = function(e) {
@@ -161,13 +165,9 @@ function handleMethod(settings) {
         `;
         const blob    = new Blob([js], { type: 'application/javascript' });
         const blobURL = URL.createObjectURL(blob);
-        const worker  = new Worker(blobURL);
-        const { onError, onSuccess, ...workerSettings } = settings;
 
+        worker = new Worker(blobURL);
         URL.revokeObjectURL(blobURL);
-
-        // Store callbacks in workerJobs object
-        workerJobs[jobID] = { onError, onSuccess };
 
         // Listen for messages from worker
         worker.onmessage = function(e) {
@@ -182,40 +182,70 @@ function handleMethod(settings) {
                 workerJobs[jobID].onError(width, height, benchmark);
             }
         };
-
-        // Send message to work
-        worker.postMessage(workerSettings);
     }
+
     // Promise
-    else if (settings.usePromise) {
+    if (settings.usePromise) {
         return new Promise((resolve, reject) => {
-            // Modify callbacks resolve/reject Promise
-            const newSettings = Object.assign({}, settings, {
+            const promiseSettings = {
+                ...settings,
                 onError(width, height, benchmark) {
-                    /* istanbul ignore else */
-                    if (settings.onError) {
-                        settings.onError(width, height, benchmark);
-                    }
+                    let isLastTest;
+
+                    // If running on the main thread, an empty settings.sizes
+                    // array indicates the last test.
                     if (settings.sizes.length === 0) {
+                        isLastTest = true;
+                    }
+                    // If running in a web worker, the settings.sizes array
+                    // accessible to this callback wil not be modified because a
+                    // copy of the settings object is sent to the worker.
+                    // Therefore, a comparison of the width and height returned
+                    // to this callback and the last [width, height] item in the
+                    // settings.sizes array is used to determine the last test.
+                    else {
+                        const [[lastWidth, lastHeight]] = settings.sizes.slice(-1);
+                        isLastTest = width === lastWidth && height === lastHeight;
+                    }
+
+                    onError(width, height, benchmark);
+
+                    if (isLastTest) {
                         reject({ width, height, benchmark });
                     }
                 },
                 onSuccess(width, height, benchmark) {
-                    /* istanbul ignore else */
-                    if (settings.onSuccess) {
-                        settings.onSuccess(width, height, benchmark);
-                    }
-
+                    onSuccess(width, height, benchmark);
                     resolve({ width, height, benchmark });
                 }
-            });
+            };
 
-            canvasTest(newSettings);
+            if (worker) {
+                const { onError, onSuccess } = promiseSettings;
+
+                // Store callbacks in workerJobs object
+                workerJobs[jobID] = { onError, onSuccess };
+
+                // Send message to work
+                worker.postMessage(settingsWithoutCallbacks);
+            }
+            else {
+                canvasTest(promiseSettings);
+            }
         });
     }
     // Standard Callbacks
     else {
-        return canvasTest(settings);
+        if (worker) {
+            // Store callbacks in workerJobs object
+            workerJobs[jobID] = { onError, onSuccess };
+
+            // Send message to worker
+            worker.postMessage(settingsWithoutCallbacks);
+        }
+        else {
+            return canvasTest(settings);
+        }
     }
 }
 
@@ -233,6 +263,7 @@ const canvasSize = {
      * @param {number} [options.min=1]
      * @param {number} [options.step=1024]
      * @param {boolean} [options.usePromise=false]
+     * @param {boolean} [options.useWorker=false]
      * @param {function} [options.onError]
      * @param {function} [options.onSuccess]
      */
@@ -259,6 +290,7 @@ const canvasSize = {
      * @param {number} [options.min=1]
      * @param {number} [options.step=1024]
      * @param {boolean} [options.usePromise=false]
+     * @param {boolean} [options.useWorker=false]
      * @param {function} [options.onError]
      * @param {function} [options.onSuccess]
      */
@@ -285,6 +317,7 @@ const canvasSize = {
      * @param {number} [options.min=1]
      * @param {number} [options.step=1024]
      * @param {boolean} [options.usePromise=false]
+     * @param {boolean} [options.useWorker=false]
      * @param {function} [options.onError]
      * @param {function} [options.onSuccess]
      */
@@ -309,13 +342,14 @@ const canvasSize = {
      * @param {number} [options.height]
      * @param {number[][]} [options.sizes]
      * @param {boolean} [options.usePromise=false]
+     * @param {boolean} [options.useWorker=false]
      * @param {function} [options.onError]
      * @param {function} [options.onSuccess]
      */
     test(options = {}) {
         const settings = Object.assign({}, defaults, options);
 
-        // Prevent mutation of sizes array if referencing user array
+        // Prevent mutation of sizes array
         settings.sizes = [...settings.sizes];
 
         if (settings.width && settings.height) {

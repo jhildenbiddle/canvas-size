@@ -10,6 +10,19 @@
     global.canvasSize = factory());
 })(this, (function() {
     "use strict";
+    function _defineProperty(obj, key, value) {
+        if (key in obj) {
+            Object.defineProperty(obj, key, {
+                value: value,
+                enumerable: true,
+                configurable: true,
+                writable: true
+            });
+        } else {
+            obj[key] = value;
+        }
+        return obj;
+    }
     function _extends() {
         _extends = Object.assign || function(target) {
             for (var i = 1; i < arguments.length; i++) {
@@ -23,6 +36,34 @@
             return target;
         };
         return _extends.apply(this, arguments);
+    }
+    function ownKeys(object, enumerableOnly) {
+        var keys = Object.keys(object);
+        if (Object.getOwnPropertySymbols) {
+            var symbols = Object.getOwnPropertySymbols(object);
+            if (enumerableOnly) symbols = symbols.filter((function(sym) {
+                return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+            }));
+            keys.push.apply(keys, symbols);
+        }
+        return keys;
+    }
+    function _objectSpread2(target) {
+        for (var i = 1; i < arguments.length; i++) {
+            var source = arguments[i] != null ? arguments[i] : {};
+            if (i % 2) {
+                ownKeys(Object(source), true).forEach((function(key) {
+                    _defineProperty(target, key, source[key]);
+                }));
+            } else if (Object.getOwnPropertyDescriptors) {
+                Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+            } else {
+                ownKeys(Object(source)).forEach((function(key) {
+                    Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+                }));
+            }
+        }
+        return target;
     }
     function _objectWithoutPropertiesLoose(source, excluded) {
         if (source == null) return {};
@@ -51,14 +92,43 @@
         }
         return target;
     }
+    function _slicedToArray(arr, i) {
+        return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+    }
     function _toConsumableArray(arr) {
         return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
     }
     function _arrayWithoutHoles(arr) {
         if (Array.isArray(arr)) return _arrayLikeToArray(arr);
     }
+    function _arrayWithHoles(arr) {
+        if (Array.isArray(arr)) return arr;
+    }
     function _iterableToArray(iter) {
         if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+    }
+    function _iterableToArrayLimit(arr, i) {
+        if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
+        var _arr = [];
+        var _n = true;
+        var _d = false;
+        var _e = undefined;
+        try {
+            for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+                _arr.push(_s.value);
+                if (i && _arr.length === i) break;
+            }
+        } catch (err) {
+            _d = true;
+            _e = err;
+        } finally {
+            try {
+                if (!_n && _i["return"] != null) _i["return"]();
+            } finally {
+                if (_d) throw _e;
+            }
+        }
+        return _arr;
     }
     function _unsupportedIterableToArray(o, minLen) {
         if (!o) return;
@@ -75,6 +145,9 @@
     }
     function _nonIterableSpread() {
         throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+    }
+    function _nonIterableRest() {
+        throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
     }
     function canvasTest(settings) {
         var size = settings.sizes.shift();
@@ -97,9 +170,11 @@
         }
         var cropCtx = cropCvs.getContext("2d");
         var testCtx = testCvs.getContext("2d");
-        testCtx.fillRect.apply(testCtx, fill);
-        cropCtx.drawImage(testCvs, width - 1, width - 1, 1, 1, 0, 0, 1, 1);
-        var isTestPass = cropCtx.getImageData(0, 0, 1, 1).data[3] !== 0;
+        if (testCtx) {
+            testCtx.fillRect.apply(testCtx, fill);
+            cropCtx.drawImage(testCvs, width - 1, width - 1, 1, 1, 0, 0, 1, 1);
+        }
+        var isTestPass = cropCtx && cropCtx.getImageData(0, 0, 1, 1).data[3] !== 0;
         var benchmark = Date.now() - job;
         if (isWorker) {
             postMessage({
@@ -162,24 +237,22 @@
         return sizes;
     }
     function handleMethod(settings) {
-        var hasCanvasSupport = window && window.HTMLCanvasElement;
+        var hasCanvasSupport = window && "HTMLCanvasElement" in window;
+        var hasOffscreenCanvasSupport = window && "OffscreenCanvas" in window;
         var jobID = Date.now();
+        var _onError = settings.onError, _onSuccess = settings.onSuccess, settingsWithoutCallbacks = _objectWithoutProperties(settings, [ "onError", "onSuccess" ]);
+        var worker = null;
         if (!hasCanvasSupport) {
             return false;
         }
-        if (settings.useWorker && window && "OffscreenCanvas" in window) {
+        if (settings.useWorker && hasOffscreenCanvasSupport) {
             var js = "\n            ".concat(canvasTest.toString(), "\n            onmessage = function(e) {\n                canvasTest(e.data);\n            };\n        ");
             var blob = new Blob([ js ], {
                 type: "application/javascript"
             });
             var blobURL = URL.createObjectURL(blob);
-            var worker = new Worker(blobURL);
-            var onError = settings.onError, onSuccess = settings.onSuccess, workerSettings = _objectWithoutProperties(settings, [ "onError", "onSuccess" ]);
+            worker = new Worker(blobURL);
             URL.revokeObjectURL(blobURL);
-            workerJobs[jobID] = {
-                onError: onError,
-                onSuccess: onSuccess
-            };
             worker.onmessage = function(e) {
                 var _e$data = e.data, width = _e$data.width, height = _e$data.height, benchmark = _e$data.benchmark, isTestPass = _e$data.isTestPass;
                 if (isTestPass) {
@@ -189,15 +262,20 @@
                     workerJobs[jobID].onError(width, height, benchmark);
                 }
             };
-            worker.postMessage(workerSettings);
-        } else if (settings.usePromise) {
+        }
+        if (settings.usePromise) {
             return new Promise((function(resolve, reject) {
-                var newSettings = _extends({}, settings, {
+                var promiseSettings = _objectSpread2(_objectSpread2({}, settings), {}, {
                     onError: function onError(width, height, benchmark) {
-                        if (settings.onError) {
-                            settings.onError(width, height, benchmark);
-                        }
+                        var isLastTest;
                         if (settings.sizes.length === 0) {
+                            isLastTest = true;
+                        } else {
+                            var _settings$sizes$slice = settings.sizes.slice(-1), _settings$sizes$slice2 = _slicedToArray(_settings$sizes$slice, 1), _settings$sizes$slice3 = _slicedToArray(_settings$sizes$slice2[0], 2), lastWidth = _settings$sizes$slice3[0], lastHeight = _settings$sizes$slice3[1];
+                            isLastTest = width === lastWidth && height === lastHeight;
+                        }
+                        _onError(width, height, benchmark);
+                        if (isLastTest) {
                             reject({
                                 width: width,
                                 height: height,
@@ -206,9 +284,7 @@
                         }
                     },
                     onSuccess: function onSuccess(width, height, benchmark) {
-                        if (settings.onSuccess) {
-                            settings.onSuccess(width, height, benchmark);
-                        }
+                        _onSuccess(width, height, benchmark);
                         resolve({
                             width: width,
                             height: height,
@@ -216,10 +292,27 @@
                         });
                     }
                 });
-                canvasTest(newSettings);
+                if (worker) {
+                    var onError = promiseSettings.onError, onSuccess = promiseSettings.onSuccess;
+                    workerJobs[jobID] = {
+                        onError: onError,
+                        onSuccess: onSuccess
+                    };
+                    worker.postMessage(settingsWithoutCallbacks);
+                } else {
+                    canvasTest(promiseSettings);
+                }
             }));
         } else {
-            return canvasTest(settings);
+            if (worker) {
+                workerJobs[jobID] = {
+                    onError: _onError,
+                    onSuccess: _onSuccess
+                };
+                worker.postMessage(settingsWithoutCallbacks);
+            } else {
+                return canvasTest(settings);
+            }
         }
     }
     var canvasSize = {

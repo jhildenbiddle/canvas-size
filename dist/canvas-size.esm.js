@@ -5,6 +5,50 @@
  * (c) 2015-2020 John Hildenbiddle <http://hildenbiddle.com>
  * MIT license
  */
+function _defineProperty(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+        });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
+
+function ownKeys(object, enumerableOnly) {
+    var keys = Object.keys(object);
+    if (Object.getOwnPropertySymbols) {
+        var symbols = Object.getOwnPropertySymbols(object);
+        if (enumerableOnly) symbols = symbols.filter((function(sym) {
+            return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+        }));
+        keys.push.apply(keys, symbols);
+    }
+    return keys;
+}
+
+function _objectSpread2(target) {
+    for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i] != null ? arguments[i] : {};
+        if (i % 2) {
+            ownKeys(Object(source), true).forEach((function(key) {
+                _defineProperty(target, key, source[key]);
+            }));
+        } else if (Object.getOwnPropertyDescriptors) {
+            Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+        } else {
+            ownKeys(Object(source)).forEach((function(key) {
+                Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+            }));
+        }
+    }
+    return target;
+}
+
 function _objectWithoutPropertiesLoose(source, excluded) {
     if (source == null) return {};
     var target = {};
@@ -55,9 +99,11 @@ function canvasTest(settings) {
     }
     var cropCtx = cropCvs.getContext("2d");
     var testCtx = testCvs.getContext("2d");
-    testCtx.fillRect.apply(testCtx, fill);
-    cropCtx.drawImage(testCvs, width - 1, width - 1, 1, 1, 0, 0, 1, 1);
-    var isTestPass = cropCtx.getImageData(0, 0, 1, 1).data[3] !== 0;
+    if (testCtx) {
+        testCtx.fillRect.apply(testCtx, fill);
+        cropCtx.drawImage(testCvs, width - 1, width - 1, 1, 1, 0, 0, 1, 1);
+    }
+    var isTestPass = cropCtx && cropCtx.getImageData(0, 0, 1, 1).data[3] !== 0;
     var benchmark = Date.now() - job;
     if (isWorker) {
         postMessage({
@@ -125,24 +171,22 @@ function createSizesArray(settings) {
 }
 
 function handleMethod(settings) {
-    var hasCanvasSupport = window && window.HTMLCanvasElement;
+    var hasCanvasSupport = window && "HTMLCanvasElement" in window;
+    var hasOffscreenCanvasSupport = window && "OffscreenCanvas" in window;
     var jobID = Date.now();
+    var {onError: onError, onSuccess: onSuccess} = settings, settingsWithoutCallbacks = _objectWithoutProperties(settings, [ "onError", "onSuccess" ]);
+    var worker = null;
     if (!hasCanvasSupport) {
         return false;
     }
-    if (settings.useWorker && window && "OffscreenCanvas" in window) {
+    if (settings.useWorker && hasOffscreenCanvasSupport) {
         var js = "\n            ".concat(canvasTest.toString(), "\n            onmessage = function(e) {\n                canvasTest(e.data);\n            };\n        ");
         var blob = new Blob([ js ], {
             type: "application/javascript"
         });
         var blobURL = URL.createObjectURL(blob);
-        var worker = new Worker(blobURL);
-        var {onError: onError, onSuccess: onSuccess} = settings, workerSettings = _objectWithoutProperties(settings, [ "onError", "onSuccess" ]);
+        worker = new Worker(blobURL);
         URL.revokeObjectURL(blobURL);
-        workerJobs[jobID] = {
-            onError: onError,
-            onSuccess: onSuccess
-        };
         worker.onmessage = function(e) {
             var {width: width, height: height, benchmark: benchmark, isTestPass: isTestPass} = e.data;
             if (isTestPass) {
@@ -152,15 +196,20 @@ function handleMethod(settings) {
                 workerJobs[jobID].onError(width, height, benchmark);
             }
         };
-        worker.postMessage(workerSettings);
-    } else if (settings.usePromise) {
+    }
+    if (settings.usePromise) {
         return new Promise((resolve, reject) => {
-            var newSettings = Object.assign({}, settings, {
+            var promiseSettings = _objectSpread2(_objectSpread2({}, settings), {}, {
                 onError(width, height, benchmark) {
-                    if (settings.onError) {
-                        settings.onError(width, height, benchmark);
-                    }
+                    var isLastTest;
                     if (settings.sizes.length === 0) {
+                        isLastTest = true;
+                    } else {
+                        var [[lastWidth, lastHeight]] = settings.sizes.slice(-1);
+                        isLastTest = width === lastWidth && height === lastHeight;
+                    }
+                    onError(width, height, benchmark);
+                    if (isLastTest) {
                         reject({
                             width: width,
                             height: height,
@@ -169,9 +218,7 @@ function handleMethod(settings) {
                     }
                 },
                 onSuccess(width, height, benchmark) {
-                    if (settings.onSuccess) {
-                        settings.onSuccess(width, height, benchmark);
-                    }
+                    onSuccess(width, height, benchmark);
                     resolve({
                         width: width,
                         height: height,
@@ -179,10 +226,27 @@ function handleMethod(settings) {
                     });
                 }
             });
-            canvasTest(newSettings);
+            if (worker) {
+                var {onError: _onError, onSuccess: _onSuccess} = promiseSettings;
+                workerJobs[jobID] = {
+                    onError: _onError,
+                    onSuccess: _onSuccess
+                };
+                worker.postMessage(settingsWithoutCallbacks);
+            } else {
+                canvasTest(promiseSettings);
+            }
         });
     } else {
-        return canvasTest(settings);
+        if (worker) {
+            workerJobs[jobID] = {
+                onError: onError,
+                onSuccess: onSuccess
+            };
+            worker.postMessage(settingsWithoutCallbacks);
+        } else {
+            return canvasTest(settings);
+        }
     }
 }
 

@@ -43,15 +43,17 @@ function canvasTest(settings) {
     const cropCtx = cropCvs.getContext('2d');
     const testCtx = testCvs.getContext('2d');
 
-    testCtx.fillRect.apply(testCtx, fill);
+    if (testCtx) {
+        testCtx.fillRect.apply(testCtx, fill);
 
-    // Render the test pixel in the bottom-right corner of the
-    // test canvas in the top-left of the 1x1 crop canvas. This
-    // dramatically reducing the time for getImageData to complete.
-    cropCtx.drawImage(testCvs, width - 1, width - 1, 1, 1, 0, 0, 1, 1);
+        // Render the test pixel in the bottom-right corner of the
+        // test canvas in the top-left of the 1x1 crop canvas. This
+        // dramatically reducing the time for getImageData to complete.
+        cropCtx.drawImage(testCvs, width - 1, width - 1, 1, 1, 0, 0, 1, 1);
+    }
 
     // Verify image data (Pass = 255, Fail = 0)
-    const isTestPass = cropCtx.getImageData(0, 0, 1, 1).data[3] !== 0;
+    const isTestPass = cropCtx && cropCtx.getImageData(0, 0, 1, 1).data[3] !== 0;
     const benchmark  = Date.now() - job; // milliseconds
 
     // Running in a web worker
