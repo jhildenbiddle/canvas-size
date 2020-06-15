@@ -49,7 +49,7 @@ function canvasTest(settings) {
         // Render the test pixel in the bottom-right corner of the
         // test canvas in the top-left of the 1x1 crop canvas. This
         // dramatically reducing the time for getImageData to complete.
-        cropCtx.drawImage(testCvs, width - 1, width - 1, 1, 1, 0, 0, 1, 1);
+        cropCtx.drawImage(testCvs, width - 1, height - 1, 1, 1, 0, 0, 1, 1);
     }
 
     // Verify image data (Pass = 255, Fail = 0)

@@ -172,7 +172,7 @@
         var testCtx = testCvs.getContext("2d");
         if (testCtx) {
             testCtx.fillRect.apply(testCtx, fill);
-            cropCtx.drawImage(testCvs, width - 1, width - 1, 1, 1, 0, 0, 1, 1);
+            cropCtx.drawImage(testCvs, width - 1, height - 1, 1, 1, 0, 0, 1, 1);
         }
         var isTestPass = cropCtx && cropCtx.getImageData(0, 0, 1, 1).data[3] !== 0;
         var benchmark = Date.now() - job;
