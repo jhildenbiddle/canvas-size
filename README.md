@@ -10,14 +10,15 @@
 
 Determine the maximum size of an HTML canvas element and test support for custom canvas dimensions.
 
-- [Demo](https://on690.csb.app/) for modern browsers (CodeSandbox)
+- [Demo](https://on690.codesandbox.io) for modern browsers (CodeSandbox)
 - [Demo](https://jsbin.com/megedep/1/edit?js,output) for legacy browsers (JSBin)
 
 ## Features
 
 - Determine the maximum area, height, and width of a canvas element
-- Test support for custom canvas element dimensions
-- Optional ES6 [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) support
+- Test custom canvas dimensions
+- ES6 Promise support
+- Web Worker and OffscreenCanvas support
 - UMD and ES6 module available
 - Lightweight (< 1k min+gzip) and dependency-free
 
@@ -31,6 +32,7 @@ Determine the maximum size of an HTML canvas element and test support for custom
 
 - [Description](#description)
 - [Installation](#installation)
+- [Usage](#usage)
 - [Methods](#methods)
 - [Test Results](#test-results)
 - [Known Issues](#known-issues)
@@ -75,6 +77,103 @@ CDN ([jsdelivr.com](https://www.jsdelivr.com/) shown, also on [unpkg.com](https:
 </script>
 ```
 
+## Usage
+
+**Single tests**
+
+Single tests return a `boolean` to indicate if the specified canvas dimensions are supported by the browser. Failed tests will return almost immediately. Successful tests times are dependent upon the browser, hardware, and canvas dimensions used.
+
+```js
+var isValidCanvas = canvasSize.test({
+  width : 8192,
+  height: 8192
+});
+
+console.log(isValidCanvas); // true|false
+```
+
+**Multiple tests using callbacks**
+
+When multiple tests are performed using `maxArea()`, `maxHeight()`, `maxWidth()`, or `test()` with multiple `sizes` defined, the `onError` callback will be invoked for each failed test until the first successful test invokes the `onSuccess` callback.
+
+```js
+canvasSize.maxArea({
+  onError: function(width, height, benchmark) {
+    console.log('Error', width, height, benchmark);
+  },
+  onSuccess: function(width, height, benchmark) {
+    console.log('Success', width, height, benchmark);
+  }
+});
+
+// Error 16387 16387 0.001
+// Error 16386 16386 0.001
+// Error 16385 16385 0.001
+// Success 16384 16384 0.500
+```
+
+**Multiple tests using Promises**
+
+Browsers with ES6 [Promise](https://www.google.com/search?client=safari&rls=en&q=js+promise&ie=UTF-8&oe=UTF-8) support (native or via polyfill) can set `usePromise:true` to handle test results using `promise.then()` and `promise.catch()` methods instead of using callbacks. Although promises are typically used for asynchronous tasks, canvas tests will still be synchronous when `usePromise` is `true` due to testing requirements, performance implications, and browser compatibility. For asynchronous canvas tests, see the next section.
+
+```js
+canvasSize.maxArea({
+  usePromise: true
+})
+.then(function(result) {
+  console.log('Success', result);
+});
+.catch(function(result) {
+  console.log('Error', result);
+});
+
+// Success { width: 16384, height: 16384, benchmark: 0.500 }
+// or
+// Error { width: 1, height: 1, benchmark: 0.001 }
+```
+
+**Asynchronous tests using Web Workers & OffscreenCanvas**
+
+Browsers that support [web workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers) and [OffscreenCanvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/OffscreenCanvas) can set `useWorker:true` to have canvas tests performed asynchronously on a separate thread. This can prevent the browser from becoming unresponsive while testing on the browser's main thread. Browser without support for web workers and OffscreenCanvas will ignore this option and perform tests synchronously as described above.
+
+Unfortunately, at this time [browser support for OffscreenCanvas](https://caniuse.com/#feat=offscreencanvas) is limited. In addition, canvas tests that fail immediately on the main thread can take significantly more time using the OffscreenCanvas API (most likely a bug during these early days of OffscreenCanvas support). As a result, the `useWorker` option can improve application performance by reducing the workload on the main browser thread, but doing so will result in longer test times.
+
+```javascript
+canvasSize.maxArea({
+  useWorker: true,
+  onError(width, height, benchmark) {
+    console.log('Error', width, height, benchmark);
+  },
+  onSuccess(width, height, benchmark) {
+    console.log('Success', width, height, benchmark);
+  }
+});
+
+// Error 16387 16387 0.001
+// Error 16386 16386 0.001
+// Error 16385 16385 0.001
+// Success 16384 16384 0.500
+```
+
+The `useWorker` option can be combined with the `usePromise` option if preferred.
+
+```js
+canvasSize.maxArea({
+  usePromise: true,
+  useWorker: true,
+})
+.then(function(result) {
+  console.log('Success', result);
+});
+.catch(function(result) {
+  console.log('Error', result);
+});
+
+// Success { width: 16384, height: 16384, benchmark: 0.500 }
+// or
+// Error { width: 1, height: 1, benchmark: 0.001 }
+```
+
 ## Methods
 
 ### maxArea()
@@ -102,7 +201,10 @@ Callbacks are invoked after each test.
 - **step**: Value to subtract from test width/height after each failed test
   - Type: `number`
   - Default: `1024`
-- **usePromise**: Determines if the method call will return an ES6 Promise. The return value for both `resolve()` and `reject()` will be an object containing `width`, `height`, and `benchmark` properties (see onError/onSuccess for value details).
+- **usePromise**: Determines if the method call will return an ES6 Promise. The return value for both `resolve()` and `reject()` will be an object containing `width`, `height`, and `benchmark` properties (see onError/onSuccess for value details). Requires ES6 [Promise](https://www.google.com/search?client=safari&rls=en&q=js+promise&ie=UTF-8&oe=UTF-8) support (native or via polyfill for legacy browsers).
+  - Type: `boolean`
+  - Default: `false`
+- **useWorker**: Determines if canvas tests will be performed asynchronously on a separate browser thread. Requires modern browser with [web worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API) and [OffscreenCanvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas) support.
   - Type: `boolean`
   - Default: `false`
 - **onError**: Callback invoked after each unsuccessful test
@@ -192,7 +294,10 @@ To test a single dimension, use `options.width` and `options.height`. A `boolean
   - Type: `number`
 - **sizes**: A two-dimensional array of canvas dimensions to test
   - Type: `array` (see examples below)
-- **usePromise**: Determines if the method call will return an ES6 Promise. The return value for both `resolve()` and `reject()` will be an object containing `width`, `height`, and `benchmark` properties (see onError/onSuccess for value details).
+- **usePromise**: Determines if the method call will return an ES6 Promise. The return value for both `resolve()` and `reject()` will be an object containing `width`, `height`, and `benchmark` properties (see onError/onSuccess for value details). Requires ES6 [Promise](https://www.google.com/search?client=safari&rls=en&q=js+promise&ie=UTF-8&oe=UTF-8) support (native or via polyfill for legacy browsers).
+  - Type: `boolean`
+  - Default: `false`
+- **useWorker**: Determines if canvas tests will be performed asynchronously on a separate browser thread. Requires modern browser with [web worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API) and [OffscreenCanvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas) support.
   - Type: `boolean`
   - Default: `false`
 - **onError**: Callback invoked after each unsuccessful test
@@ -297,9 +402,7 @@ Tests conducted using [BrowserStack](https://www.browserstack.com/) virtualized 
 
 1. **Some browsers become unresponsive during tests**
 
-   This is a result of the single-threaded nature of JavaScript and the time required to read data from large HTML canvas elements on the client. [OffscreenCanvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas) and [Web Workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API) seem like a promising solution for supporting browsers, but extensive testing shows performance far worse than testing on the main thread.
-
-   To accommodate for the brief delays that may occur when testing extremely large canvas sizes, consider the following:
+   This is a result of the single-threaded nature of JavaScript and the time required to read data from large HTML canvas elements on the client. To accommodate for the brief delay that may occur when testing extremely large canvas sizes, consider the following:
 
    - Call the library when tests are least likely to affect the overall user experience.
    - [Cache test results on the client](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs/Client-side_storage) so that tests only need to be performed once per browser.
