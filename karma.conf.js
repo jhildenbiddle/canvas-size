@@ -17,7 +17,6 @@ const files = {
 // =============================================================================
 const settings = {
     files: [
-        'node_modules/@babel/polyfill/dist/polyfill.js',
         files.test
     ],
     preprocessors: {
@@ -36,16 +35,7 @@ const settings = {
                         {
                             loader : 'babel-loader',
                             options: {
-                                presets: [
-                                    [
-                                        '@babel/env',
-                                        {
-                                            targets: {
-                                                browsers: ['ie >= 9']
-                                            }
-                                        }
-                                    ]
-                                ],
+                                // See .babelrc
                                 plugins: [
                                     ['istanbul', { include: 'src/*' }]
                                 ]

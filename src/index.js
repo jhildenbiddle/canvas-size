@@ -275,7 +275,7 @@ const canvasSize = {
             step  : options.step,
             sizes : [...testSizes.area]
         });
-        const settings = Object.assign({}, defaults, options, { sizes });
+        const settings = { ...defaults, ...options, sizes };
 
         return handleMethod(settings);
     },
@@ -302,7 +302,7 @@ const canvasSize = {
             step  : options.step,
             sizes : [...testSizes.height]
         });
-        const settings = Object.assign({}, defaults, options, { sizes });
+        const settings = { ...defaults, ...options, sizes };
 
         return handleMethod(settings);
     },
@@ -329,7 +329,7 @@ const canvasSize = {
             step  : options.step,
             sizes : [...testSizes.width]
         });
-        const settings = Object.assign({}, defaults, options, { sizes });
+        const settings = { ...defaults, ...options, sizes };
 
         return handleMethod(settings);
     },
@@ -347,7 +347,7 @@ const canvasSize = {
      * @param {function} [options.onSuccess]
      */
     test(options = {}) {
-        const settings = Object.assign({}, defaults, options);
+        const settings = { ...defaults, ...options };
 
         // Prevent mutation of sizes array
         settings.sizes = [...settings.sizes];

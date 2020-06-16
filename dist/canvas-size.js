@@ -23,20 +23,6 @@
         }
         return obj;
     }
-    function _extends() {
-        _extends = Object.assign || function(target) {
-            for (var i = 1; i < arguments.length; i++) {
-                var source = arguments[i];
-                for (var key in source) {
-                    if (Object.prototype.hasOwnProperty.call(source, key)) {
-                        target[key] = source[key];
-                    }
-                }
-            }
-            return target;
-        };
-        return _extends.apply(this, arguments);
-    }
     function ownKeys(object, enumerableOnly) {
         var keys = Object.keys(object);
         if (Object.getOwnPropertySymbols) {
@@ -325,7 +311,7 @@
                 step: options.step,
                 sizes: _toConsumableArray(testSizes.area)
             });
-            var settings = _extends({}, defaults, options, {
+            var settings = _objectSpread2(_objectSpread2(_objectSpread2({}, defaults), options), {}, {
                 sizes: sizes
             });
             return handleMethod(settings);
@@ -339,7 +325,7 @@
                 step: options.step,
                 sizes: _toConsumableArray(testSizes.height)
             });
-            var settings = _extends({}, defaults, options, {
+            var settings = _objectSpread2(_objectSpread2(_objectSpread2({}, defaults), options), {}, {
                 sizes: sizes
             });
             return handleMethod(settings);
@@ -353,14 +339,14 @@
                 step: options.step,
                 sizes: _toConsumableArray(testSizes.width)
             });
-            var settings = _extends({}, defaults, options, {
+            var settings = _objectSpread2(_objectSpread2(_objectSpread2({}, defaults), options), {}, {
                 sizes: sizes
             });
             return handleMethod(settings);
         },
         test: function test() {
             var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-            var settings = _extends({}, defaults, options);
+            var settings = _objectSpread2(_objectSpread2({}, defaults), options);
             settings.sizes = _toConsumableArray(settings.sizes);
             if (settings.width && settings.height) {
                 settings.sizes = [ [ settings.width, settings.height ] ];

@@ -40,21 +40,7 @@ const pluginSettings = {
         throwOnError  : true
     },
     babel: {
-        es5: {
-            plugins: [
-                '@babel/plugin-proposal-object-rest-spread',
-                '@babel/plugin-transform-object-assign'
-            ]
-        },
-        es6: {
-            presets: [
-                ['@babel/env', {
-                    targets: {
-                        esmodules: true
-                    }
-                }]
-            ]
-        }
+        // See .babelrc
     },
     terser: {
         beautify: {
@@ -91,7 +77,8 @@ const config = {
         resolve(),
         commonjs(),
         json(),
-        eslint(pluginSettings.eslint)
+        eslint(pluginSettings.eslint),
+        babel(pluginSettings.babel)
     ],
     watch: {
         clearScreen: false
@@ -107,7 +94,6 @@ const esm = merge({}, config, {
         format: 'esm'
     },
     plugins: config.plugins.concat([
-        babel(pluginSettings.babel.es6),
         terser(pluginSettings.terser.beautify)
     ])
 });
@@ -119,7 +105,6 @@ const esmMinified = merge({}, config, {
         format: esm.output.format
     },
     plugins: config.plugins.concat([
-        babel(pluginSettings.babel.es6),
         terser(pluginSettings.terser.minify)
     ])
 });
@@ -130,7 +115,6 @@ const umd = merge({}, config, {
         format: 'umd'
     },
     plugins: config.plugins.concat([
-        babel(pluginSettings.babel.es5),
         terser(pluginSettings.terser.beautify)
     ])
 });
@@ -142,7 +126,6 @@ const umdMinified = merge({}, config, {
         format: umd.output.format
     },
     plugins: config.plugins.concat([
-        babel(pluginSettings.babel.es5),
         terser(pluginSettings.terser.minify)
     ])
 });

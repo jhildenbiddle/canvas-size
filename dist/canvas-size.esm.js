@@ -78,6 +78,73 @@ function _objectWithoutProperties(source, excluded) {
     return target;
 }
 
+function _slicedToArray(arr, i) {
+    return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+}
+
+function _toConsumableArray(arr) {
+    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+}
+
+function _arrayWithoutHoles(arr) {
+    if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+}
+
+function _arrayWithHoles(arr) {
+    if (Array.isArray(arr)) return arr;
+}
+
+function _iterableToArray(iter) {
+    if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+}
+
+function _iterableToArrayLimit(arr, i) {
+    if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
+    var _arr = [];
+    var _n = true;
+    var _d = false;
+    var _e = undefined;
+    try {
+        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+            _arr.push(_s.value);
+            if (i && _arr.length === i) break;
+        }
+    } catch (err) {
+        _d = true;
+        _e = err;
+    } finally {
+        try {
+            if (!_n && _i["return"] != null) _i["return"]();
+        } finally {
+            if (_d) throw _e;
+        }
+    }
+    return _arr;
+}
+
+function _unsupportedIterableToArray(o, minLen) {
+    if (!o) return;
+    if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+    var n = Object.prototype.toString.call(o).slice(8, -1);
+    if (n === "Object" && o.constructor) n = o.constructor.name;
+    if (n === "Map" || n === "Set") return Array.from(o);
+    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+}
+
+function _arrayLikeToArray(arr, len) {
+    if (len == null || len > arr.length) len = arr.length;
+    for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+    return arr2;
+}
+
+function _nonIterableSpread() {
+    throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+function _nonIterableRest() {
+    throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
 function canvasTest(settings) {
     var size = settings.sizes.shift();
     var width = size[0];
@@ -151,11 +218,11 @@ function createSizesArray(settings) {
     var isHeight = settings.width === 1;
     var sizes = [];
     if (!settings.width || !settings.height) {
-        settings.sizes.forEach(testSize => {
+        settings.sizes.forEach((function(testSize) {
             var width = isArea || isWidth ? testSize : 1;
             var height = isArea || isHeight ? testSize : 1;
             sizes.push([ width, height ]);
-        });
+        }));
     } else {
         var testMin = settings.min || defaults.min;
         var testStep = settings.step || defaults.step;
@@ -174,7 +241,7 @@ function handleMethod(settings) {
     var hasCanvasSupport = window && "HTMLCanvasElement" in window;
     var hasOffscreenCanvasSupport = window && "OffscreenCanvas" in window;
     var jobID = Date.now();
-    var {onError: onError, onSuccess: onSuccess} = settings, settingsWithoutCallbacks = _objectWithoutProperties(settings, [ "onError", "onSuccess" ]);
+    var _onError = settings.onError, _onSuccess = settings.onSuccess, settingsWithoutCallbacks = _objectWithoutProperties(settings, [ "onError", "onSuccess" ]);
     var worker = null;
     if (!hasCanvasSupport) {
         return false;
@@ -188,7 +255,7 @@ function handleMethod(settings) {
         worker = new Worker(blobURL);
         URL.revokeObjectURL(blobURL);
         worker.onmessage = function(e) {
-            var {width: width, height: height, benchmark: benchmark, isTestPass: isTestPass} = e.data;
+            var _e$data = e.data, width = _e$data.width, height = _e$data.height, benchmark = _e$data.benchmark, isTestPass = _e$data.isTestPass;
             if (isTestPass) {
                 workerJobs[jobID].onSuccess(width, height, benchmark);
                 delete workerJobs[jobID];
@@ -198,17 +265,17 @@ function handleMethod(settings) {
         };
     }
     if (settings.usePromise) {
-        return new Promise((resolve, reject) => {
+        return new Promise((function(resolve, reject) {
             var promiseSettings = _objectSpread2(_objectSpread2({}, settings), {}, {
-                onError(width, height, benchmark) {
+                onError: function onError(width, height, benchmark) {
                     var isLastTest;
                     if (settings.sizes.length === 0) {
                         isLastTest = true;
                     } else {
-                        var [[lastWidth, lastHeight]] = settings.sizes.slice(-1);
+                        var _settings$sizes$slice = settings.sizes.slice(-1), _settings$sizes$slice2 = _slicedToArray(_settings$sizes$slice, 1), _settings$sizes$slice3 = _slicedToArray(_settings$sizes$slice2[0], 2), lastWidth = _settings$sizes$slice3[0], lastHeight = _settings$sizes$slice3[1];
                         isLastTest = width === lastWidth && height === lastHeight;
                     }
-                    onError(width, height, benchmark);
+                    _onError(width, height, benchmark);
                     if (isLastTest) {
                         reject({
                             width: width,
@@ -217,8 +284,8 @@ function handleMethod(settings) {
                         });
                     }
                 },
-                onSuccess(width, height, benchmark) {
-                    onSuccess(width, height, benchmark);
+                onSuccess: function onSuccess(width, height, benchmark) {
+                    _onSuccess(width, height, benchmark);
                     resolve({
                         width: width,
                         height: height,
@@ -227,21 +294,21 @@ function handleMethod(settings) {
                 }
             });
             if (worker) {
-                var {onError: _onError, onSuccess: _onSuccess} = promiseSettings;
+                var onError = promiseSettings.onError, onSuccess = promiseSettings.onSuccess;
                 workerJobs[jobID] = {
-                    onError: _onError,
-                    onSuccess: _onSuccess
+                    onError: onError,
+                    onSuccess: onSuccess
                 };
                 worker.postMessage(settingsWithoutCallbacks);
             } else {
                 canvasTest(promiseSettings);
             }
-        });
+        }));
     } else {
         if (worker) {
             workerJobs[jobID] = {
-                onError: onError,
-                onSuccess: onSuccess
+                onError: _onError,
+                onSuccess: _onSuccess
             };
             worker.postMessage(settingsWithoutCallbacks);
         } else {
@@ -251,52 +318,52 @@ function handleMethod(settings) {
 }
 
 var canvasSize = {
-    maxArea() {
+    maxArea: function maxArea() {
         var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
         var sizes = createSizesArray({
             width: options.max,
             height: options.max,
             min: options.min,
             step: options.step,
-            sizes: [ ...testSizes.area ]
+            sizes: _toConsumableArray(testSizes.area)
         });
-        var settings = Object.assign({}, defaults, options, {
+        var settings = _objectSpread2(_objectSpread2(_objectSpread2({}, defaults), options), {}, {
             sizes: sizes
         });
         return handleMethod(settings);
     },
-    maxHeight() {
+    maxHeight: function maxHeight() {
         var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
         var sizes = createSizesArray({
             width: 1,
             height: options.max,
             min: options.min,
             step: options.step,
-            sizes: [ ...testSizes.height ]
+            sizes: _toConsumableArray(testSizes.height)
         });
-        var settings = Object.assign({}, defaults, options, {
+        var settings = _objectSpread2(_objectSpread2(_objectSpread2({}, defaults), options), {}, {
             sizes: sizes
         });
         return handleMethod(settings);
     },
-    maxWidth() {
+    maxWidth: function maxWidth() {
         var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
         var sizes = createSizesArray({
             width: options.max,
             height: 1,
             min: options.min,
             step: options.step,
-            sizes: [ ...testSizes.width ]
+            sizes: _toConsumableArray(testSizes.width)
         });
-        var settings = Object.assign({}, defaults, options, {
+        var settings = _objectSpread2(_objectSpread2(_objectSpread2({}, defaults), options), {}, {
             sizes: sizes
         });
         return handleMethod(settings);
     },
-    test() {
+    test: function test() {
         var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-        var settings = Object.assign({}, defaults, options);
-        settings.sizes = [ ...settings.sizes ];
+        var settings = _objectSpread2(_objectSpread2({}, defaults), options);
+        settings.sizes = _toConsumableArray(settings.sizes);
         if (settings.width && settings.height) {
             settings.sizes = [ [ settings.width, settings.height ] ];
         }

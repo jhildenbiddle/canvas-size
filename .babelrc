@@ -2,10 +2,10 @@
     "exclude": ["node_modules/**"],
     "presets": [
         ["@babel/env", {
-            "modules": false,
-            "targets": {
-                "browsers": "ie >= 9"
-            }
+            "targets": "ie >= 9"
         }]
+    ],
+    "plugins": [
+        "@babel/plugin-proposal-object-rest-spread"
     ]
 }
