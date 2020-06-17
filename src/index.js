@@ -22,7 +22,7 @@ const testSizes = {
         16384,
         // Chrome 68 (Android 7.1-9)
         14188,
-        // Chrome 68 (Android 5),
+        // Chrome 68 (Android 5)
         11402,
         // Chrome 68 (Android 6)
         10836,
@@ -46,8 +46,8 @@ const testSizes = {
         // Chrome 68 (Android 4.4-9)
         // Firefox 63 (Mac, Win)
         32767,
-        // IE11
         // Edge 17 (Win)
+        // IE11 (Win)
         16384,
         // IE 9-10 (Win)
         8192,
@@ -66,8 +66,8 @@ const testSizes = {
         // Chrome 68 (Android 4.4-9)
         // Firefox 63 (Mac, Win)
         32767,
-        // IE11
         // Edge 17 (Win)
+        // IE11 (Win)
         16384,
         // IE 9-10 (Win)
         8192,
