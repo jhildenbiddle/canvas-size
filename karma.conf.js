@@ -72,7 +72,7 @@ const settings = {
     // https://support.saucelabs.com/hc/en-us/articles/225104707-Karma-Tests-Disconnect-Particularly-When-Running-Tests-on-Safari
     browserDisconnectTimeout  : 1000*10, // default 2000
     browserDisconnectTolerance: 1,       // default 0
-    browserNoActivityTimeout  : 1000*30, // default 10000
+    browserNoActivityTimeout  : 1000*20, // default 10000
     captureTimeout            : 1000*60, // default 60000
     client: {
         mocha: {
@@ -90,13 +90,12 @@ module.exports = function(config) {
     // Remote test
     if (isRemote) {
         // Browsers
-        // https://wiki.saucelabs.com/display/DOCS/Platform+Configurator#/
+        // https://wiki.saucelabs.com/display/DOCS/Platform+Configurator
         settings.customLaunchers = {
             sl_chrome: {
                 base       : 'SauceLabs',
                 browserName: 'Chrome',
-                platform   : 'Windows 10',
-                version    : '26.0'
+                platform   : 'Windows 10'
             },
             sl_edge: {
                 base       : 'SauceLabs',
@@ -108,31 +107,18 @@ module.exports = function(config) {
                 base       : 'SauceLabs',
                 browserName: 'Firefox',
                 platform   : 'Windows 10',
-                version    : '30'
+                version    : '55'
             },
-            // sl_ie_11: {
-            //     base       : 'SauceLabs',
-            //     browserName: 'internet explorer',
-            //     platform   : 'Windows 7',
-            //     version    : '11.0'
-            // },
-            sl_ie_10: {
-                base       : 'SauceLabs',
-                browserName: 'internet explorer',
-                platform   : 'Windows 7',
-                version    : '10.0'
-            },
-            sl_ie_9: {
+            sl_ie_11: {
                 base       : 'SauceLabs',
                 browserName: 'Internet Explorer',
                 platform   : 'Windows 7',
-                version    : '9.0'
+                version    : '11.0'
             },
             sl_safari: {
                 base       : 'SauceLabs',
                 browserName: 'Safari',
-                platform   : 'OS X 10.10',
-                version    : '8.0'
+                platform   : 'OS X 10.13',
             }
         };
         settings.browsers = Object.keys(settings.customLaunchers);
