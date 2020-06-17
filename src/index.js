@@ -15,8 +15,6 @@ const defaults = {
 };
 const testSizes = {
     area: [
-        // Future Browsers?
-        32767,
         // Chrome 70 (Mac, Win)
         // Chrome 68 (Android 4.4)
         // Edge 17 (Win)
