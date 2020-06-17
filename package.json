@@ -64,7 +64,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^4.0.2",
     "lodash.merge": "^4.6.2",
-    "mocha": "^4.1.0",
+    "mocha": "^8.0.1",
     "rimraf": "^3.0.2",
     "rollup": "^2.16.1",
     "rollup-plugin-babel": "^4.4.0",
