@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.2.0
+
+*2020-06-18*
+
+- Add `useWorker` option which allows canvas tests to be performed asynchronously on a separate thread (requires Web Worker and OffscreenCanvas support)
+- Add "Usage" section to the documentation
+- Remove `requestAnimationFrame` from canvas test loop
+
 ## 1.1.0
 
 *2020-05-31*
