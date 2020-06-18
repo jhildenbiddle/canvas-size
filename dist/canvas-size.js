@@ -182,6 +182,11 @@
         }
         return isTestPass;
     }
+    var testSizes = {
+        area: [ 16384, 14188, 11402, 10836, 11180, 8192, 4096, 1 ],
+        height: [ 8388607, 65535, 32767, 16384, 8192, 4096, 1 ],
+        width: [ 4194303, 65535, 32767, 16384, 8192, 4096, 1 ]
+    };
     var defaults = {
         max: null,
         min: 1,
@@ -191,11 +196,6 @@
         useWorker: false,
         onError: Function.prototype,
         onSuccess: Function.prototype
-    };
-    var testSizes = {
-        area: [ 16384, 14188, 11402, 10836, 11180, 8192, 4096, defaults.min ],
-        height: [ 8388607, 65535, 32767, 16384, 8192, 4096, defaults.min ],
-        width: [ 4194303, 65535, 32767, 16384, 8192, 4096, defaults.min ]
     };
     var workerJobs = {};
     function createSizesArray(settings) {
