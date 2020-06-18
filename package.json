@@ -21,10 +21,13 @@
     "max",
     "maximum",
     "offscreen",
+    "offscreencanvas",
     "promise",
     "scale",
     "size",
     "test",
+    "web worker",
+    "worker",
     "width"
   ],
   "files": [
