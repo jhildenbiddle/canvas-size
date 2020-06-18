@@ -1,44 +1,19 @@
 // Dependencies
 // =============================================================================
 import canvasSize from '../src/index';
+import testSizes from '../src/test-sizes';
 import { expect } from 'chai';
 
 
 // Constants & Variables
 // =============================================================================
-const hasPromiseSupport         = Boolean(window.Promise);
+const hasPromiseSupport         = 'Promise' in window;
 const hasOffscreenCanvasSupport = 'OffscreenCanvas' in window;
-const hideConsoleMsgs           = true;
-
-
-// Functions
-// =============================================================================
-// eslint-disable-next-line no-unused-vars
-function handleError(title, width, height, context) {
-    // If a canvas of 1x1 is unreadable then the issue is most likely related to
-    // running the browser in a virtual machine. The following check allows
-    // these failed tests to be skipped
-    if (width === 1 && height === 1) {
-        if (!hideConsoleMsgs) {
-            console.log(`${title} ${width} x ${height} SKIPPED (likely VM issue)`);
-        }
-
-        if (context) {
-            context.skip();
-        }
-    }
-    else if (!hideConsoleMsgs) {
-        console.log(`${title} ${width} x ${height} ERROR`);
-    }
-}
-
-// eslint-disable-next-line no-unused-vars
-function handleSuccess(title, width, height, context) {
-    if (!hideConsoleMsgs) {
-        console.log(`${title} ${width} x ${height} SUCCESS`);
-    }
-}
-
+const maxTestSize = {
+    area  : testSizes.area[0],
+    height: testSizes.height[0],
+    width : testSizes.width[0]
+};
 
 // Suite
 // =============================================================================
@@ -46,17 +21,9 @@ describe('canvasSize', function() {
     // maxArea()
     // -------------------------------------------------------------------------
     describe('maxArea()', function() {
-        const title = this.title;
-
         it('determines max area (default sizes)', function(done) {
-            const testContext = this;
-
             canvasSize.maxArea({
-                onError(width, height) {
-                    handleError(title, width, height, testContext);
-                },
-                onSuccess(width, height) {
-                    handleSuccess(title, width, height);
+                onSuccess(width, height, benchmark) {
                     expect(width).to.be.a('number');
                     expect(height).to.be.a('number');
                     done();
@@ -65,16 +32,10 @@ describe('canvasSize', function() {
         });
 
         it('determines max area (max + step)', function(done) {
-            const testContext = this;
-
             canvasSize.maxArea({
-                max : 1000000,
-                step: 999999,
-                onError(width, height) {
-                    handleError(title, width, height, testContext);
-                },
-                onSuccess(width, height) {
-                    handleSuccess(title, width, height);
+                max : maxTestSize.area + 1,
+                step: maxTestSize.area,
+                onSuccess(width, height, benchmark) {
                     expect(width).to.be.a('number');
                     expect(height).to.be.a('number');
                     done();
@@ -86,17 +47,9 @@ describe('canvasSize', function() {
     // maxHeight()
     // -------------------------------------------------------------------------
     describe('maxHeight()', function() {
-        const title = this.title;
-
         it('determines max height (default sizes)', function(done) {
-            const testContext = this;
-
             canvasSize.maxHeight({
-                onError(width, height) {
-                    handleError(title, width, height, testContext);
-                },
-                onSuccess(width, height) {
-                    handleSuccess(title, width, height);
+                onSuccess(width, height, benchmark) {
                     expect(height).to.be.a('number');
                     done();
                 }
@@ -104,16 +57,10 @@ describe('canvasSize', function() {
         });
 
         it('determines max height (max + step)', function(done) {
-            const testContext = this;
-
             canvasSize.maxHeight({
-                max : 1000000,
-                step: 999999,
-                onError(width, height) {
-                    handleError(title, width, height, testContext);
-                },
-                onSuccess(width, height) {
-                    handleSuccess(title, width, height);
+                max : maxTestSize.height + 1,
+                step: maxTestSize.height,
+                onSuccess(width, height, benchmark) {
                     expect(height).to.be.a('number');
                     done();
                 }
@@ -124,17 +71,9 @@ describe('canvasSize', function() {
     // maxWidth()
     // -------------------------------------------------------------------------
     describe('maxWidth()', function() {
-        const title = this.title;
-
         it('determines max width (default sizes)', function(done) {
-            const testContext = this;
-
             canvasSize.maxWidth({
-                onError(width, height) {
-                    handleError(title, width, height, testContext);
-                },
-                onSuccess(width, height) {
-                    handleSuccess(title, width, height);
+                onSuccess(width, height, benchmark) {
                     expect(width).to.be.a('number');
                     done();
                 }
@@ -142,16 +81,10 @@ describe('canvasSize', function() {
         });
 
         it('determines max width (max + step)', function(done) {
-            const testContext = this;
-
             canvasSize.maxWidth({
-                max : 1000000,
-                step: 999999,
-                onError(width, height) {
-                    handleError(title, width, height, testContext);
-                },
-                onSuccess(width, height) {
-                    handleSuccess(title, width, height);
+                max : maxTestSize.width + 1,
+                step: maxTestSize.width,
+                onSuccess(width, height, benchmark) {
                     expect(width).to.be.a('number');
                     done();
                 }
@@ -162,8 +95,6 @@ describe('canvasSize', function() {
     // test()
     // -------------------------------------------------------------------------
     describe('test()', function() {
-        const title = this.title;
-
         it('returns true for valid width / height', function() {
             const testResult = canvasSize.test({
                 width : 1,
@@ -175,8 +106,8 @@ describe('canvasSize', function() {
 
         it('returns false for invalid width / height', function() {
             const testResult = canvasSize.test({
-                width : 1000000,
-                height: 1000000
+                width : maxTestSize.area + 1,
+                height: maxTestSize.area + 1
             });
 
             expect(testResult).to.equal(false);
@@ -184,16 +115,15 @@ describe('canvasSize', function() {
 
         it('triggers onError callback (sizes)', function(done) {
             const testSizes = [
-                [3000000, 3000000],
-                [2000000, 2000000],
-                [1000000, 1000000]
+                [maxTestSize.area + 3, maxTestSize.area + 3],
+                [maxTestSize.area + 2, maxTestSize.area + 2],
+                [maxTestSize.area + 1, maxTestSize.area + 1]
             ];
             const testArr = [];
 
             canvasSize.test({
                 sizes: testSizes,
-                onError(width, height) {
-                    handleError(title, width, height);
+                onError(width, height, benchmark) {
                     testArr.push([width, height]);
 
                     if (testArr.length === testSizes.length) {
@@ -205,20 +135,15 @@ describe('canvasSize', function() {
         });
 
         it('triggers onSuccess callback (sizes)', function(done) {
-            const testContext = this;
             const testSizes   = [
-                [2000000, 2000000],
-                [1000000, 1000000],
+                [maxTestSize.area + 2, maxTestSize.area + 2],
+                [maxTestSize.area + 1, maxTestSize.area + 1],
                 [1, 1]
             ];
 
             canvasSize.test({
                 sizes: testSizes,
-                onError(width, height) {
-                    handleError(title, width, height, testContext);
-                },
-                onSuccess(width, height) {
-                    handleSuccess(title, width, height, testContext);
+                onSuccess(width, height, benchmark) {
                     expect(testSizes).to.deep.include([width, height]);
 
                     if (width === 1 && height === 1) {
@@ -263,7 +188,7 @@ describe('canvasSize', function() {
             });
 
             it('test() invokes promise.catch() for invalid width / height', function(done) {
-                const testSize = 1000000;
+                const testSize = maxTestSize.area + 1;
 
                 let onError    = 0;
                 let onSuccess  = 0;
@@ -295,12 +220,14 @@ describe('canvasSize', function() {
 
             ['maxArea', 'maxWidth', 'maxHeight'].forEach(method => {
                 it(`${method}() invokes promise.then() for valid width / height`, function(done) {
+                    const maxValue = maxTestSize[method.replace('max','').toLowerCase()];
+
                     let onError   = 0;
                     let onSuccess = 0;
 
                     canvasSize[method]({
-                        max       : 1000000,
-                        step      : 999999,
+                        max       : maxValue + 1,
+                        step      : maxValue,
                         usePromise: true,
                         onError(width, height, benchmark) {
                             onError++;
@@ -379,7 +306,7 @@ describe('canvasSize', function() {
             });
 
             it('test() posts message for invalid width / height', function(done) {
-                const testSize = 16385; // Chrome maxArea w/h + 1
+                const testSize = maxTestSize.area + 1;
 
                 let onError   = 0;
                 let onSuccess = 0;
@@ -406,7 +333,7 @@ describe('canvasSize', function() {
             });
 
             it('test() invokes promise.catch() for invalid width / height', function(done) {
-                const testSize = 16385; // Chrome maxArea w/h + 1
+                const testSize = maxTestSize.area + 1;
 
                 let onError   = 0;
                 let onSuccess = 0;
@@ -436,14 +363,14 @@ describe('canvasSize', function() {
 
             ['maxArea', 'maxHeight', 'maxWidth'].forEach(method => {
                 it(`${method}() posts message for valid width / height`, function(done) {
-                    const testSize = method === 'maxArea' ? 16385 : 9999999;
+                    const maxValue = maxTestSize[method.replace('max','').toLowerCase()];
 
                     let onError   = 0;
                     let onSuccess = 0;
 
                     canvasSize[method]({
-                        max      : testSize,
-                        step     : testSize - 1,
+                        max      : maxValue + 1,
+                        step     : maxValue,
                         useWorker: true,
                         onError(width, height, benchmark) {
                             onError++;
@@ -462,14 +389,14 @@ describe('canvasSize', function() {
                 });
 
                 it(`${method}() invokes promise.then() for valid width / height`, function(done) {
-                    const testSize = method === 'maxArea' ? 16385 : 9999999;
+                    const maxValue = maxTestSize[method.replace('max','').toLowerCase()];
 
                     let onError   = 0;
                     let onSuccess = 0;
 
                     canvasSize[method]({
-                        max       : testSize,
-                        step      : testSize - 1,
+                        max       : maxValue + 1,
+                        step      : maxValue,
                         usePromise: true,
                         useWorker : true,
                         onError(width, height, benchmark) {
