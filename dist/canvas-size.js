@@ -6,7 +6,7 @@
  * MIT license
  */
 (function(global, factory) {
-    typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = global || self, 
+    typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, 
     global.canvasSize = factory());
 })(this, (function() {
     "use strict";
