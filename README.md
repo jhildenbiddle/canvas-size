@@ -122,7 +122,7 @@ canvasSize.maxArea({
 })
 .then(function(result) {
   console.log('Success', result);
-});
+})
 .catch(function(result) {
   console.log('Error', result);
 });
@@ -166,7 +166,7 @@ canvasSize.maxArea({
 })
 .then(function(result) {
   console.log('Success', result);
-});
+})
 .catch(function(result) {
   console.log('Error', result);
 });
@@ -263,7 +263,7 @@ canvasSize.maxArea({
 })
 .then(({ width, height, benchmark }) => {
   console.log(`Success: ${width} x ${height} (${benchmark} ms)`);
-});
+})
 .catch(({ width, height, benchmark }) => {
   console.log(`Error: ${width} x ${height} (${benchmark} ms)`);
 });
@@ -278,7 +278,7 @@ canvasSize.maxArea({
 })
 .then(({ width, height, benchmark }) => {
   console.log(`Success: ${width} x ${height} (${benchmark} ms)`);
-});
+})
 .catch(({ width, height, benchmark }) => {
   console.log(`Error: ${width} x ${height} (${benchmark} ms)`);
 });
@@ -367,7 +367,7 @@ canvasSize.test({
 })
 .then(({ width, height, benchmark }) => {
   console.log(`Success: ${width} x ${height} (${benchmark} ms)`);
-});
+})
 .catch(({ width, height, benchmark }) => {
   console.log(`Error: ${width} x ${height} (${benchmark} ms)`);
 });
