@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.2.1
+
+*2020-11-11*
+
+- Fix web worker bug in minified esm distributable (#5, #6)
+
 ## 1.2.0
 
 *2020-06-18*
