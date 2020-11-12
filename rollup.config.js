@@ -53,7 +53,9 @@ const pluginSettings = {
         },
         minify: {
             compress: true,
-            mangle  : true,
+            mangle  : {
+                reserved: ['canvasTest']
+            },
             output  : {
                 comments: new RegExp(pkg.name)
             }
