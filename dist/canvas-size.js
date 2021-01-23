@@ -2,7 +2,7 @@
  * canvas-size
  * v1.2.1
  * https://github.com/jhildenbiddle/canvas-size
- * (c) 2015-2020 John Hildenbiddle <http://hildenbiddle.com>
+ * (c) 2015-2021 John Hildenbiddle <http://hildenbiddle.com>
  * MIT license
  */
 (function(global, factory) {
@@ -232,7 +232,7 @@
             return false;
         }
         if (settings.useWorker && hasOffscreenCanvasSupport) {
-            var js = "\n            ".concat(canvasTest.toString(), "\n            onmessage = function(e) {\n                canvasTest(e.data);\n            };\n        ");
+            var js = "\n            var canvasTest = ".concat(canvasTest.toString(), ";\n            onmessage = function(e) {\n                canvasTest(e.data);\n            };\n        ");
             var blob = new Blob([ js ], {
                 type: "application/javascript"
             });

@@ -94,7 +94,7 @@ function handleMethod(settings) {
     // Create web worker
     if (settings.useWorker && hasOffscreenCanvasSupport) {
         const js = `
-            ${canvasTest.toString()}
+            var canvasTest = ${canvasTest.toString()};
             onmessage = function(e) {
                 canvasTest(e.data);
             };
