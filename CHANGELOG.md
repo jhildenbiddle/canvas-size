@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.2.2
+
+*2021-01-28*
+
+- Fix reference error after minification (#5, #6)
+
 ## 1.2.1
 
 *2020-11-11*
