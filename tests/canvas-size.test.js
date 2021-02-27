@@ -95,10 +95,19 @@ describe('canvasSize', function() {
     // test()
     // -------------------------------------------------------------------------
     describe('test()', function() {
-        it('returns true for valid width / height', function() {
+        it('returns true for valid width / height integers', function() {
             const testResult = canvasSize.test({
                 width : 1,
                 height: 1
+            });
+
+            expect(testResult).to.equal(true);
+        });
+
+        it('returns true for valid width / height floats', function() {
+            const testResult = canvasSize.test({
+                width : 1.1,
+                height: 1.1
             });
 
             expect(testResult).to.equal(true);
