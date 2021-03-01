@@ -19,8 +19,8 @@
  */
 function canvasTest(settings) {
     const size     = settings.sizes.shift();
-    const width    = Math.max(Math.round(size[0]), 1);
-    const height   = Math.max(Math.round(size[1]), 1);
+    const width    = Math.max(Math.ceil(size[0]), 1);
+    const height   = Math.max(Math.ceil(size[1]), 1);
     const fill     = [width - 1, height - 1, 1, 1]; // x, y, width, height
     const job      = Date.now();
     const isWorker = typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope;

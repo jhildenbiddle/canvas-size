@@ -147,8 +147,8 @@ function _nonIterableRest() {
 
 function canvasTest(settings) {
     var size = settings.sizes.shift();
-    var width = Math.max(Math.round(size[0]), 1);
-    var height = Math.max(Math.round(size[1]), 1);
+    var width = Math.max(Math.ceil(size[0]), 1);
+    var height = Math.max(Math.ceil(size[1]), 1);
     var fill = [ width - 1, height - 1, 1, 1 ];
     var job = Date.now();
     var isWorker = typeof WorkerGlobalScope !== "undefined" && self instanceof WorkerGlobalScope;
