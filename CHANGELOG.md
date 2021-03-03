@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.2.3
+
+*2021-03-03*
+
+- Fix handling of floating point sizes in Webkit-based browsers (e.g. Safari)
+
 ## 1.2.2
 
 *2021-01-28*
