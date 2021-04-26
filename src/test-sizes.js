@@ -9,10 +9,10 @@ const testSizes = {
         14188,
         // Chrome 68 (Android 5)
         11402,
-        // Chrome 68 (Android 6)
-        10836,
         // Firefox 63 (Mac, Win)
         11180,
+        // Chrome 68 (Android 6)
+        10836,
         // IE 9-11 (Win)
         8192,
         // IE Mobile (Windows Phone 8.x)
