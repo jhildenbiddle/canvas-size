@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.2.4
+
+*2021-04-26*
+
+- Fix `maxArea()` test order for more accurate results in Firefox (#12)
+
 ## 1.2.3
 
 *2021-03-03*
