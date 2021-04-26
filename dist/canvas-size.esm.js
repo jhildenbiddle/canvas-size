@@ -1,6 +1,6 @@
 /*!
  * canvas-size
- * v1.2.3
+ * v1.2.4
  * https://github.com/jhildenbiddle/canvas-size
  * (c) 2015-2021 John Hildenbiddle <http://hildenbiddle.com>
  * MIT license
@@ -95,17 +95,18 @@ function _arrayWithHoles(arr) {
 }
 
 function _iterableToArray(iter) {
-    if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+    if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
 }
 
 function _iterableToArrayLimit(arr, i) {
-    if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
+    var _i = arr && (typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]);
+    if (_i == null) return;
     var _arr = [];
     var _n = true;
     var _d = false;
-    var _e = undefined;
+    var _s, _e;
     try {
-        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+        for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
             _arr.push(_s.value);
             if (i && _arr.length === i) break;
         }
@@ -194,7 +195,7 @@ function canvasTest(settings) {
 }
 
 var testSizes = {
-    area: [ 16384, 14188, 11402, 10836, 11180, 8192, 4096, 1 ],
+    area: [ 16384, 14188, 11402, 11180, 10836, 8192, 4096, 1 ],
     height: [ 8388607, 65535, 32767, 16384, 8192, 4096, 1 ],
     width: [ 4194303, 65535, 32767, 16384, 8192, 4096, 1 ]
 };
