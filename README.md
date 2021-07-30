@@ -399,7 +399,7 @@ Tests conducted using [BrowserStack](https://www.browserstack.com/) virtualized 
 | Chrome 68 (Android 5) *       |    32,767 |     32,767 | 11,402 x 11,402 (130,005,604) |
 | Chrome 68 (Android 4.4) *     |    32,767 |     32,767 | 16,384 x 16,384 (268,435,456) |
 | IE (Windows Phone 8.x)        |     4,096 |      4,096 |  4,096 x  4,096  (16,777,216) |
-| Safari (iOS 9 - 12)           | 4,194,303 |  8,388,607 |  4,096 x  4,096  (16,777,216) |
+| Safari (iOS 9 - 14.6)         | 4,194,303 |  8,388,607 |  4,096 x  4,096  (16,777,216) |
 
 ## Known Issues
 
