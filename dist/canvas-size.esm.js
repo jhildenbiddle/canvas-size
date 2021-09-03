@@ -5,27 +5,15 @@
  * (c) 2015-2021 John Hildenbiddle <http://hildenbiddle.com>
  * MIT license
  */
-function _defineProperty(obj, key, value) {
-    if (key in obj) {
-        Object.defineProperty(obj, key, {
-            value: value,
-            enumerable: true,
-            configurable: true,
-            writable: true
-        });
-    } else {
-        obj[key] = value;
-    }
-    return obj;
-}
-
 function ownKeys(object, enumerableOnly) {
     var keys = Object.keys(object);
     if (Object.getOwnPropertySymbols) {
         var symbols = Object.getOwnPropertySymbols(object);
-        if (enumerableOnly) symbols = symbols.filter((function(sym) {
-            return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-        }));
+        if (enumerableOnly) {
+            symbols = symbols.filter((function(sym) {
+                return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+            }));
+        }
         keys.push.apply(keys, symbols);
     }
     return keys;
@@ -47,6 +35,20 @@ function _objectSpread2(target) {
         }
     }
     return target;
+}
+
+function _defineProperty(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+        });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
 }
 
 function _objectWithoutPropertiesLoose(source, excluded) {
@@ -99,7 +101,7 @@ function _iterableToArray(iter) {
 }
 
 function _iterableToArrayLimit(arr, i) {
-    var _i = arr && (typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]);
+    var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
     if (_i == null) return;
     var _arr = [];
     var _n = true;
@@ -200,6 +202,8 @@ var testSizes = {
     width: [ 4194303, 65535, 32767, 16384, 8192, 4096, 1 ]
 };
 
+var _excluded = [ "onError", "onSuccess" ];
+
 var defaults = {
     max: null,
     min: 1,
@@ -242,7 +246,7 @@ function handleMethod(settings) {
     var hasCanvasSupport = window && "HTMLCanvasElement" in window;
     var hasOffscreenCanvasSupport = window && "OffscreenCanvas" in window;
     var jobID = Date.now();
-    var _onError = settings.onError, _onSuccess = settings.onSuccess, settingsWithoutCallbacks = _objectWithoutProperties(settings, [ "onError", "onSuccess" ]);
+    var _onError = settings.onError, _onSuccess = settings.onSuccess, settingsWithoutCallbacks = _objectWithoutProperties(settings, _excluded);
     var worker = null;
     if (!hasCanvasSupport) {
         return false;
@@ -372,5 +376,5 @@ var canvasSize = {
     }
 };
 
-export default canvasSize;
+export { canvasSize as default };
 //# sourceMappingURL=canvas-size.esm.js.map
