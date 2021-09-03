@@ -5,7 +5,12 @@ module.exports = {
         'es6'     : true,
         'node'    : true
     },
-    'extends': 'eslint:recommended',
+    'extends': [
+        'eslint:recommended'
+    ],
+    'ignorePatterns': [
+        'dist'
+    ],
     'plugins': [],
     'parserOptions': {
         'ecmaVersion': 9,
@@ -20,7 +25,6 @@ module.exports = {
         'dot-notation'               : ['error'],
         'eqeqeq'                     : ['error'],
         'indent'                     : ['error', 4, { 'MemberExpression': 0 }],
-        'linebreak-style'            : ['error', 'unix'],
         'no-console'                 : ['warn'],
         'no-floating-decimal'        : ['error'],
         'no-implicit-coercion'       : ['error'],

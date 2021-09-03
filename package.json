@@ -40,8 +40,9 @@
     "prepare": "rimraf dist/*.js* && npm run build",
     "build": "rollup -c",
     "dev": "npm start | npm run test-watch",
+    "lint": "eslint . && markdownlint . --ignore node_modules",
     "start": "rimraf coverage/* && npm run build -- --watch",
-    "test": "rimraf coverage/* && karma start",
+    "test": "rimraf coverage/* && npm run lint && karma start",
     "test-watch": "npm test -- --auto-watch --no-single-run",
     "test-remote": "npm test -- --remote",
     "version": "npm run prepare && npm run test && git add -A dist"
@@ -68,6 +69,7 @@
     "karma-sourcemap-loader": "^0.3.8",
     "karma-webpack": "^4.0.2",
     "lodash.merge": "^4.6.2",
+    "markdownlint-cli": "^0.28.1",
     "mocha": "^8.2.1",
     "rimraf": "^3.0.2",
     "rollup": "^2.38.0",
