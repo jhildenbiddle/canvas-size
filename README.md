@@ -8,10 +8,17 @@
 [![jsDelivr](https://data.jsdelivr.com/v1/package/npm/canvas-size/badge)](https://www.jsdelivr.com/package/npm/canvas-size)
 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2Fjhildenbiddle%2Fcanvas-size&hashtags=canvas,developers,frontend,javascript)
 
-Determine the maximum size of an HTML canvas element and test support for custom canvas dimensions.
+Determine the maximum size and custom dimension support of an HTML `<canvas>` element.
 
-- [Demo](https://on690.codesandbox.io) for modern browsers (CodeSandbox)
-- [Demo](https://jsbin.com/megedep/1/edit?js,output) for legacy browsers (JSBin)
+- [Modern Demo](https://on690.codesandbox.io): For modern, ES6-capable browsers
+- [Legacy Demo](https://jsbin.com/megedep/1): For older, ES5-based browsers (like Internet Explorer)
+- [Test Results](#test-results): Max `<canvas>` dimensions for various platforms and browsers
+
+## Why?
+
+The [HTML canvas](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas) element is [widely supported](http://caniuse.com/#feat=canvas) by modern and legacy browsers, but each browser and platform combination imposes [unique size limitations](#test-results) that will render a canvas unusable when exceeded. Unfortunately, browsers do not provide a way to determine what their limitations are, nor do they provide any kind of feedback after an unusable canvas has been created. This makes working with large canvas elements a challenge, especially for applications that support a variety of browsers and platforms.
+
+This micro-library provides the maximum area, height, and width of an HTML canvas element supported by the browser as well as the ability to test custom canvas dimensions. By collecting this information *before* a new canvas element is created, applications are able to reliably set canvas dimensions within the size limitations of each browser/platform.
 
 ## Features
 
@@ -28,45 +35,12 @@ Determine the maximum size of an HTML canvas element and test support for custom
 | ---- | ---- | ------ | ------- | ------ |
 | 9+   | 12+  | 4+     | 3.6+    | 4+     |
 
-------
-
-- [canvas-size](#canvas-size)
-  - [Features](#features)
-  - [Description](#description)
-  - [Installation](#installation)
-  - [Usage](#usage)
-  - [Methods](#methods)
-    - [maxArea()](#maxarea)
-    - [maxHeight()](#maxheight)
-    - [maxWidth()](#maxwidth)
-    - [test()](#test)
-  - [Test Results](#test-results)
-    - [Desktop](#desktop)
-    - [Mobile](#mobile)
-  - [Known Issues](#known-issues)
-  - [Contact](#contact)
-  - [License](#license)
-
-------
-
-## Description
-
-The [HTML canvas](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas) element is [widely supported](http://caniuse.com/#feat=canvas) by modern and legacy browsers, but each browser and platform combination imposes [unique size limitations](#test-results) that will render a canvas unusable when exceeded. Unfortunately, browsers do not provide a way to determine what their limitations are, nor do they provide any kind of feedback after an unusable canvas has been created. This makes working with large canvas elements a challenge, especially for applications that support a variety of browsers and platforms.
-
-This micro-library provides the maximum area, height, and width of an HTML canvas element supported by the browser as well as the ability to test custom canvas dimensions. By collecting this information *before* a new canvas element is created, applications are able to reliably set canvas dimensions within the size limitations of each browser/platform.
-
 ## Installation
 
 NPM:
 
 ```bash
 npm install canvas-size
-```
-
-Git:
-
-```bash
-git clone https://github.com/jhildenbiddle/canvas-size.git
 ```
 
 CDN ([jsdelivr.com](https://www.jsdelivr.com/) shown, also on [unpkg.com](https://unpkg.com/)):
@@ -186,11 +160,7 @@ canvasSize.maxArea({
 
 ## Methods
 
-### maxArea()
-
-### maxHeight()
-
-### maxWidth()
+### maxArea(), maxHeight(), maxWidth()
 
 Determines the maximum area/height/width of an HTML canvas element on the client.
 
@@ -259,6 +229,15 @@ canvasSize.maxArea({
     console.log('Success:', width, height, benchmark);
   }
 });
+
+// Same options for maxHeight() and maxWidth()
+canvasSize.maxHeight({
+  // ...
+});
+
+canvasSize.maxWidth({
+  // ...
+});
 ```
 
 Using ES6 Promises & Web Workers:
@@ -289,6 +268,15 @@ canvasSize.maxArea({
 })
 .catch(({ width, height, benchmark }) => {
   console.log(`Error: ${width} x ${height} (${benchmark} ms)`);
+});
+
+// Same options for maxHeight() and maxWidth()
+canvasSize.maxHeight({
+  // ...
+});
+
+canvasSize.maxWidth({
+  // ...
 });
 ```
 
