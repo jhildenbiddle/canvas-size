@@ -25,7 +25,7 @@ const settings = {
         [files.test]: ['eslint', 'webpack', 'sourcemap']
     },
     frameworks: ['mocha', 'chai'],
-    reporters : ['mocha', 'coverage-istanbul'],
+    reporters : ['mocha', 'BrowserStack', 'coverage-istanbul'],
     webpack: {
         mode  : 'development',
         module: {
