@@ -25,7 +25,7 @@ const settings = {
         [files.test]: ['eslint', 'webpack', 'sourcemap']
     },
     frameworks: ['mocha', 'chai'],
-    reporters : ['mocha', 'BrowserStack', 'coverage-istanbul'],
+    reporters : ['mocha', 'coverage-istanbul', 'BrowserStack'],
     webpack: {
         mode  : 'development',
         module: {
@@ -120,7 +120,10 @@ module.exports = function(config) {
         settings.browserStack = {
             username : process.env.BROWSERSTACK_USERNAME,
             accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
-            build    : `${gitInfo.branch}: ${gitInfo.commitMessage}`,
+            build    : `${gitInfo.branch}: ${gitInfo.commitMessage} @ ${
+                process.env.BUILD_NUMBER ||
+                new Date().toLocaleString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short', hour12: true })
+            }`,
             project  : pkg.name,
             video    : false
         };
