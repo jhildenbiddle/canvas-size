@@ -1,6 +1,6 @@
 /*!
  * canvas-size
- * v1.2.4
+ * v1.2.5
  * https://github.com/jhildenbiddle/canvas-size
  * (c) 2015-2021 John Hildenbiddle <http://hildenbiddle.com>
  * MIT license

@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.2.5
+
+*2021-09-04*
+
+- Update badges in documentation
+- Update browser test results (#14)
+- Replace Travis CI with GitHub CI
+
 ## 1.2.4
 
 *2021-04-26*
