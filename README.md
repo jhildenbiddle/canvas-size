@@ -383,31 +383,36 @@ canvasSize.test({
 
 ## Test Results
 
-Tests conducted using [BrowserStack](https://www.browserstack.com/) virtualized device are denoted with an asterisk (`*`). Results from these tests may vary from actual hardware.
+Tests were conducted using virtualized device courtesy of [BrowserStack](https://www.browserstack.com/). Results may vary on actual hardware.
 
 ### Desktop
 
-| Browser (OS)            | Max Width | Max Height |          Max Area (Total) |
-| ----------------------- | --------: | ---------: | ----------------------------: |
-| Chrome 83 (Mac, Win *)  |    65,535 |     65,535 | 16,384 x 16,384 (268,435,456) |
-| Chrome 70 (Mac, Win *)  |    32,767 |     32,767 | 16,384 x 16,384 (268,435,456) |
-| Edge 17 *               |    16,384 |     16,384 | 16,384 x 16,384 (268,435,456) |
-| Firefox 63 (Mac, Win *) |    32,767 |     32,767 | 11,180 x 11,180 (124,992,400) |
-| IE 11 *                 |    16,384 |     16,384 |   8,192 x 8,192  (67,108,864) |
-| IE 9 - 10 *             |     8,192 |      8,192 |   8,192 x 8,192  (67,108,864) |
-| Safari 7 - 12           | 4,194,303 |  8,388,607 | 16,384 x 16,384 (268,435,456) |
+| Browser (OS)             | Max Width | Max Height |              Max Area (Total) |
+| ------------------------ | --------: | ---------: | ----------------------------: |
+| Chrome >= 73 (Mac, Win)  |    65,535 |     65,535 | 16,384 x 16,384 (268,435,456) |
+| Chrome <= 72 (Mac, Win)  |    32,767 |     32,767 | 16,384 x 16,384 (268,435,456) |
+| Edge >= 80 (Mac, Win)    |    65,535 |     65,535 | 16,384 x 16,384 (268,435,456) |
+| Edge <= 18 (Win)         |    16,384 |     16,384 | 16,384 x 16,384 (268,435,456) |
+| Firefox >= 60 (Mac, Win) |    32,767 |     32,767 | 11,180 x 11,180 (124,992,400) |
+| IE 11 (Win)              |    16,384 |     16,384 |   8,192 x 8,192  (67,108,864) |
+| IE 9 - 10 (Win)          |     8,192 |      8,192 |   8,192 x 8,192  (67,108,864) |
+| Safari >= 5 (Mac)        | 4,194,303 |  8,388,607 | 16,384 x 16,384 (268,435,456) |
 
 ### Mobile
 
-| Browser (OS)                  | Max Width | Max Height |          Max Area (Total) |
-| ----------------------------- | --------: | ---------: | ----------------------------: |
-| Chrome 68 (Android 9) *       |    32,767 |     32,767 | 14,188 x 14,188 (201,299,344) |
-| Chrome 68 (Android 7.1 - 8) * |    32,767 |     32,767 | 14,188 x 14,188 (201,299,344) |
-| Chrome 68 (Android 6)         |    32,767 |     32,767 | 10,836 x 10,836 (117,418,896) |
-| Chrome 68 (Android 5) *       |    32,767 |     32,767 | 11,402 x 11,402 (130,005,604) |
-| Chrome 68 (Android 4.4) *     |    32,767 |     32,767 | 16,384 x 16,384 (268,435,456) |
-| IE (Windows Phone 8.x)        |     4,096 |      4,096 |  4,096 x  4,096  (16,777,216) |
-| Safari (iOS 9 - 12)           | 4,194,303 |  8,388,607 |  4,096 x  4,096  (16,777,216) |
+Be aware that test results can vary between mobile devices running the same platform/browser combination, most notably on older devices with less capable hardware.
+
+| Browser (OS)                | Max Width | Max Height |              Max Area (Total) |
+| --------------------------- | --------: | ---------: | ----------------------------: |
+| Chrome 91 (Android 8 - 11)  |    65,535 |     65,535 | 16,384 x 16,384 (268,435,456) |
+| Chrome 91 (Android 7)       |    65,535 |     65,535 | 14,188 x 14,188 (201,299,344) |
+| Chrome 91 (Android 6)       |    65,535 |     65,535 | 16,384 x 16,384 (268,435,456) |
+| Chrome 91 (Android 5)       |    65,535 |     65,535 | 11,180 x 11,180 (124,992,400) |
+| Chrome 68 (Android 7.1 - 9) |    32,767 |     32,767 | 14,188 x 14,188 (201,299,344) |
+| Chrome 68 (Android 6)       |    32,767 |     32,767 | 10,836 x 10,836 (117,418,896) |
+| Chrome 68 (Android 5)       |    32,767 |     32,767 | 11,402 x 11,402 (130,005,604) |
+| IE (Windows Phone 8.x)      |     4,096 |      4,096 |  4,096 x  4,096  (16,777,216) |
+| Safari (iOS >= 9)           | 4,194,303 |  8,388,607 |  4,096 x  4,096  (16,777,216) |
 
 ## Known Issues
 
