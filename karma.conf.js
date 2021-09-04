@@ -120,6 +120,7 @@ module.exports = function(config) {
         settings.browserStack = {
             username : process.env.BROWSERSTACK_USERNAME,
             accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
+            build    : `${gitInfo.branch}: ${gitInfo.commitMessage}`,
             project  : pkg.name,
             video    : false
         };
