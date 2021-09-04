@@ -43,6 +43,14 @@ NPM:
 npm install canvas-size
 ```
 
+```js
+import canvasSize from 'canvas-size';
+
+canvasSize.maxArea({
+  // ...
+});
+```
+
 CDN ([jsdelivr.com](https://www.jsdelivr.com/) shown, also on [unpkg.com](https://unpkg.com/)):
 
 ```html
@@ -55,7 +63,9 @@ CDN ([jsdelivr.com](https://www.jsdelivr.com/) shown, also on [unpkg.com](https:
 <script type="module">
   import canvasSize from 'https://cdn.jsdelivr.net/npm/canvas-size@1/dist/canvas-size.esm.min.js';
 
-  // Do stuff...
+  canvasSize.maxArea({
+    // ...
+  });
 </script>
 ```
 
