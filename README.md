@@ -1,6 +1,7 @@
 # canvas-size
 
 [![NPM](https://img.shields.io/npm/v/canvas-size.svg?style=flat-square)](https://www.npmjs.com/package/canvas-size)
+![GitHub branch checks state](https://img.shields.io/github/checks-status/jhildenbiddle/canvas-size/master?style=flat-square)
 [![Codacy grade](https://img.shields.io/codacy/grade/c39af90445e7478d80fd796d12947495?style=flat-square)](https://app.codacy.com/gh/jhildenbiddle/canvas-size/dashboard?branch=master)
 [![Codecov](https://img.shields.io/codecov/c/github/jhildenbiddle/canvas-size.svg?style=flat-square)](https://codecov.io/gh/jhildenbiddle/canvas-size)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/jhildenbiddle/canvas-size/blob/master/LICENSE)
@@ -9,9 +10,9 @@
 
 Determine the maximum size and custom dimension support of an HTML `<canvas>` element.
 
-- [Modern Demo](https://on690.codesandbox.io): For modern, ES6-capable browsers
-- [Legacy Demo](https://jsbin.com/megedep/1): For older, ES5-based browsers (like Internet Explorer)
-- [Test Results](#test-results): Max `<canvas>` dimensions for various platforms and browsers
+- [Demo (Codesandbox)](https://on690.codesandbox.io): For modern browsers (ES6+)
+- [Demo (JSBin)](https://jsbin.com/megedep/1): For legacy browsers (ES5)
+- [Test Results](#test-results): HTML `<canvas>` test results for various platforms and browsers
 
 ## Why?
 
