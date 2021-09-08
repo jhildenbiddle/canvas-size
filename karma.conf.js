@@ -120,10 +120,14 @@ module.exports = function(config) {
         settings.browserStack = {
             username : process.env.BROWSERSTACK_USERNAME,
             accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
-            build    : `${gitInfo.branch}: ${gitInfo.commitMessage} @ ${
-                process.env.GITHUB_RUN_ID ||
-                new Date().toLocaleString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short', hour12: true })
-            }`,
+            build    : [
+                `${gitInfo.branch}:` ,
+                gitInfo.commitMessage,
+                '@',
+                new Date().toLocaleString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short', hour12: true }),
+                '-',
+                process.env.GITHUB_RUN_ID ? 'GitHub' : 'Local'
+            ].join(' '),
             project  : pkg.name,
             video    : false
         };
