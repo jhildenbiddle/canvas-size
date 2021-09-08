@@ -96,21 +96,18 @@ module.exports = function(config) {
             bs_chrome: {
                 base           : 'BrowserStack',
                 browser        : 'Chrome',
-                browser_version: '83.0',
                 os             : 'Windows',
                 os_version     : '10'
             },
             bs_firefox: {
                 base           : 'BrowserStack',
                 browser        : 'Firefox',
-                browser_version: '77.0',
                 os             : 'Windows',
                 os_version     : '10'
             },
             bs_safari: {
                 base           : 'BrowserStack',
                 browser        : 'Safari',
-                browser_version: '13.1',
                 os             : 'OS X',
                 os_version     : 'Catalina'
             }
