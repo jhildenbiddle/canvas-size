@@ -367,7 +367,7 @@ canvasSize.test({
     [16384, 16384],
     [8192, 8192],
     [4096, 4096]
-  ]
+  ],
   usePromise: true,
   useWorker : true,
 })
