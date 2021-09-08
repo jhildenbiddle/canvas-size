@@ -61,7 +61,6 @@
     "eslint": "^7.18.0",
     "eslint-plugin-chai-expect": "^2.2.0",
     "eslint-plugin-mocha": "^9.0.0",
-    "git-repo-info": "^2.1.1",
     "karma": "^6.3.4",
     "karma-browserstack-launcher": "^1.6.0",
     "karma-chai": "^0.1.0",

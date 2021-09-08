@@ -2,9 +2,9 @@
 
 // Dependencies
 // =============================================================================
-const fs          = require('fs');
-const getRepoInfo = require('git-repo-info');
-const pkg         = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
+const fs           = require('fs');
+const pkg          = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
+const { execSync } = require('child_process');
 
 
 // Variables
@@ -12,7 +12,12 @@ const pkg         = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 const files = {
     test: './tests/**/*.test.js'
 };
-const gitInfo = getRepoInfo();
+const gitInfo = {
+    branch   : execSync('git rev-parse --abbrev-ref HEAD').toString().trim(),
+    commitMsg: execSync('git log -1 --pretty=%B').toString().trim(),
+    isClean  : Boolean(execSync('[[ -n $(git status -s) ]] || echo "clean"').toString().trim()),
+    isDirty  : Boolean(execSync('[[ -z $(git status -s) ]] || echo "dirty"').toString().trim())
+};
 
 
 // Settings
@@ -118,12 +123,9 @@ module.exports = function(config) {
             username : process.env.BROWSERSTACK_USERNAME,
             accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
             build    : [
-                `${gitInfo.branch}:` ,
-                gitInfo.commitMessage,
-                '@',
-                new Date().toLocaleString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short', hour12: true }),
-                '-',
-                process.env.GITHUB_RUN_ID ? 'GitHub' : 'Local'
+                `${process.env.GITHUB_RUN_ID ? 'GitHub' : 'Local'}:${gitInfo.branch} -`,
+                gitInfo.isClean ? gitInfo.commitMessage : 'Uncommitted Changes',
+                `@ ${new Date().toLocaleString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short', hour12: true })}`
             ].join(' '),
             project  : pkg.name,
             video    : false
