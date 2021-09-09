@@ -2,8 +2,8 @@
 
 [![NPM](https://img.shields.io/npm/v/canvas-size.svg?style=flat-square)](https://www.npmjs.com/package/canvas-size)
 [![GitHub Workflow Status (master)](https://img.shields.io/github/workflow/status/jhildenbiddle/canvas-size/Build%20&%20Test/master?label=checks&style=flat-square)](https://github.com/jhildenbiddle/canvas-size/actions?query=branch%3Amaster+)
-[![Codacy grade](https://img.shields.io/codacy/grade/c39af90445e7478d80fd796d12947495?style=flat-square)](https://app.codacy.com/gh/jhildenbiddle/canvas-size/dashboard?branch=master)
-[![Codecov](https://img.shields.io/codecov/c/github/jhildenbiddle/canvas-size.svg?style=flat-square)](https://codecov.io/gh/jhildenbiddle/canvas-size)
+[![Codacy code quality](https://img.shields.io/codacy/grade/c39af90445e7478d80fd796d12947495/master?style=flat-square)](https://app.codacy.com/gh/jhildenbiddle/canvas-size/dashboard?branch=master)
+[![Codacy branch coverage](https://img.shields.io/codacy/coverage/c39af90445e7478d80fd796d12947495/master?style=flat-square)](https://app.codacy.com/gh/jhildenbiddle/canvas-size/dashboard?branch=master)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/jhildenbiddle/canvas-size/blob/master/LICENSE)
 [![jsDelivr](https://data.jsdelivr.com/v1/package/npm/canvas-size/badge)](https://www.jsdelivr.com/package/npm/canvas-size)
 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2Fjhildenbiddle%2Fcanvas-size&hashtags=canvas,developers,frontend,javascript)
