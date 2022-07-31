@@ -37,7 +37,7 @@ This micro-library provides the maximum area, height, and width of an HTML canva
 
 ## Installation
 
-NPM:
+**NPM**
 
 ```bash
 npm install canvas-size
@@ -45,29 +45,23 @@ npm install canvas-size
 
 ```js
 import canvasSize from 'canvas-size';
-
-canvasSize.maxArea({
-  // ...
-});
 ```
 
-CDN ([jsdelivr.com](https://www.jsdelivr.com/) shown, also on [unpkg.com](https://unpkg.com/)):
+**CDN**
+
+Available on [jsdelivr](https://www.jsdelivr.com/package/npm/canvas-size) (below), [unpkg](https://unpkg.com/browse/canvas-size/), and other CDN services that auto-publish npm packages.
+
+```js
+// ES Module (latest v1.x.x)
+import canvasSize from 'https://cdn.jsdelivr.net/npm/canvas-size@1/dist/canvas-size.esm.min.js';
+```
 
 ```html
-<!-- ES5 (latest v1.x.x) -->
+<!-- Global "canvasSize" (latest v1.x.x) -->
 <script src="https://cdn.jsdelivr.net/npm/canvas-size@1"></script>
 ```
 
-```html
-<!-- ES6 Module (latest v1.x.x) -->
-<script type="module">
-  import canvasSize from 'https://cdn.jsdelivr.net/npm/canvas-size@1/dist/canvas-size.esm.min.js';
-
-  canvasSize.maxArea({
-    // ...
-  });
-</script>
-```
+> 💡 Note the `@` version lock in the URLs above. This prevents breaking changes in future releases from affecting your project and is therefore the safest method of loading dependencies from a CDN. When a new major version is released, you will need to manually update your CDN URLs by changing the version after the `@` symbol.
 
 ## Usage
 
@@ -132,7 +126,7 @@ Unfortunately, at this time [browser support for OffscreenCanvas](https://canius
 
 Note that if `useWorker` is `true` and the current browser does not support web workers and OffscreenCanvas, tests will be done on the main thread.
 
-```javascript
+```js
 canvasSize.maxArea({
   useWorker: true,
   onError(width, height, benchmark) {
@@ -216,7 +210,7 @@ The following examples use `maxArea()`. Usage for `maxHeight()` and `maxWidth()`
 
 Using callbacks:
 
-```javascript
+```js
 // Default (optimized sizes)
 canvasSize.maxArea({
   onError: function(width, height, benchmark) {
@@ -252,7 +246,7 @@ canvasSize.maxWidth({
 
 Using ES6 Promises & Web Workers:
 
-```javascript
+```js
 // Default (optimized sizes)
 canvasSize.maxArea({
   usePromise: true,
@@ -331,7 +325,7 @@ To test a single dimension, use `options.width` and `options.height`. A `boolean
 
 Using return value:
 
-```javascript
+```js
 // Single dimension
 var isValidCanvasSize = canvasSize.test({
   height: 16384,
@@ -341,7 +335,7 @@ var isValidCanvasSize = canvasSize.test({
 
 Using callbacks:
 
-```javascript
+```js
 // Multiple dimensions
 canvasSize.test({
   sizes: [
@@ -360,7 +354,7 @@ canvasSize.test({
 
 Using ES6 Promises & Web Workers:
 
-```javascript
+```js
 // Multiple dimensions
 canvasSize.test({
   sizes: [
