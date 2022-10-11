@@ -6,7 +6,7 @@
 [![Codacy branch coverage](https://img.shields.io/codacy/coverage/c39af90445e7478d80fd796d12947495/master?style=flat-square)](https://app.codacy.com/gh/jhildenbiddle/canvas-size/dashboard?branch=master)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/jhildenbiddle/canvas-size/blob/master/LICENSE)
 [![jsDelivr](https://data.jsdelivr.com/v1/package/npm/canvas-size/badge)](https://www.jsdelivr.com/package/npm/canvas-size)
-[![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2Fjhildenbiddle%2Fcanvas-size&hashtags=canvas,developers,frontend,javascript)
+[![Sponsor this project](https://img.shields.io/static/v1?style=flat-square&label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/jhildenbiddle)
 
 Determine the maximum size and custom dimension support of an HTML `<canvas>` element.
 
@@ -421,11 +421,20 @@ Be aware that test results can vary between mobile devices running the same plat
 
    In some virtualized environments (mostly with older browsers), canvas-size may produce inconsistent results or fail all tests when calling `maxArea()`, `maxHeight()`, `maxWidth()`, and `test()` using `options.sizes`. This is a result of the virtual GPU failing after a test canvas exceeds the browser's size limitations, causing all subsequent tests to fail even for canvas dimensions that are actually supported by the browser. The easiest and most reliable way to address these issues is to use a GPU-optimized virtual machine. If this isn't possible and your VM only supports software rendering, avoid iterating over canvas dimensions that exceed the browser's size limitations and instead specify dimensions that are known to be supported by the browser.
 
-## Contact
+## Sponsorship
 
-- Create a [Github issue](https://github.com/jhildenbiddle/canvas-size/issues) for bug reports, feature requests, or questions
-- Follow [@jhildenbiddle](https://twitter.com/jhildenbiddle) for announcements
-- Add a ⭐️ [star on GitHub](https://github.com/jhildenbiddle/canvas-size) or ❤️ [tweet](https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2Fjhildenbiddle%2Fcanvas-size&hashtags=css,developers,frontend,javascript) to support the project!
+A [sponsorship](https://github.com/sponsors/jhildenbiddle) is more than just a way to show appreciation for the open-source authors and projects we rely on; it can be the spark that ignites the next big idea, the inspiration to create something new, and the motivation to share so that others may benefit.
+
+If you benefit from this project, please consider supporting the work and encouraging future efforts by [becoming a sponsor](https://github.com/sponsors/jhildenbiddle).
+
+Thank you! 🙏🏻
+
+## Contact & Support
+
+- Follow 👨🏻‍💻 **@jhildenbiddle** on [Twitter](https://twitter.com/jhildenbiddle) and [GitHub](https://github.com/jhildenbiddle) for announcements
+- Create a 💬 [GitHub issue](https://github.com/jhildenbiddle/canvas-size/issues) for bug reports, feature requests, or questions
+- Add a ⭐️ [star on GitHub](https://github.com/jhildenbiddle/canvas-size) and 🐦 [tweet](https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2Fjhildenbiddle%2Fcanvas-size&hashtags=css,developers,frontend,javascript) to promote the project
+- Become a 💖 [sponsor](https://github.com/sponsors/jhildenbiddle) to support the project and future efforts
 
 ## License
 
