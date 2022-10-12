@@ -438,6 +438,6 @@ Thank you! 🙏🏻
 
 ## License
 
-This project is licensed under the MIT License. See the [MIT LICENSE](https://github.com/jhildenbiddle/canvas-size/blob/master/LICENSE) for details.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/jhildenbiddle/canvas-size/blob/master/LICENSE) for details.
 
 Copyright (c) John Hildenbiddle ([@jhildenbiddle](https://twitter.com/jhildenbiddle))
