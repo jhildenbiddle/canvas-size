@@ -2,42 +2,56 @@
  * canvas-size
  * v1.2.5
  * https://github.com/jhildenbiddle/canvas-size
- * (c) 2015-2022 John Hildenbiddle <http://hildenbiddle.com>
+ * (c) 2015-2023 John Hildenbiddle <http://hildenbiddle.com>
  * MIT license
  */
+function _iterableToArrayLimit(arr, i) {
+    var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"];
+    if (null != _i) {
+        var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1;
+        try {
+            if (_x = (_i = _i.call(arr)).next, 0 === i) {
+                if (Object(_i) !== _i) return;
+                _n = !1;
+            } else for (;!(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0) ;
+        } catch (err) {
+            _d = !0, _e = err;
+        } finally {
+            try {
+                if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return;
+            } finally {
+                if (_d) throw _e;
+            }
+        }
+        return _arr;
+    }
+}
+
 function ownKeys(object, enumerableOnly) {
     var keys = Object.keys(object);
     if (Object.getOwnPropertySymbols) {
         var symbols = Object.getOwnPropertySymbols(object);
-        if (enumerableOnly) {
-            symbols = symbols.filter((function(sym) {
-                return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-            }));
-        }
-        keys.push.apply(keys, symbols);
+        enumerableOnly && (symbols = symbols.filter((function(sym) {
+            return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+        }))), keys.push.apply(keys, symbols);
     }
     return keys;
 }
 
 function _objectSpread2(target) {
     for (var i = 1; i < arguments.length; i++) {
-        var source = arguments[i] != null ? arguments[i] : {};
-        if (i % 2) {
-            ownKeys(Object(source), true).forEach((function(key) {
-                _defineProperty(target, key, source[key]);
-            }));
-        } else if (Object.getOwnPropertyDescriptors) {
-            Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-        } else {
-            ownKeys(Object(source)).forEach((function(key) {
-                Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-            }));
-        }
+        var source = null != arguments[i] ? arguments[i] : {};
+        i % 2 ? ownKeys(Object(source), !0).forEach((function(key) {
+            _defineProperty(target, key, source[key]);
+        })) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach((function(key) {
+            Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+        }));
     }
     return target;
 }
 
 function _defineProperty(obj, key, value) {
+    key = _toPropertyKey(key);
     if (key in obj) {
         Object.defineProperty(obj, key, {
             value: value,
@@ -100,31 +114,6 @@ function _iterableToArray(iter) {
     if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
 }
 
-function _iterableToArrayLimit(arr, i) {
-    var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
-    if (_i == null) return;
-    var _arr = [];
-    var _n = true;
-    var _d = false;
-    var _s, _e;
-    try {
-        for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
-            _arr.push(_s.value);
-            if (i && _arr.length === i) break;
-        }
-    } catch (err) {
-        _d = true;
-        _e = err;
-    } finally {
-        try {
-            if (!_n && _i["return"] != null) _i["return"]();
-        } finally {
-            if (_d) throw _e;
-        }
-    }
-    return _arr;
-}
-
 function _unsupportedIterableToArray(o, minLen) {
     if (!o) return;
     if (typeof o === "string") return _arrayLikeToArray(o, minLen);
@@ -146,6 +135,22 @@ function _nonIterableSpread() {
 
 function _nonIterableRest() {
     throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+function _toPrimitive(input, hint) {
+    if (typeof input !== "object" || input === null) return input;
+    var prim = input[Symbol.toPrimitive];
+    if (prim !== undefined) {
+        var res = prim.call(input, hint || "default");
+        if (typeof res !== "object") return res;
+        throw new TypeError("@@toPrimitive must return a primitive value.");
+    }
+    return (hint === "string" ? String : Number)(input);
+}
+
+function _toPropertyKey(arg) {
+    var key = _toPrimitive(arg, "string");
+    return typeof key === "symbol" ? key : String(key);
 }
 
 function canvasTest(settings) {
