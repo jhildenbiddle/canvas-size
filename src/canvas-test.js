@@ -5,11 +5,10 @@
  * by decreasing canvas height and/or width until a test succeeds.
  *
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * IMPORTANT: ONLY USE ES5 CODE IN THIS FUNCTION (I.E. NO BABEL TRANSPILATION)
- *            This function will be used both on the main thread and as part of
- *            an inline web worker. If this code is transpiled from ES6+ to ES5,
- *            the main thread will have access to Babel's helper functions but
- *            the web worker scope will.
+ * IMPORTANT: DO NOT USE ES6 CODE THAT REQUIRES BABEL HELPERS IN THIS FILE.
+ *            This function will be used on the main thread and as part of an
+ *            inline web worker, but access to Babel helpers will be available
+ *            only on the main thread.
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *
  * @param {object} settings
@@ -55,6 +54,13 @@ function canvasTest(settings) {
     // Verify image data (Pass = 255, Fail = 0)
     const isTestPass = cropCtx && cropCtx.getImageData(0, 0, 1, 1).data[3] !== 0;
     const benchmark  = Date.now() - job; // milliseconds
+
+    // Release canvas elements (Safari memory usage fix)
+    // See: https://stackoverflow.com/questions/52532614/total-canvas-memory-use-exceeds-the-maximum-limit-safari-12
+    [cropCvs, testCvs].forEach(cvs => {
+        cvs.height = 0;
+        cvs.width = 0;
+    });
 
     // Running in a web worker
     if (isWorker) {

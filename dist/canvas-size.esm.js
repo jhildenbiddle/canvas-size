@@ -180,6 +180,10 @@ function canvasTest(settings) {
     }
     var isTestPass = cropCtx && cropCtx.getImageData(0, 0, 1, 1).data[3] !== 0;
     var benchmark = Date.now() - job;
+    [ cropCvs, testCvs ].forEach((function(cvs) {
+        cvs.height = 0;
+        cvs.width = 0;
+    }));
     if (isWorker) {
         postMessage({
             width: width,
