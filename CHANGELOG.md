@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.2.6
+
+*2023-02-24*
+
+- Fix Safari canvas memory usage (#16)
+
 ## 1.2.5
 
 *2021-09-04*
