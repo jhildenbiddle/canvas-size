@@ -1,5 +1,7 @@
 /* eslint-env browser, worker */
 
+let JobIndex = 0;
+
 /**
  * Tests ability to read pixel data from canvas elements of various dimensions
  * by decreasing canvas height and/or width until a test succeeds.
@@ -21,7 +23,7 @@ function canvasTest(settings) {
     const width    = Math.max(Math.ceil(size[0]), 1);
     const height   = Math.max(Math.ceil(size[1]), 1);
     const fill     = [width - 1, height - 1, 1, 1]; // x, y, width, height
-    const job      = Date.now();
+    const job      = ++JobIndex;
     const isWorker = typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope;
 
     let cropCvs, testCvs;
