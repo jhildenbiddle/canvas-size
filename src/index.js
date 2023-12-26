@@ -70,6 +70,8 @@ function createSizesArray(settings) {
     return sizes;
 }
 
+let JobIndex = 0;
+
 /**
  * Handles calls from maxArea(), maxHeight(), maxWidth(), and test() methods.
  *
@@ -81,7 +83,7 @@ function createSizesArray(settings) {
 function handleMethod(settings) {
     const hasCanvasSupport          = window && 'HTMLCanvasElement' in window;
     const hasOffscreenCanvasSupport = window && 'OffscreenCanvas' in window;
-    const jobID                     = Date.now();
+    const jobID                     = ++JobIndex;
     const { onError, onSuccess, ...settingsWithoutCallbacks } = settings;
 
     let worker  = null;
