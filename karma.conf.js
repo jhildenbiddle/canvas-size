@@ -104,9 +104,16 @@ module.exports = function(config) {
                 os             : 'Windows',
                 os_version     : '10'
             },
-            bs_firefox: {
+            // bs_firefox: {
+            //     base           : 'BrowserStack',
+            //     browser        : 'Firefox',
+            //     os             : 'Windows',
+            //     os_version     : '10'
+            // },
+            bs_ie_11: {
                 base           : 'BrowserStack',
-                browser        : 'Firefox',
+                browser        : 'IE',
+                browser_version: '11.0',
                 os             : 'Windows',
                 os_version     : '10'
             },
