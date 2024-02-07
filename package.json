@@ -45,7 +45,7 @@
     "test": "rimraf coverage/* && npm run lint && karma start",
     "test-watch": "npm test -- --auto-watch --no-single-run",
     "test-remote": "npm test -- --remote",
-    "version": "npm run prepare && npm run test && git add -A dist"
+    "version": "npm run prepare && npm run test"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
