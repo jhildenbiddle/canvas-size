@@ -77,8 +77,9 @@ function createSizesArray(settings) {
  * @param {function} settings.onSuccess
  */
 function handleMethod(settings) {
-  const hasCanvasSupport = window && 'HTMLCanvasElement' in window;
-  const hasOffscreenCanvasSupport = window && 'OffscreenCanvas' in window;
+  const isBrowser = typeof window !== 'undefined';
+  const hasCanvasSupport = isBrowser && 'HTMLCanvasElement' in window;
+  const hasOffscreenCanvasSupport = isBrowser && 'OffscreenCanvas' in window;
   const jobID = Date.now();
   const { onError, onSuccess, ...settingsWithoutCallbacks } = settings;
 
