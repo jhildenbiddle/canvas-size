@@ -10,7 +10,7 @@
 
 Determine the maximum size and custom dimension support of an HTML `<canvas>` element.
 
-- [Demo (Codesandbox)](https://on690.codesandbox.io): For modern browsers (ES6+)
+- [Demo (CodeSandbox)](https://on690.codesandbox.io): For modern browsers (ES6+)
 - [Demo (JSBin)](https://jsbin.com/megedep/1): For legacy browsers (ES5)
 - [Test Results](#test-results): HTML `<canvas>` test results for various platforms and browsers
 
