@@ -107,30 +107,42 @@ module.exports = function(config) {
             bs_chrome_legacy: {
                 base           : 'BrowserStack',
                 browser        : 'Chrome',
-                browserVersion : '68.0',
+                browserVersion : '68.0', // No OffscreenCanvas support
                 os             : 'Windows',
-                os_version     : '10'
+                os_version     : '11'
             },
             bs_firefox: {
                 base           : 'BrowserStack',
                 browser        : 'Firefox',
-                // browserVersion : '104.0',
                 os             : 'Windows',
                 os_version     : '11'
             },
+            bs_firefox_legacy: {
+                base           : 'BrowserStack',
+                browser        : 'Firefox',
+                browserVersion : '104.0', // No OffscreenCanvas support
+                os             : 'Windows',
+                os_version     : '11'
+            },
+            bs_safari: {
+                base           : 'BrowserStack',
+                browser        : 'Safari',
+                os             : 'OS X',
+                os_version     : 'Sonoma'
+            },
+            bs_safari_legacy: {
+                base           : 'BrowserStack',
+                browser        : 'Safari',
+                os             : 'OS X',
+                os_version     : 'Monterey'
+            }
             // bs_ie_11: {
             //     base           : 'BrowserStack',
             //     browser        : 'IE',
             //     browser_version: '11.0',
             //     os             : 'Windows',
-            //     os_version     : '7'
+            //     os_version     : '10'
             // },
-            // bs_safari: {
-            //     base           : 'BrowserStack',
-            //     browser        : 'Safari',
-            //     os             : 'OS X',
-            //     os_version     : 'Catalina'
-            // }
         };
         settings.browsers = Object.keys(settings.customLaunchers);
         settings.reporters.push('BrowserStack');
