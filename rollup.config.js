@@ -1,13 +1,9 @@
-// Dependencies
-// =============================================================================
-const path = require('path');
-
-import { babel } from '@rollup/plugin-babel';
-import eslint    from '@rollup/plugin-eslint';
-import mergician from 'mergician';
-import pkg       from './package.json';
-import terser    from '@rollup/plugin-terser';
-
+import { babel }     from '@rollup/plugin-babel';
+import eslint        from '@rollup/plugin-eslint';
+import { mergician } from 'mergician';
+import path          from 'node:path';
+import pkg           from './package.json';
+import terser        from '@rollup/plugin-terser';
 
 // Settings
 // =============================================================================

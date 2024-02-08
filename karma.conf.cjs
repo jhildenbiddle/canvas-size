@@ -102,27 +102,35 @@ module.exports = function(config) {
                 base           : 'BrowserStack',
                 browser        : 'Chrome',
                 os             : 'Windows',
-                os_version     : '10'
+                os_version     : '11'
             },
-            // bs_firefox: {
-            //     base           : 'BrowserStack',
-            //     browser        : 'Firefox',
-            //     os             : 'Windows',
-            //     os_version     : '10'
-            // },
-            bs_ie_11: {
+            bs_chrome_legacy: {
                 base           : 'BrowserStack',
-                browser        : 'IE',
-                browser_version: '11.0',
+                browser        : 'Chrome',
+                browserVersion : '68.0',
                 os             : 'Windows',
                 os_version     : '10'
             },
-            bs_safari: {
+            bs_firefox: {
                 base           : 'BrowserStack',
-                browser        : 'Safari',
-                os             : 'OS X',
-                os_version     : 'Catalina'
-            }
+                browser        : 'Firefox',
+                // browserVersion : '104.0',
+                os             : 'Windows',
+                os_version     : '11'
+            },
+            // bs_ie_11: {
+            //     base           : 'BrowserStack',
+            //     browser        : 'IE',
+            //     browser_version: '11.0',
+            //     os             : 'Windows',
+            //     os_version     : '7'
+            // },
+            // bs_safari: {
+            //     base           : 'BrowserStack',
+            //     browser        : 'Safari',
+            //     os             : 'OS X',
+            //     os_version     : 'Catalina'
+            // }
         };
         settings.browsers = Object.keys(settings.customLaunchers);
         settings.reporters.push('BrowserStack');

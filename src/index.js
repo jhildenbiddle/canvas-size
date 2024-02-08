@@ -1,5 +1,5 @@
-import canvasTest from './canvas-test';
-import testSizes from './test-sizes';
+import canvasTest from './canvas-test.js';
+import testSizes from './test-sizes.js';
 
 
 // Constants & Variables

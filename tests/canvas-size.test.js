@@ -1,7 +1,7 @@
 // Dependencies
 // =============================================================================
-import canvasSize from '../src/index';
-import testSizes from '../src/test-sizes';
+import canvasSize from '../src/index.js';
+import testSizes from '../src/test-sizes.js';
 import { expect } from 'chai';
 
 
