@@ -23,12 +23,4 @@ bsServer.init({
             '/dist': './dist'
         }
     },
-    // serveStatic: ['./dist/'],
-    // rewriteRules: [
-    //     // Replace CDN URLs with local paths
-    //     {
-    //         match: /https?.*\/CHANGELOG.md/g,
-    //         replace: '/CHANGELOG.md'
-    //     }
-    // ]
 });
