@@ -145,12 +145,12 @@ function handleMethod(settings) {
           onError(width, height, benchmark);
 
           if (isLastTest) {
-            reject({ width, height, benchmark });
+            reject({ width, height, benchmark, success: false, error: true });
           }
         },
         onSuccess(width, height, benchmark) {
           onSuccess(width, height, benchmark);
-          resolve({ width, height, benchmark });
+          resolve({ width, height, benchmark, success: true, error: false });
         }
       };
 

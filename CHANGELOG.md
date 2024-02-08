@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.0.0
+
+_Unreleased_
+
+- Add `success` and `error` properties to promise results
+
 ## 1.2.6
 
 _2023-02-24_
