@@ -33,8 +33,26 @@ const pluginSettings = {
         throwOnError  : true
     },
     babel: {
-        // See .babelrc
-        babelHelpers: 'bundled'
+        shared: {
+            babelHelpers: 'bundled',
+            exclude: ['node_modules/**'],
+        },
+        get esm() {
+            return {
+                ...this.shared,
+                presets: [
+                    ['@babel/env', { 'targets': 'defaults and fully supports es6-module' }]
+                ]
+            };
+        },
+        get umd() {
+            return {
+                ...this.shared,
+                presets: [
+                    ['@babel/env', { 'targets': '>0.3%, ie 11' }]
+                ]
+            };
+        }
     },
     terser: {
         beautify: {
@@ -69,7 +87,6 @@ const config = {
     },
     plugins: [
         eslint(pluginSettings.eslint),
-        babel(pluginSettings.babel)
     ],
     watch: {
         clearScreen: false
@@ -84,9 +101,11 @@ const esm = mergician({}, config, {
         file  : config.output.file.replace(/\.js$/, '.esm.js'),
         format: 'esm'
     },
-    plugins: config.plugins.concat([
+    plugins: [
+        ...config.plugins,
+        babel(pluginSettings.babel.esm),
         terser(pluginSettings.terser.beautify)
-    ])
+    ]
 });
 
 // ES Module (Minified)
@@ -95,9 +114,11 @@ const esmMinified = mergician({}, config, {
         file  : esm.output.file.replace(/\.js$/, '.min.js'),
         format: esm.output.format
     },
-    plugins: config.plugins.concat([
+    plugins: [
+        ...config.plugins,
+        babel(pluginSettings.babel.esm),
         terser(pluginSettings.terser.minify)
-    ])
+    ]
 });
 
 // UMD
@@ -105,9 +126,11 @@ const umd = mergician({}, config, {
     output: {
         format: 'umd'
     },
-    plugins: config.plugins.concat([
+    plugins: [
+        ...config.plugins,
+        babel(pluginSettings.babel.umd),
         terser(pluginSettings.terser.beautify)
-    ])
+    ]
 });
 
 // UMD (Minified)
@@ -116,9 +139,11 @@ const umdMinified = mergician({}, config, {
         file  : umd.output.file.replace(/\.js$/, '.min.js'),
         format: umd.output.format
     },
-    plugins: config.plugins.concat([
+    plugins: [
+        ...config.plugins,
+        babel(pluginSettings.babel.umd),
         terser(pluginSettings.terser.minify)
-    ])
+    ]
 });
 
 
