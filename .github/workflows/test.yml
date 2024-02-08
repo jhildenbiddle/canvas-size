@@ -12,51 +12,30 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Install
         run: npm ci --ignore-scripts
-
       - name: Lint
         run: npm run lint
-
       - name: Build
         run: npm run build
 
   test:
-    name: Test
+    timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install
-        run: npm ci --ignore-scripts
-
-      - name: Build
-        run: npm run build
-
-      - name: Setup BrowserStack environment
-        uses: browserstack/github-actions/setup-env@master
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          username: ${{ secrets.BROWSERSTACK_USERNAME }}
-          access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-
-      - name: Start BrowserStack tunnel
-        uses: browserstack/github-actions/setup-local@master
+          node-version: 18
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Run Playwright tests
+        run: npx playwright test
+      - uses: actions/upload-artifact@v3
+        if: always()
         with:
-          local-testing: start
-          local-identifier: random
-
-      - name: Run tests on BrowserStack
-        run: npm run test-remote
-
-      - name: Stop BrowserStack tunnel
-        uses: browserstack/github-actions/setup-local@master
-        with:
-          local-testing: stop
-
-      - name: Report code coverage
-        uses: codacy/codacy-coverage-reporter-action@v1
-        with:
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          coverage-reports: coverage/lcov.info
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30

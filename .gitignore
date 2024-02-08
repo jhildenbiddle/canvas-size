@@ -1,12 +1,16 @@
-# Folders
-coverage
-dist
-node_modules
-
-# Files
-*.log
-
 # OS
 ._*
 .cache
 .DS_Store
+
+# Files
+*.log
+
+# Folders
+coverage
+dist
+node_modules
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/

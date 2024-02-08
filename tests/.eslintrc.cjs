@@ -1,9 +1,5 @@
 module.exports = {
-  env: {},
-  plugins: [],
-  parserOptions: {
-    ecmaVersion: 8
-  },
+  extends: ['plugin:playwright/recommended'],
   rules: {
     'no-console': 'off'
   }
