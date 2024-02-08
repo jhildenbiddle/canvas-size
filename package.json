@@ -41,7 +41,7 @@
     "prepare": "rimraf dist/*.js* && npm run build",
     "build": "rollup -c",
     "dev": "npm start & npm run test-watch & npm run serve",
-    "lint": "eslint . && markdownlint . --ignore node_modules",
+    "lint": "eslint . && markdownlint *.md",
     "serve": "node server.js",
     "start": "rimraf coverage/* && npm run build -- --watch",
     "test": "rimraf coverage/* && karma start karma.conf.cjs",
