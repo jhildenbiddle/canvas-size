@@ -2,13 +2,13 @@
 
 ## 1.2.6
 
-*2023-02-24*
+_2023-02-24_
 
 - Fix Safari canvas memory usage (#16)
 
 ## 1.2.5
 
-*2021-09-04*
+_2021-09-04_
 
 - Update badges in documentation
 - Update browser test results (#14)
@@ -16,31 +16,31 @@
 
 ## 1.2.4
 
-*2021-04-26*
+_2021-04-26_
 
 - Fix `maxArea()` test order for more accurate results in Firefox (#12)
 
 ## 1.2.3
 
-*2021-03-03*
+_2021-03-03_
 
 - Fix handling of floating point sizes in Webkit-based browsers (e.g. Safari)
 
 ## 1.2.2
 
-*2021-01-28*
+_2021-01-28_
 
 - Fix reference error after minification (#5, #6)
 
 ## 1.2.1
 
-*2020-11-11*
+_2020-11-11_
 
 - Fix web worker bug in minified esm distributable (#5, #6)
 
 ## 1.2.0
 
-*2020-06-18*
+_2020-06-18_
 
 - Add `useWorker` option which allows canvas tests to be performed asynchronously on a separate thread (requires Web Worker and OffscreenCanvas support)
 - Add "Usage" section to the documentation
@@ -48,7 +48,7 @@
 
 ## 1.1.0
 
-*2020-05-31*
+_2020-05-31_
 
 - Add `usePromise` option which allows the use of standard `then()`, `catch()`, and `finally()` promise methods or `async` functions in modern browsers (legacy browsers will require a promise polyfill and transpilation to ES5 for `async` functions)
 - Add `benchmark` return value to `onError()` and `onSuccess()` callbacks
@@ -60,25 +60,25 @@
 
 ## 1.0.4
 
-*2019-04-08*
+_2019-04-08_
 
 - Fix memory consumption
 
 ## 1.0.3
 
-*2019-01-08*
+_2019-01-08_
 
 - Update unit test configuration (Karma & Travis)
 - Update dependencies
 
 ## 1.0.2
 
-*2018-12-23*
+_2018-12-23_
 
 - Update preferred CDN link to jsdelivr
 
 ## 1.0.0
 
-*2018-12-06*
+_2018-12-06_
 
 - Initial release

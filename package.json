@@ -41,7 +41,8 @@
     "prepare": "rimraf dist/*.js* && npm run build",
     "build": "rollup -c",
     "dev": "npm start & npm run test-watch & npm run serve",
-    "lint": "eslint . && markdownlint *.md",
+    "lint": "prettier . --check && eslint . && markdownlint *.md",
+    "lint:fix": "prettier . --write && eslint . --fix",
     "serve": "node server.js",
     "start": "rimraf coverage/* && npm run build -- --watch",
     "test": "rimraf coverage/* && karma start karma.conf.cjs",
@@ -56,8 +57,10 @@
     "@rollup/plugin-terser": "^0.4.0",
     "browser-sync": "^3.0.2",
     "eslint": "^7.32.0",
+    "eslint-config-prettier": "^9.1.0",
     "markdownlint-cli": "^0.39.0",
     "mergician": "^2.0.0",
+    "prettier": "^3.2.5",
     "rimraf": "^5.0.5",
     "rollup": "^2.79.1"
   }

@@ -18,7 +18,7 @@ Determine the maximum size and custom dimension support of an HTML `<canvas>` el
 
 The [HTML canvas](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas) element is [widely supported](http://caniuse.com/#feat=canvas) by modern and legacy browsers, but each browser and platform combination imposes [unique size limitations](#test-results) that will render a canvas unusable when exceeded. Unfortunately, browsers do not provide a way to determine what their limitations are, nor do they provide any kind of feedback after an unusable canvas has been created. This makes working with large canvas elements a challenge, especially for applications that support a variety of browsers and platforms.
 
-This micro-library provides the maximum area, height, and width of an HTML canvas element supported by the browser as well as the ability to test custom canvas dimensions. By collecting this information *before* a new canvas element is created, applications are able to reliably set canvas dimensions within the size limitations of each browser/platform.
+This micro-library provides the maximum area, height, and width of an HTML canvas element supported by the browser as well as the ability to test custom canvas dimensions. By collecting this information _before_ a new canvas element is created, applications are able to reliably set canvas dimensions within the size limitations of each browser/platform.
 
 ## Features
 
@@ -31,9 +31,9 @@ This micro-library provides the maximum area, height, and width of an HTML canva
 
 **Browser Support**
 
-| IE   | Edge | Chrome | Firefox | Safari |
-| ---- | ---- | ------ | ------- | ------ |
-| 9+   | 12+  | 4+     | 3.6+    | 4+     |
+| IE  | Edge | Chrome | Firefox | Safari |
+| --- | ---- | ------ | ------- | ------ |
+| 9+  | 12+  | 4+     | 3.6+    | 4+     |
 
 ## Installation
 
@@ -71,7 +71,7 @@ Single tests return a `boolean` to indicate if the specified canvas dimensions a
 
 ```js
 var isValidCanvas = canvasSize.test({
-  width : 8192,
+  width: 8192,
   height: 8192
 });
 
@@ -84,10 +84,10 @@ When multiple tests are performed using `maxArea()`, `maxHeight()`, `maxWidth()`
 
 ```js
 canvasSize.maxArea({
-  onError: function(width, height, benchmark) {
+  onError: function (width, height, benchmark) {
     console.log('Error', width, height, benchmark);
   },
-  onSuccess: function(width, height, benchmark) {
+  onSuccess: function (width, height, benchmark) {
     console.log('Success', width, height, benchmark);
   }
 });
@@ -103,15 +103,16 @@ canvasSize.maxArea({
 Browsers with ES6 [Promise](https://www.google.com/search?client=safari&rls=en&q=js+promise&ie=UTF-8&oe=UTF-8) support (native or via polyfill) can set `usePromise:true` to handle test results using `promise.then()` and `promise.catch()` methods instead of using callbacks. Although promises are typically used for asynchronous tasks, canvas tests will still be synchronous when `usePromise` is `true` due to testing requirements, performance implications, and browser compatibility. For asynchronous canvas tests, see the next section.
 
 ```js
-canvasSize.maxArea({
-  usePromise: true
-})
-.then(function(result) {
-  console.log('Success', result);
-})
-.catch(function(result) {
-  console.log('Error', result);
-});
+canvasSize
+  .maxArea({
+    usePromise: true
+  })
+  .then(function (result) {
+    console.log('Success', result);
+  })
+  .catch(function (result) {
+    console.log('Error', result);
+  });
 
 // Success { width: 16384, height: 16384, benchmark: 0.250 }
 // or
@@ -146,16 +147,17 @@ canvasSize.maxArea({
 The `useWorker` option can be combined with the `usePromise` option as well.
 
 ```js
-canvasSize.maxArea({
-  usePromise: true,
-  useWorker: true,
-})
-.then(function(result) {
-  console.log('Success', result);
-})
-.catch(function(result) {
-  console.log('Error', result);
-});
+canvasSize
+  .maxArea({
+    usePromise: true,
+    useWorker: true
+  })
+  .then(function (result) {
+    console.log('Success', result);
+  })
+  .catch(function (result) {
+    console.log('Error', result);
+  });
 
 // Success { width: 16384, height: 16384, benchmark: 0.250 }
 // or
@@ -176,10 +178,10 @@ Callbacks are invoked after each test.
 
 **Options**
 
-- **max**: Maximum canvas height/width to test (area = max * max)
+- **max**: Maximum canvas height/width to test (area = max \* max)
   - Type: `number`
-  - Default: *See description above*
-- **min**: Minimum canvas height/width to test (area = min * min)
+  - Default: _See description above_
+- **min**: Minimum canvas height/width to test (area = min \* min)
   - Type: `number`
   - Default: `1`
 - **step**: Value to subtract from test width/height after each failed test
@@ -213,23 +215,23 @@ Using callbacks:
 ```js
 // Default (optimized sizes)
 canvasSize.maxArea({
-  onError: function(width, height, benchmark) {
+  onError: function (width, height, benchmark) {
     console.log('Error:', width, height, benchmark);
   },
-  onSuccess: function(width, height, benchmark) {
+  onSuccess: function (width, height, benchmark) {
     console.log('Success:', width, height, benchmark);
   }
 });
 
 // Custom sizes
 canvasSize.maxArea({
-  max : 16384,
-  min : 1,     // default
-  step: 1024,  // default
-  onError: function(width, height, benchmark) {
+  max: 16384,
+  min: 1, // default
+  step: 1024, // default
+  onError: function (width, height, benchmark) {
     console.log('Error:', width, height, benchmark);
   },
-  onSuccess: function(width, height, benchmark) {
+  onSuccess: function (width, height, benchmark) {
     console.log('Success:', width, height, benchmark);
   }
 });
@@ -248,31 +250,33 @@ Using ES6 Promises & Web Workers:
 
 ```js
 // Default (optimized sizes)
-canvasSize.maxArea({
-  usePromise: true,
-  useWorker : true,
-})
-.then(({ width, height, benchmark }) => {
-  console.log(`Success: ${width} x ${height} (${benchmark} ms)`);
-})
-.catch(({ width, height, benchmark }) => {
-  console.log(`Error: ${width} x ${height} (${benchmark} ms)`);
-});
+canvasSize
+  .maxArea({
+    usePromise: true,
+    useWorker: true
+  })
+  .then(({ width, height, benchmark }) => {
+    console.log(`Success: ${width} x ${height} (${benchmark} ms)`);
+  })
+  .catch(({ width, height, benchmark }) => {
+    console.log(`Error: ${width} x ${height} (${benchmark} ms)`);
+  });
 
 // Custom sizes
-canvasSize.maxArea({
-  max       : 16384,
-  min       : 1,     // default
-  step      : 1024,  // default
-  usePromise: true,
-  useWorker : true,
-})
-.then(({ width, height, benchmark }) => {
-  console.log(`Success: ${width} x ${height} (${benchmark} ms)`);
-})
-.catch(({ width, height, benchmark }) => {
-  console.log(`Error: ${width} x ${height} (${benchmark} ms)`);
-});
+canvasSize
+  .maxArea({
+    max: 16384,
+    min: 1, // default
+    step: 1024, // default
+    usePromise: true,
+    useWorker: true
+  })
+  .then(({ width, height, benchmark }) => {
+    console.log(`Success: ${width} x ${height} (${benchmark} ms)`);
+  })
+  .catch(({ width, height, benchmark }) => {
+    console.log(`Error: ${width} x ${height} (${benchmark} ms)`);
+  });
 
 // Same options for maxHeight() and maxWidth()
 canvasSize.maxHeight({
@@ -329,7 +333,7 @@ Using return value:
 // Single dimension
 var isValidCanvasSize = canvasSize.test({
   height: 16384,
-  width : 16384
+  width: 16384
 });
 ```
 
@@ -343,10 +347,10 @@ canvasSize.test({
     [8192, 8192],
     [4096, 4096]
   ],
-  onError: function(width, height, benchmark) {
+  onError: function (width, height, benchmark) {
     console.log('Error:', width, height);
   },
-  onSuccess: function(width, height, benchmark) {
+  onSuccess: function (width, height, benchmark) {
     console.log('Success:', width, height);
   }
 });
@@ -356,21 +360,22 @@ Using ES6 Promises & Web Workers:
 
 ```js
 // Multiple dimensions
-canvasSize.test({
-  sizes: [
-    [16384, 16384],
-    [8192, 8192],
-    [4096, 4096]
-  ],
-  usePromise: true,
-  useWorker : true,
-})
-.then(({ width, height, benchmark }) => {
-  console.log(`Success: ${width} x ${height} (${benchmark} ms)`);
-})
-.catch(({ width, height, benchmark }) => {
-  console.log(`Error: ${width} x ${height} (${benchmark} ms)`);
-});
+canvasSize
+  .test({
+    sizes: [
+      [16384, 16384],
+      [8192, 8192],
+      [4096, 4096]
+    ],
+    usePromise: true,
+    useWorker: true
+  })
+  .then(({ width, height, benchmark }) => {
+    console.log(`Success: ${width} x ${height} (${benchmark} ms)`);
+  })
+  .catch(({ width, height, benchmark }) => {
+    console.log(`Error: ${width} x ${height} (${benchmark} ms)`);
+  });
 ```
 
 ## Test Results
@@ -387,8 +392,8 @@ Tests were conducted using virtualized device courtesy of [BrowserStack](https:/
 | Edge <= 18 (Win)          |    16,384 |     16,384 | 16,384 x 16,384 (268,435,456) |
 | Firefox >= 122 (Mac, Win) |    32,767 |     32,767 | 23,168 x 23,168 (536,756,224) |
 | Firefox >= 60 (Mac, Win)  |    32,767 |     32,767 | 11,180 x 11,180 (124,992,400) |
-| IE 11 (Win)               |    16,384 |     16,384 |   8,192 x 8,192  (67,108,864) |
-| IE 9 - 10 (Win)           |     8,192 |      8,192 |   8,192 x 8,192  (67,108,864) |
+| IE 11 (Win)               |    16,384 |     16,384 |    8,192 x 8,192 (67,108,864) |
+| IE 9 - 10 (Win)           |     8,192 |      8,192 |    8,192 x 8,192 (67,108,864) |
 | Safari >= 5 (Mac)         | 4,194,303 |  8,388,607 | 16,384 x 16,384 (268,435,456) |
 
 ### Mobile
@@ -404,8 +409,8 @@ Be aware that test results can vary between mobile devices running the same plat
 | Chrome 68 (Android 7.1 - 9) |    32,767 |     32,767 | 14,188 x 14,188 (201,299,344) |
 | Chrome 68 (Android 6)       |    32,767 |     32,767 | 10,836 x 10,836 (117,418,896) |
 | Chrome 68 (Android 5)       |    32,767 |     32,767 | 11,402 x 11,402 (130,005,604) |
-| IE (Windows Phone 8.x)      |     4,096 |      4,096 |  4,096 x  4,096  (16,777,216) |
-| Safari (iOS >= 9)           | 4,194,303 |  8,388,607 |  4,096 x  4,096  (16,777,216) |
+| IE (Windows Phone 8.x)      |     4,096 |      4,096 |    4,096 x 4,096 (16,777,216) |
+| Safari (iOS >= 9)           | 4,194,303 |  8,388,607 |    4,096 x 4,096 (16,777,216) |
 
 ## Known Issues
 

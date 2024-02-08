@@ -1,182 +1,174 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <style>
-        html, body {
-            margin: 0;
-            font-family: sans-serif;
-            min-height: 100vh;
+      html,
+      body {
+        margin: 0;
+        font-family: sans-serif;
+        min-height: 100vh;
+      }
+
+      #app {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        height: 100vh;
+      }
+
+      #app > * {
+        overflow: auto;
+        padding: 2.5em;
+      }
+
+      nav {
+        background: #eee;
+      }
+
+      main {
+        background: #222;
+        color: #fff;
+      }
+
+      label {
+        display: block;
+      }
+
+      label + label {
+        margin-top: 0.25em;
+      }
+
+      label input[type='number'] {
+        width: 6em;
+      }
+
+      output {
+        font-family: monospace;
+        white-space: pre;
+      }
+
+      output > * {
+        margin: 0.5em 0;
+      }
+
+      .spinner,
+      .spinner:after {
+        width: 50px;
+        height: 50px;
+        margin: auto;
+        border-radius: 50%;
+      }
+
+      .spinner {
+        --hue: 215;
+        --saturation: 100%;
+        --lightness: 50%;
+
+        position: relative;
+        margin-bottom: 2em;
+        border: 10px solid
+          hsla(var(--hue), var(--saturation), var(--lightness), 0.3);
+        border-left: 10px solid
+          hsl(var(--hue), var(--saturation), var(--lightness));
+        transform: translateZ(0);
+        animation: spinner 1.1s infinite linear;
+      }
+
+      @keyframes spinner {
+        0% {
+          transform: rotate(0deg);
         }
 
-        #app {
-            display: grid;
-            grid-template-columns: max-content 1fr;
-            height: 100vh;
+        100% {
+          transform: rotate(360deg);
         }
-
-        #app > * {
-            overflow: auto;
-            padding: 2.5em;
-        }
-
-        nav {
-            background: #eee;
-        }
-
-        main {
-            background: #222;
-            color: #fff;
-        }
-
-        label {
-            display: block;
-        }
-
-        label + label {
-            margin-top: 0.25em
-        }
-
-        label input[type="number"] {
-            width: 6em;
-        }
-
-        output {
-            font-family: monospace;
-            white-space: pre;
-        }
-
-        output > * {
-            margin: 0.5em 0;
-        }
-
-        .spinner,
-        .spinner:after {
-            width: 50px;
-            height: 50px;
-            margin: auto;
-            border-radius: 50%;
-        }
-
-        .spinner {
-            --hue: 215;
-            --saturation: 100%;
-            --lightness: 50%;
-
-            position: relative;
-            margin-bottom: 2em;
-            border: 10px solid hsla(var(--hue), var(--saturation), var(--lightness), 0.3);
-            border-left: 10px solid hsl(var(--hue), var(--saturation), var(--lightness));
-            transform: translateZ(0);
-            animation: spinner 1.1s infinite linear;
-        }
-
-        @keyframes spinner {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div id="app">
-        <nav>
-            <div class="spinner"></div>
-            <p>
-                <label>
-                    <input type="radio" name="method" value="maxArea" checked> maxArea
-                </label>
-                <label>
-                    <input type="radio" name="method" value="maxHeight"> maxHeight
-                </label>
-                <label>
-                    <input type="radio" name="method" value="maxWidth"> maxWidth
-                </label>
-            </p>
-            <p>
-                <label>
-                    <input type="checkbox" name="usepromise"> usePromise
-                </label>
-                <label>
-                    <input type="checkbox" name="useworker"> useWorker
-                </label>
-            </p>
+      <nav>
+        <div class="spinner"></div>
+        <p>
+          <label>
+            <input type="radio" name="method" value="maxArea" checked /> maxArea
+          </label>
+          <label>
+            <input type="radio" name="method" value="maxHeight" /> maxHeight
+          </label>
+          <label>
+            <input type="radio" name="method" value="maxWidth" /> maxWidth
+          </label>
+        </p>
+        <p>
+          <label>
+            <input type="checkbox" name="usepromise" /> usePromise
+          </label>
+          <label> <input type="checkbox" name="useworker" /> useWorker </label>
+        </p>
 
-            <p>
-                <label>
-                    <input type="number" name="min"> min
-                </label>
-                <label>
-                    <input type="number" name="max"> max
-                </label>
-                <label>
-                    <input type="number" name="step"> step
-                </label>
-            </p>
-            <p><button>Test canvasSize</button></p>
-        </nav>
-        <main>
-            <output></output>
-        </main>
+        <p>
+          <label> <input type="number" name="min" /> min </label>
+          <label> <input type="number" name="max" /> max </label>
+          <label> <input type="number" name="step" /> step </label>
+        </p>
+        <p><button>Test canvasSize</button></p>
+      </nav>
+      <main>
+        <output></output>
+      </main>
     </div>
 
     <script src="dist/canvas-size.js"></script>
     <script>
-        const $ = document.querySelector.bind(document);
+      const $ = document.querySelector.bind(document);
 
-        function testCanvasSize(evt) {
-            const method = $('input[name="method"]:checked').value;
-            const usePromise = Boolean($('input[name="usepromise"]:checked'));
-            const useWorker = Boolean($('input[name="useworker"]:checked'));
-            const min = $('input[name="min"]').value;
-            const max = $('input[name="max"]').value;
-            const step = $('input[name="step"]').value;
-            const settings = {
-                min: min ? parseInt(min) : undefined,
-                max: max ? parseInt(max) : undefined,
-                step: step ? parseInt(step) : undefined,
-                usePromise,
-                useWorker
-            };
-            const outputElm = $('output');
+      function testCanvasSize(evt) {
+        const method = $('input[name="method"]:checked').value;
+        const usePromise = Boolean($('input[name="usepromise"]:checked'));
+        const useWorker = Boolean($('input[name="useworker"]:checked'));
+        const min = $('input[name="min"]').value;
+        const max = $('input[name="max"]').value;
+        const step = $('input[name="step"]').value;
+        const settings = {
+          min: min ? parseInt(min) : undefined,
+          max: max ? parseInt(max) : undefined,
+          step: step ? parseInt(step) : undefined,
+          usePromise,
+          useWorker
+        };
+        const outputElm = $('output');
 
-            function log(msg) {
-                outputElm.insertAdjacentHTML('afterbegin', `<div>${msg}</div>`);
-            }
-
-            // Clear console
-            outputElm.innerHTML = '';
-
-            if (usePromise) {
-                canvasSize[method](settings)
-                    .then(({ width, height, benchmark }) => {
-                        log(`Success: ${width} x ${height} (${benchmark} ms)`);
-                    })
-                    .catch(({ width, height, benchmark }) => {
-                        log(`Error: ${width} x ${height} (${benchmark} ms)`);
-                    });
-            }
-            else {
-                canvasSize[method]({
-                    ...settings,
-                    onError(width, height, benchmark) {
-                        log(`Error: ${width} x ${height} (${benchmark}ms)`);
-                    },
-                    onSuccess(width, height, benchmark) {
-                        log(`Success: ${width} x ${height} (${benchmark}ms)`);
-                    }
-                })
-            }
+        function log(msg) {
+          outputElm.insertAdjacentHTML('afterbegin', `<div>${msg}</div>`);
         }
 
-        $('button').addEventListener('click', testCanvasSize);
-    </script>
-</body>
+        // Clear console
+        outputElm.innerHTML = '';
 
+        if (usePromise) {
+          canvasSize[method](settings)
+            .then(({ width, height, benchmark }) => {
+              log(`Success: ${width} x ${height} (${benchmark} ms)`);
+            })
+            .catch(({ width, height, benchmark }) => {
+              log(`Error: ${width} x ${height} (${benchmark} ms)`);
+            });
+        } else {
+          canvasSize[method]({
+            ...settings,
+            onError(width, height, benchmark) {
+              log(`Error: ${width} x ${height} (${benchmark}ms)`);
+            },
+            onSuccess(width, height, benchmark) {
+              log(`Success: ${width} x ${height} (${benchmark}ms)`);
+            }
+          });
+        }
+      }
+
+      $('button').addEventListener('click', testCanvasSize);
+    </script>
+  </body>
 </html>
