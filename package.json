@@ -40,7 +40,7 @@
   "scripts": {
     "prepare": "rimraf dist/*.js* && npm run build",
     "build": "rollup -c",
-    "dev": "npm start | npm run test-watch | npm run serve",
+    "dev": "npm start & npm run test-watch & npm run serve",
     "lint": "eslint . && markdownlint . --ignore node_modules",
     "serve": "node server.js",
     "start": "rimraf coverage/* && npm run build -- --watch",
