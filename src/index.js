@@ -8,7 +8,6 @@ const defaults = {
   min: 1,
   sizes: [],
   step: 1024,
-  usePromise: false,
   useWorker: false,
   // Callbacks
   onError: Function.prototype,
@@ -75,7 +74,7 @@ function createSizesArray(settings) {
  * @param {number[][]} settings.sizes
  * @param {function} settings.onError
  * @param {function} settings.onSuccess
- * @returns {Promise|undefined}
+ * @returns {Promise}
  */
 function handleMethod(settings) {
   const isBrowser = typeof window !== 'undefined';
@@ -119,67 +118,52 @@ function handleMethod(settings) {
     };
   }
 
-  // Promise
-  if (settings.usePromise) {
-    return new Promise((resolve, reject) => {
-      const promiseSettings = {
-        ...settings,
-        onError(width, height, benchmark) {
-          let isLastTest;
+  return new Promise((resolve, reject) => {
+    const promiseSettings = {
+      ...settings,
+      onError(width, height, benchmark) {
+        let isLastTest;
 
-          // If running on the main thread, an empty settings.sizes
-          // array indicates the last test.
-          if (settings.sizes.length === 0) {
-            isLastTest = true;
-          }
-          // If running in a web worker, the settings.sizes array
-          // accessible to this callback wil not be modified because a
-          // copy of the settings object is sent to the worker.
-          // Therefore, a comparison of the width and height returned
-          // to this callback and the last [width, height] item in the
-          // settings.sizes array is used to determine the last test.
-          else {
-            const [[lastWidth, lastHeight]] = settings.sizes.slice(-1);
-            isLastTest = width === lastWidth && height === lastHeight;
-          }
+        // If running on the main thread, an empty settings.sizes
+        // array indicates the last test.
+        if (settings.sizes.length === 0) {
+          isLastTest = true;
+        }
+        // If running in a web worker, the settings.sizes array
+        // accessible to this callback wil not be modified because a
+        // copy of the settings object is sent to the worker.
+        // Therefore, a comparison of the width and height returned
+        // to this callback and the last [width, height] item in the
+        // settings.sizes array is used to determine the last test.
+        else {
+          const [[lastWidth, lastHeight]] = settings.sizes.slice(-1);
+          isLastTest = width === lastWidth && height === lastHeight;
+        }
 
-          onError(width, height, benchmark);
+        onError(width, height, benchmark);
 
-          if (isLastTest) {
-            reject({ width, height, benchmark, success: false, error: true });
-          }
-        },
-        onSuccess(width, height, benchmark) {
-          onSuccess(width, height, benchmark);
-          resolve({ width, height, benchmark, success: true, error: false });
-        },
-      };
+        if (isLastTest) {
+          reject({ width, height, benchmark, success: false, error: true });
+        }
+      },
+      onSuccess(width, height, benchmark) {
+        onSuccess(width, height, benchmark);
+        resolve({ width, height, benchmark, success: true, error: false });
+      },
+    };
 
-      if (worker) {
-        const { onError, onSuccess } = promiseSettings;
-
-        // Store callbacks in workerJobs object
-        workerJobs[jobID] = { onError, onSuccess };
-
-        // Send message to work
-        worker.postMessage(settingsWithoutCallbacks);
-      } else {
-        canvasTest(promiseSettings);
-      }
-    });
-  }
-  // Standard Callbacks
-  else {
     if (worker) {
+      const { onError, onSuccess } = promiseSettings;
+
       // Store callbacks in workerJobs object
       workerJobs[jobID] = { onError, onSuccess };
 
-      // Send message to worker
+      // Send message to work
       worker.postMessage(settingsWithoutCallbacks);
     } else {
-      return canvasTest(settings);
+      canvasTest(promiseSettings);
     }
-  }
+  });
 }
 
 // Methods
@@ -194,11 +178,10 @@ const canvasSize = {
    * @param {number} [options.max]
    * @param {number} [options.min=1]
    * @param {number} [options.step=1024]
-   * @param {boolean} [options.usePromise=false]
    * @param {boolean} [options.useWorker=false]
    * @param {function} [options.onError]
    * @param {function} [options.onSuccess]
-   * @returns {Promise|undefined}
+   * @returns {Promise}
    */
   maxArea(options = {}) {
     const sizes = createSizesArray({
@@ -222,11 +205,10 @@ const canvasSize = {
    * @param {number} [options.max]
    * @param {number} [options.min=1]
    * @param {number} [options.step=1024]
-   * @param {boolean} [options.usePromise=false]
    * @param {boolean} [options.useWorker=false]
    * @param {function} [options.onError]
    * @param {function} [options.onSuccess]
-   * @returns {Promise|undefined}
+   * @returns {Promise}
    */
   maxHeight(options = {}) {
     const sizes = createSizesArray({
@@ -250,11 +232,10 @@ const canvasSize = {
    * @param {number} [options.max]
    * @param {number} [options.min=1]
    * @param {number} [options.step=1024]
-   * @param {boolean} [options.usePromise=false]
    * @param {boolean} [options.useWorker=false]
    * @param {function} [options.onError]
    * @param {function} [options.onSuccess]
-   * @returns {Promise|undefined}
+   * @returns {Promise}
    */
   maxWidth(options = {}) {
     const sizes = createSizesArray({
@@ -276,11 +257,10 @@ const canvasSize = {
    * @param {number} [options.width]
    * @param {number} [options.height]
    * @param {number[][]} [options.sizes]
-   * @param {boolean} [options.usePromise=false]
    * @param {boolean} [options.useWorker=false]
    * @param {function} [options.onError]
    * @param {function} [options.onSuccess]
-   * @returns {Promise|undefined}
+   * @returns {Promise}
    */
   test(options = {}) {
     const settings = { ...defaults, ...options };

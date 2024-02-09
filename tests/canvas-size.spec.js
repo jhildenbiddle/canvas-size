@@ -30,7 +30,6 @@ function doTests(useWorker) {
     test.describe('maxArea()', () => {
       test('determines max area (default sizes)', async ({ page }) => {
         const options = {
-          usePromise: true,
           useWorker,
         };
 
@@ -52,7 +51,6 @@ function doTests(useWorker) {
             canvasSize.maxArea({
               max: Number.MAX_SAFE_INTEGER,
               step: Number.MAX_SAFE_INTEGER - offset,
-              usePromise: true,
             }),
           offset,
         );
@@ -67,32 +65,32 @@ function doTests(useWorker) {
     ['height', 'width'].forEach(dimension => {
       const methodName = `max${dimension.charAt(0).toUpperCase()}${dimension.slice(1)}`;
 
-      test(`determines max ${dimension} (default sizes)`, async ({ page }) => {
-        const results = await page.evaluate(
-          methodName =>
-            canvasSize[methodName]({
-              usePromise: true,
-            }),
-          methodName,
-        );
+      test.describe(`${methodName}()`, () => {
+        test(`determines max ${dimension} (default sizes)`, async ({
+          page,
+        }) => {
+          const results = await page.evaluate(
+            methodName => canvasSize[methodName]({}),
+            methodName,
+          );
 
-        expect(results[dimension]).toBeGreaterThan(1);
-        expect(testSizes[dimension]).toContain(results[dimension]);
-      });
+          expect(results[dimension]).toBeGreaterThan(1);
+          expect(testSizes[dimension]).toContain(results[dimension]);
+        });
 
-      test(`determines max ${dimension} (max + step)`, async ({ page }) => {
-        const offset = 100;
-        const results = await page.evaluate(
-          ([methodName, offset]) =>
-            canvasSize[methodName]({
-              max: Number.MAX_SAFE_INTEGER,
-              step: Number.MAX_SAFE_INTEGER - offset,
-              usePromise: true,
-            }),
-          [methodName, offset],
-        );
+        test(`determines max ${dimension} (max + step)`, async ({ page }) => {
+          const offset = 100;
+          const results = await page.evaluate(
+            ([methodName, offset]) =>
+              canvasSize[methodName]({
+                max: Number.MAX_SAFE_INTEGER,
+                step: Number.MAX_SAFE_INTEGER - offset,
+              }),
+            [methodName, offset],
+          );
 
-        expect(results[dimension]).toBe(offset);
+          expect(results[dimension]).toBe(offset);
+        });
       });
     });
 
@@ -102,36 +100,41 @@ function doTests(useWorker) {
       test('returns true for valid width / height integers', async ({
         page,
       }) => {
-        const result = await page.evaluate(() =>
+        const { success } = await page.evaluate(() =>
           canvasSize.test({
             width: 1,
             height: 1,
           }),
         );
 
-        expect(result).toBe(true);
+        expect(success).toBe(true);
       });
 
       test('returns true for valid width / height floats', async ({ page }) => {
-        const result = await page.evaluate(() =>
+        const { success } = await page.evaluate(() =>
           canvasSize.test({
             width: 1.1,
             height: 1.1,
           }),
         );
 
-        expect(result).toBe(true);
+        expect(success).toBe(true);
       });
 
       test('returns false for invalid width / height', async ({ page }) => {
-        const result = await page.evaluate(() =>
-          canvasSize.test({
-            width: Number.MAX_SAFE_INTEGER,
-            height: Number.MAX_SAFE_INTEGER,
-          }),
+        const { success } = await page.evaluate(
+          () =>
+            new Promise(resolve => {
+              canvasSize
+                .test({
+                  width: Number.MAX_SAFE_INTEGER,
+                  height: Number.MAX_SAFE_INTEGER,
+                })
+                .catch(result => resolve(result));
+            }),
         );
 
-        expect(result).toBe(false);
+        expect(success).toBe(false);
       });
 
       test('triggers onError callback (sizes)', async ({ page }) => {
@@ -148,7 +151,6 @@ function doTests(useWorker) {
               canvasSize
                 .test({
                   sizes,
-                  usePromise: true,
                   onError(width, height, benchmark) {
                     errorArr.push([width, height]);
                   },
@@ -171,7 +173,6 @@ function doTests(useWorker) {
             new Promise(resolve => {
               canvasSize.test({
                 sizes,
-                usePromise: true,
                 onSuccess(width, height, benchmark) {
                   resolve([width, height]);
                 },
