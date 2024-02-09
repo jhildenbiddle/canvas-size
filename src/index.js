@@ -75,6 +75,7 @@ function createSizesArray(settings) {
  * @param {number[][]} settings.sizes
  * @param {function} settings.onError
  * @param {function} settings.onSuccess
+ * @returns {Promise|undefined}
  */
 function handleMethod(settings) {
   const isBrowser = typeof window !== 'undefined';
@@ -197,6 +198,7 @@ const canvasSize = {
    * @param {boolean} [options.useWorker=false]
    * @param {function} [options.onError]
    * @param {function} [options.onSuccess]
+   * @returns {Promise|undefined}
    */
   maxArea(options = {}) {
     const sizes = createSizesArray({
@@ -224,6 +226,7 @@ const canvasSize = {
    * @param {boolean} [options.useWorker=false]
    * @param {function} [options.onError]
    * @param {function} [options.onSuccess]
+   * @returns {Promise|undefined}
    */
   maxHeight(options = {}) {
     const sizes = createSizesArray({
@@ -251,6 +254,7 @@ const canvasSize = {
    * @param {boolean} [options.useWorker=false]
    * @param {function} [options.onError]
    * @param {function} [options.onSuccess]
+   * @returns {Promise|undefined}
    */
   maxWidth(options = {}) {
     const sizes = createSizesArray({
@@ -276,6 +280,7 @@ const canvasSize = {
    * @param {boolean} [options.useWorker=false]
    * @param {function} [options.onError]
    * @param {function} [options.onSuccess]
+   * @returns {Promise|undefined}
    */
   test(options = {}) {
     const settings = { ...defaults, ...options };
