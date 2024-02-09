@@ -72,7 +72,7 @@ Single tests return a `boolean` to indicate if the specified canvas dimensions a
 ```js
 var isValidCanvas = canvasSize.test({
   width: 8192,
-  height: 8192
+  height: 8192,
 });
 
 console.log(isValidCanvas); // true|false
@@ -89,7 +89,7 @@ canvasSize.maxArea({
   },
   onSuccess: function (width, height, benchmark) {
     console.log('Success', width, height, benchmark);
-  }
+  },
 });
 
 // Error 16387 16387 0.001
@@ -105,7 +105,7 @@ Browsers with ES6 [Promise](https://www.google.com/search?client=safari&rls=en&q
 ```js
 canvasSize
   .maxArea({
-    usePromise: true
+    usePromise: true,
   })
   .then(function (result) {
     console.log('Success', result);
@@ -135,7 +135,7 @@ canvasSize.maxArea({
   },
   onSuccess(width, height, benchmark) {
     console.log('Success', width, height, benchmark);
-  }
+  },
 });
 
 // Error 16387 16387 0.001
@@ -150,7 +150,7 @@ The `useWorker` option can be combined with the `usePromise` option as well.
 canvasSize
   .maxArea({
     usePromise: true,
-    useWorker: true
+    useWorker: true,
   })
   .then(function (result) {
     console.log('Success', result);
@@ -220,7 +220,7 @@ canvasSize.maxArea({
   },
   onSuccess: function (width, height, benchmark) {
     console.log('Success:', width, height, benchmark);
-  }
+  },
 });
 
 // Custom sizes
@@ -233,7 +233,7 @@ canvasSize.maxArea({
   },
   onSuccess: function (width, height, benchmark) {
     console.log('Success:', width, height, benchmark);
-  }
+  },
 });
 
 // Same options for maxHeight() and maxWidth()
@@ -253,7 +253,7 @@ Using ES6 Promises & Web Workers:
 canvasSize
   .maxArea({
     usePromise: true,
-    useWorker: true
+    useWorker: true,
   })
   .then(({ width, height, benchmark }) => {
     console.log(`Success: ${width} x ${height} (${benchmark} ms)`);
@@ -269,7 +269,7 @@ canvasSize
     min: 1, // default
     step: 1024, // default
     usePromise: true,
-    useWorker: true
+    useWorker: true,
   })
   .then(({ width, height, benchmark }) => {
     console.log(`Success: ${width} x ${height} (${benchmark} ms)`);
@@ -333,7 +333,7 @@ Using return value:
 // Single dimension
 var isValidCanvasSize = canvasSize.test({
   height: 16384,
-  width: 16384
+  width: 16384,
 });
 ```
 
@@ -345,14 +345,14 @@ canvasSize.test({
   sizes: [
     [16384, 16384],
     [8192, 8192],
-    [4096, 4096]
+    [4096, 4096],
   ],
   onError: function (width, height, benchmark) {
     console.log('Error:', width, height);
   },
   onSuccess: function (width, height, benchmark) {
     console.log('Success:', width, height);
-  }
+  },
 });
 ```
 
@@ -365,10 +365,10 @@ canvasSize
     sizes: [
       [16384, 16384],
       [8192, 8192],
-      [4096, 4096]
+      [4096, 4096],
     ],
     usePromise: true,
-    useWorker: true
+    useWorker: true,
   })
   .then(({ width, height, benchmark }) => {
     console.log(`Success: ${width} x ${height} (${benchmark} ms)`);

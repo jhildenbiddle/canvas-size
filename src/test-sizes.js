@@ -19,7 +19,7 @@ const testSizes = {
     // Safari (iOS 9 - 12)
     4096,
     // Failed
-    1
+    1,
   ],
   height: [
     // Safari 7-12 (Mac)
@@ -39,7 +39,7 @@ const testSizes = {
     // IE Mobile (Windows Phone 8.x)
     4096,
     // Failed
-    1
+    1,
   ],
   width: [
     // Safari 7-12 (Mac)
@@ -59,8 +59,8 @@ const testSizes = {
     // IE Mobile (Windows Phone 8.x)
     4096,
     // Failed
-    1
-  ]
+    1,
+  ],
 };
 
 export default testSizes;

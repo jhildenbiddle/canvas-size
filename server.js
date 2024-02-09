@@ -7,7 +7,7 @@ const demoConfig = {
   ghostMode: {
     clicks: false,
     forms: false,
-    scroll: false
+    scroll: false,
   },
   open: false,
   notify: false,
@@ -17,9 +17,9 @@ const demoConfig = {
   server: {
     baseDir: ['./demo/'],
     routes: {
-      '/dist': './dist'
-    }
-  }
+      '/dist': './dist',
+    },
+  },
 };
 const playwrightConfig = {
   ...demoConfig,
@@ -34,12 +34,12 @@ const playwrightConfig = {
           res.setHeader('Content-Type', 'text/html');
           res.end('');
           next();
-        }
-      }
-    ]
+        },
+      },
+    ],
   },
   snippet: false,
-  watch: false
+  watch: false,
 };
 const args = process.argv.slice(2);
 const config = args.includes('--playwright') ? playwrightConfig : demoConfig;

@@ -3,14 +3,14 @@ module.exports = {
     browser: true,
     commonjs: true,
     es6: true,
-    node: true
+    node: true,
   },
   extends: ['eslint:recommended'],
   ignorePatterns: ['dist'],
   plugins: [],
   parserOptions: {
     ecmaVersion: 9,
-    sourceType: 'module'
+    sourceType: 'module',
   },
   rules: {
     'array-bracket-spacing': ['error', 'never'],
@@ -35,6 +35,6 @@ module.exports = {
     'no-var': ['error'],
     'prefer-const': ['error'],
     quotes: ['error', 'single'],
-    semi: ['error', 'always']
-  }
+    semi: ['error', 'always'],
+  },
 };

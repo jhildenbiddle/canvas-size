@@ -12,7 +12,7 @@ const defaults = {
   useWorker: false,
   // Callbacks
   onError: Function.prototype,
-  onSuccess: Function.prototype
+  onSuccess: Function.prototype,
 };
 const workerJobs = {
   // jobID: {
@@ -151,7 +151,7 @@ function handleMethod(settings) {
         onSuccess(width, height, benchmark) {
           onSuccess(width, height, benchmark);
           resolve({ width, height, benchmark, success: true, error: false });
-        }
+        },
       };
 
       if (worker) {
@@ -204,7 +204,7 @@ const canvasSize = {
       height: options.max,
       min: options.min,
       step: options.step,
-      sizes: [...testSizes.area]
+      sizes: [...testSizes.area],
     });
     const settings = { ...defaults, ...options, sizes };
 
@@ -231,7 +231,7 @@ const canvasSize = {
       height: options.max,
       min: options.min,
       step: options.step,
-      sizes: [...testSizes.height]
+      sizes: [...testSizes.height],
     });
     const settings = { ...defaults, ...options, sizes };
 
@@ -258,7 +258,7 @@ const canvasSize = {
       height: 1,
       min: options.min,
       step: options.step,
-      sizes: [...testSizes.width]
+      sizes: [...testSizes.width],
     });
     const settings = { ...defaults, ...options, sizes };
 
@@ -288,7 +288,7 @@ const canvasSize = {
     }
 
     return handleMethod(settings);
-  }
+  },
 };
 
 // Exports

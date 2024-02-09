@@ -69,7 +69,7 @@ function canvasTest(settings) {
       width,
       height,
       benchmark,
-      isTestPass
+      isTestPass,
     });
 
     if (!isTestPass && settings.sizes.length) {

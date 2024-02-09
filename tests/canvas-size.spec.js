@@ -31,12 +31,12 @@ function doTests(useWorker) {
       test('determines max area (default sizes)', async ({ page }) => {
         const options = {
           usePromise: true,
-          useWorker
+          useWorker,
         };
 
         const { width, height } = await page.evaluate(
           options => canvasSize.maxArea(options),
-          options
+          options,
         );
 
         expect(width).toBeGreaterThan(1);
@@ -52,9 +52,9 @@ function doTests(useWorker) {
             canvasSize.maxArea({
               max: Number.MAX_SAFE_INTEGER,
               step: Number.MAX_SAFE_INTEGER - offset,
-              usePromise: true
+              usePromise: true,
             }),
-          offset
+          offset,
         );
 
         expect(width).toBe(offset);
@@ -71,9 +71,9 @@ function doTests(useWorker) {
         const results = await page.evaluate(
           methodName =>
             canvasSize[methodName]({
-              usePromise: true
+              usePromise: true,
             }),
-          methodName
+          methodName,
         );
 
         expect(results[dimension]).toBeGreaterThan(1);
@@ -87,9 +87,9 @@ function doTests(useWorker) {
             canvasSize[methodName]({
               max: Number.MAX_SAFE_INTEGER,
               step: Number.MAX_SAFE_INTEGER - offset,
-              usePromise: true
+              usePromise: true,
             }),
-          [methodName, offset]
+          [methodName, offset],
         );
 
         expect(results[dimension]).toBe(offset);
@@ -100,13 +100,13 @@ function doTests(useWorker) {
     // -------------------------------------------------------------------------
     test.describe('test()', () => {
       test('returns true for valid width / height integers', async ({
-        page
+        page,
       }) => {
         const result = await page.evaluate(() =>
           canvasSize.test({
             width: 1,
-            height: 1
-          })
+            height: 1,
+          }),
         );
 
         expect(result).toBe(true);
@@ -116,8 +116,8 @@ function doTests(useWorker) {
         const result = await page.evaluate(() =>
           canvasSize.test({
             width: 1.1,
-            height: 1.1
-          })
+            height: 1.1,
+          }),
         );
 
         expect(result).toBe(true);
@@ -127,8 +127,8 @@ function doTests(useWorker) {
         const result = await page.evaluate(() =>
           canvasSize.test({
             width: Number.MAX_SAFE_INTEGER,
-            height: Number.MAX_SAFE_INTEGER
-          })
+            height: Number.MAX_SAFE_INTEGER,
+          }),
         );
 
         expect(result).toBe(false);
@@ -138,7 +138,7 @@ function doTests(useWorker) {
         const sizes = [
           [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER],
           [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER],
-          [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER]
+          [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER],
         ];
         const result = await page.evaluate(
           sizes =>
@@ -151,11 +151,11 @@ function doTests(useWorker) {
                   usePromise: true,
                   onError(width, height, benchmark) {
                     errorArr.push([width, height]);
-                  }
+                  },
                 })
                 .catch(result => resolve(errorArr));
             }),
-          sizes
+          sizes,
         );
 
         expect(result).toEqual(sizes);
@@ -164,7 +164,7 @@ function doTests(useWorker) {
       test('triggers onSuccess callback (sizes)', async ({ page }) => {
         const sizes = [
           [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER],
-          [1, 1]
+          [1, 1],
         ];
         const result = await page.evaluate(
           sizes =>
@@ -174,10 +174,10 @@ function doTests(useWorker) {
                 usePromise: true,
                 onSuccess(width, height, benchmark) {
                   resolve([width, height]);
-                }
+                },
               });
             }),
-          sizes
+          sizes,
         );
 
         expect(result).toEqual([1, 1]);

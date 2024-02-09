@@ -136,7 +136,7 @@
           max: max ? parseInt(max) : undefined,
           step: step ? parseInt(step) : undefined,
           usePromise,
-          useWorker
+          useWorker,
         };
         const outputElm = $('output');
 
@@ -163,7 +163,7 @@
             },
             onSuccess(width, height, benchmark) {
               log(`Success: ${width} x ${height} (${benchmark}ms)`);
-            }
+            },
           });
         }
       }
