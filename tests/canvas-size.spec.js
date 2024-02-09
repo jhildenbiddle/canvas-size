@@ -137,8 +137,8 @@ function doTests(useWorker) {
       test('triggers onError callback (sizes)', async ({ page }) => {
         const sizes = [
           [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER],
-          [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER],
-          [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER],
+          [Number.MAX_SAFE_INTEGER - 1, Number.MAX_SAFE_INTEGER - 1],
+          [Number.MAX_SAFE_INTEGER - 2, Number.MAX_SAFE_INTEGER - 2],
         ];
         const result = await page.evaluate(
           sizes =>

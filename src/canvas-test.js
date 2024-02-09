@@ -73,7 +73,9 @@ function canvasTest(settings) {
     });
 
     if (!isTestPass && settings.sizes.length) {
-      canvasTest(settings);
+      setTimeout(() => {
+        canvasTest(settings);
+      }, 0);
     }
   } else if (isTestPass) {
     settings.onSuccess(width, height, benchmark);
@@ -81,7 +83,9 @@ function canvasTest(settings) {
     settings.onError(width, height, benchmark);
 
     if (settings.sizes.length) {
-      canvasTest(settings);
+      setTimeout(() => {
+        canvasTest(settings);
+      }, 0);
     }
   }
 
