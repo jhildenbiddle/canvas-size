@@ -4,7 +4,15 @@
 
 _Unreleased_
 
-- Add `success` and `error` properties to promise results
+- Add `success` property to promise results
+- Remove `usePromise` option and return promise automatically based on browser support
+- Update promise behavior to always resolve leaving `catch` available for exceptions
+- Update callback function to receive results as object instead of separate arguments
+- Update ES module build from ES5 to ES2015+ syntax
+- Update test environment and migrate tests to Playwright
+- Update documentation
+- Update CI
+- Fix recursion issue when large quantity of tests
 
 ## 1.2.6
 
