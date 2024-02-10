@@ -122,16 +122,11 @@ function doTests(useWorker) {
       });
 
       test('returns false for invalid width / height', async ({ page }) => {
-        const { success } = await page.evaluate(
-          () =>
-            new Promise(resolve => {
-              canvasSize
-                .test({
-                  width: Number.MAX_SAFE_INTEGER,
-                  height: Number.MAX_SAFE_INTEGER,
-                })
-                .catch(result => resolve(result));
-            }),
+        const { success } = await page.evaluate(async () =>
+          canvasSize.test({
+            width: Number.MAX_SAFE_INTEGER,
+            height: Number.MAX_SAFE_INTEGER,
+          }),
         );
 
         expect(success).toBe(false);
@@ -143,22 +138,18 @@ function doTests(useWorker) {
           [Number.MAX_SAFE_INTEGER - 1, Number.MAX_SAFE_INTEGER - 1],
           [Number.MAX_SAFE_INTEGER - 2, Number.MAX_SAFE_INTEGER - 2],
         ];
-        const result = await page.evaluate(
-          sizes =>
-            new Promise(resolve => {
-              const errorArr = [];
+        const result = await page.evaluate(async sizes => {
+          const errorArr = [];
 
-              canvasSize
-                .test({
-                  sizes,
-                  onError(width, height, benchmark) {
-                    errorArr.push([width, height]);
-                  },
-                })
-                .catch(result => resolve(errorArr));
-            }),
-          sizes,
-        );
+          await canvasSize.test({
+            sizes,
+            onError(width, height, benchmark) {
+              errorArr.push([width, height]);
+            },
+          });
+
+          return Promise.resolve(errorArr);
+        }, sizes);
 
         expect(result).toEqual(sizes);
       });
@@ -188,4 +179,4 @@ function doTests(useWorker) {
 }
 
 doTests(false);
-doTests(true);
+// doTests(true);

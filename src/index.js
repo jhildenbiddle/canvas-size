@@ -78,6 +78,7 @@ function createSizesArray(settings) {
  */
 function handleMethod(settings) {
   const isBrowser = typeof window !== 'undefined';
+  const hasPromiseSupport = isBrowser && 'Promise' in window;
   const hasCanvasSupport = isBrowser && 'HTMLCanvasElement' in window;
   const hasOffscreenCanvasSupport = isBrowser && 'OffscreenCanvas' in window;
   const jobID = Date.now();
@@ -118,52 +119,67 @@ function handleMethod(settings) {
     };
   }
 
-  return new Promise((resolve, reject) => {
-    const promiseSettings = {
-      ...settings,
-      onError(width, height, benchmark) {
-        let isLastTest;
+  // Promise
+  if (hasPromiseSupport) {
+    return new Promise(resolve => {
+      const promiseSettings = {
+        ...settings,
+        onError(width, height, benchmark) {
+          let isLastTest;
 
-        // If running on the main thread, an empty settings.sizes
-        // array indicates the last test.
-        if (settings.sizes.length === 0) {
-          isLastTest = true;
-        }
-        // If running in a web worker, the settings.sizes array
-        // accessible to this callback wil not be modified because a
-        // copy of the settings object is sent to the worker.
-        // Therefore, a comparison of the width and height returned
-        // to this callback and the last [width, height] item in the
-        // settings.sizes array is used to determine the last test.
-        else {
-          const [[lastWidth, lastHeight]] = settings.sizes.slice(-1);
-          isLastTest = width === lastWidth && height === lastHeight;
-        }
+          // If running on the main thread, an empty settings.sizes
+          // array indicates the last test.
+          if (settings.sizes.length === 0) {
+            isLastTest = true;
+          }
+          // If running in a web worker, the settings.sizes array
+          // accessible to this callback wil not be modified because a
+          // copy of the settings object is sent to the worker.
+          // Therefore, a comparison of the width and height returned
+          // to this callback and the last [width, height] item in the
+          // settings.sizes array is used to determine the last test.
+          else {
+            const [[lastWidth, lastHeight]] = settings.sizes.slice(-1);
+            isLastTest = width === lastWidth && height === lastHeight;
+          }
 
-        onError(width, height, benchmark);
+          onError(width, height, benchmark);
 
-        if (isLastTest) {
-          reject({ width, height, benchmark, success: false, error: true });
-        }
-      },
-      onSuccess(width, height, benchmark) {
-        onSuccess(width, height, benchmark);
-        resolve({ width, height, benchmark, success: true, error: false });
-      },
-    };
+          if (isLastTest) {
+            resolve({ success: false, width, height, benchmark });
+          }
+        },
+        onSuccess(width, height, benchmark) {
+          onSuccess(width, height, benchmark);
+          resolve({ success: true, width, height, benchmark });
+        },
+      };
 
+      if (worker) {
+        const { onError, onSuccess } = promiseSettings;
+
+        // Store callbacks in workerJobs object
+        workerJobs[jobID] = { onError, onSuccess };
+
+        // Send message to work
+        worker.postMessage(settingsWithoutCallbacks);
+      } else {
+        canvasTest(promiseSettings);
+      }
+    });
+  }
+  // Legacy (no Promise support)
+  else {
     if (worker) {
-      const { onError, onSuccess } = promiseSettings;
-
       // Store callbacks in workerJobs object
       workerJobs[jobID] = { onError, onSuccess };
 
-      // Send message to work
+      // Send message to worker
       worker.postMessage(settingsWithoutCallbacks);
     } else {
-      canvasTest(promiseSettings);
+      return canvasTest(settings);
     }
-  });
+  }
 }
 
 // Methods
