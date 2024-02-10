@@ -52,7 +52,10 @@ Available on [jsdelivr](https://www.jsdelivr.com/package/npm/canvas-size) (below
 
 ```html
 <!-- ES Module (latest v2.x.x) -->
-<script type="module" src="https://cdn.jsdelivr.net/npm/canvas-size@2/dist/canvas-size.esm.min.js"></script>
+<script
+  type="module"
+  src="https://cdn.jsdelivr.net/npm/canvas-size@2/dist/canvas-size.esm.min.js"
+></script>
 ```
 
 ```html
@@ -74,10 +77,10 @@ Each `canvasSize()` [method](#methods) returns a [`Promise Object`](https://deve
 
 ```js
 {
-	success: boolean,  // Status of last test
-	width: number,     // Width of last canvas
-	height: number,    // Height of last canvas
-	benchmark: number, // Time to complete last test
+  success: boolean,  // Status of last test
+  width: number,     // Width of last canvas
+  height: number,    // Height of last canvas
+  benchmark: number, // Time to complete last test
 }
 ```
 
@@ -88,8 +91,8 @@ Test results can be obtained after the promise has resolved using a `then` handl
 canvasSize
   .test({
     // ...
-	})
-	.then(result => {
+  })
+  .then(result => {
     console.log(result); // { success: <boolean>, ... }
   });
 ```
@@ -101,7 +104,7 @@ const result = await canvasSize.test({
   // ...
 });
 
-console.log(result); // { success: <boolean>, height: <number>, width: <number>, benchark: <number> }
+console.log(result); // { success: <boolean>, height: <number>, width: <number>, benchmark: <number> }
 ```
 
 [Destructuring assignment](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) allows for simplified access to test result values:
@@ -112,7 +115,7 @@ const { success, width, height } = await canvasSize.test({
 });
 
 if (success) {
-  console.log (`Created canvas: ${width} x ${height}`);
+  console.log(`Created canvas: ${width} x ${height}`);
 }
 ```
 
@@ -158,7 +161,7 @@ if (success) {
 
 ### Web Workers
 
-Browsers that support [web workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers) and [OffscreenCanvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/OffscreenCanvas) can have canvas tests performed on a separate thread by setting `useWorker:true`. This can prevent the browser from becoming unresponsive while testing on the browser's main thread. 
+Browsers that support [web workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers) and [OffscreenCanvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/OffscreenCanvas) can have canvas tests performed on a separate thread by setting `useWorker:true`. This can prevent the browser from becoming unresponsive while testing on the browser's main thread.
 
 Note: Browsers without support for web workers and OffscreenCanvas will ignore this option and perform tests on the main thread even when `useWorker` us `true`.
 
@@ -211,7 +214,7 @@ When `options.max` is specified, the value will be used for the initial area/hei
 The following examples use `maxArea()`. Usage for `maxHeight()` and `maxWidth()` is identical.
 
 ```js
-// Optimzed tests
+// Optimized tests
 const { success, width, height } = await canvasSize.maxArea();
 ```
 
@@ -228,7 +231,7 @@ const { success, width, height } = await canvasSize.maxArea({
 Using callbacks instead of [promises](#promises):
 
 ```js
-// Optimzed tests
+// Optimized tests
 canvasSize.maxArea({
   onSuccess: function (width, height, benchmark) {
     console.log('Success:', width, height, benchmark);
@@ -252,7 +255,7 @@ canvasSize.maxArea({
 Details are identical to [maxArea](#maxarea) method except for method name:
 
 ```js
-canvasSize.maxHeight
+canvasSize.maxHeight;
 ```
 
 ### maxWidth
@@ -260,7 +263,7 @@ canvasSize.maxHeight
 Details are identical to [maxArea](#maxarea) method except for method name:
 
 ```js
-canvasSize.maxWidth
+canvasSize.maxWidth;
 ```
 
 ### test
