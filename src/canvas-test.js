@@ -7,8 +7,8 @@
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * IMPORTANT: DO NOT USE ES6 CODE THAT REQUIRES BABEL HELPERS IN THIS FILE.
  *            This function will be used on the main thread and as part of an
- *            inline web worker, but access to Babel helpers will be available
- *            only on the main thread.
+ *            inline web worker, but access to Babel helpers will not be
+ *            available to the web worker.
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *
  * @param {object} settings
