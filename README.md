@@ -171,7 +171,7 @@ canvasSize.maxArea({
 
 ## Methods
 
-### maxArea(), maxHeight(), maxWidth()
+### maxArea
 
 Determines the maximum area/height/width of an HTML canvas element on the client. Returns a [promise](#promises) or `undefined` in legacy browsers.
 
@@ -247,7 +247,23 @@ canvasSize.maxArea({
 });
 ```
 
-### test()
+### maxHeight
+
+Details are identical to [maxArea](#maxarea) method except for method name:
+
+```js
+canvasSize.maxHeight
+```
+
+### maxWidth
+
+Details are identical to [maxArea](#maxarea) method except for method name:
+
+```js
+canvasSize.maxWidth
+```
+
+### test
 
 Determines if the dimension(s) specified exceed the HTML canvas size limitations of the browser. Returns a [promise](#promises) or `undefined` in legacy browsers.
 
