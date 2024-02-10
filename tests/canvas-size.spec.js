@@ -158,8 +158,6 @@ function doTests(useWorker) {
           sizes,
         );
 
-        console.log({ errorArr, testTimes, totalTimes });
-
         expect(errorArr).toEqual(sizes);
         testTimes.forEach(testTime =>
           expect(testTime).toEqual(expect.any(Number)),
@@ -187,8 +185,6 @@ function doTests(useWorker) {
             return result;
           },
         );
-
-        console.log({ width, height, testTime, totalTime });
 
         expect(width).toEqual(1);
         expect(height).toEqual(height);
