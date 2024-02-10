@@ -81,7 +81,7 @@ function handleMethod(settings) {
   const hasPromiseSupport = isBrowser && 'Promise' in window;
   const hasCanvasSupport = isBrowser && 'HTMLCanvasElement' in window;
   const hasOffscreenCanvasSupport = isBrowser && 'OffscreenCanvas' in window;
-  const jobID = Date.now();
+  const jobID = URL.createObjectURL(new Blob([])).slice(-36);
   const totalTimeStart = performance.now();
   const { onError, onSuccess, ...settingsWithoutCallbacks } = settings;
 
