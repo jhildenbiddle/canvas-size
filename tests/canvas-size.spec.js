@@ -143,7 +143,7 @@ function doTests(useWorker) {
 
           await canvasSize.test({
             sizes,
-            onError(width, height, benchmark) {
+            onError({ width, height, benchmark }) {
               errorArr.push([width, height]);
             },
           });
@@ -164,7 +164,7 @@ function doTests(useWorker) {
             new Promise(resolve => {
               canvasSize.test({
                 sizes,
-                onSuccess(width, height, benchmark) {
+                onSuccess({ width, height, benchmark }) {
                   resolve([width, height]);
                 },
               });
@@ -179,4 +179,4 @@ function doTests(useWorker) {
 }
 
 doTests(false);
-// doTests(true);
+doTests(true);

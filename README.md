@@ -24,7 +24,7 @@ This micro-library provides the maximum area, height, and width of an HTML canva
 
 - Determine the maximum `<canvas>` area, height, and width
 - Test custom `<canvas>` dimensions
-- Web worker / OffscreenCanvas support
+- Web worker + OffscreenCanvas support
 - UMD and ES6 module available
 - Lightweight (< 1k min+gzip) and dependency-free
 
@@ -84,7 +84,7 @@ Each `canvasSize()` [method](#methods) returns a [`Promise Object`](https://deve
 }
 ```
 
-Test results can be obtained after the promise has resolved using a `then` handler:
+Test results are provided after the promise has resolved using a `then` handler:
 
 ```js
 // Use maxArea(), maxHeight(), maxWidth(), or test()
@@ -92,19 +92,19 @@ canvasSize
   .test({
     // ...
   })
-  .then(result => {
-    console.log(result); // { success: <boolean>, ... }
+  .then(results => {
+    console.log(results); // { success: <boolean>, ... }
   });
 ```
 
 Alternatively, the [`await`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await) operator can be used to simplify handling asynchronous events. This requires calling `canvasSize` within an [async function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function) or in an environment that supports top-level [`await`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await):
 
 ```js
-const result = await canvasSize.test({
+const results = await canvasSize.test({
   // ...
 });
 
-console.log(result); // { success: <boolean>, height: <number>, width: <number>, benchmark: <number> }
+console.log(results); // { success: <boolean>, height: <number>, width: <number>, benchmark: <number> }
 ```
 
 [Destructuring assignment](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) allows for simplified access to test result values:
@@ -119,6 +119,27 @@ if (success) {
 }
 ```
 
+Promises and [callbacks](#callbacks) can be used together to provide individual test results when multiple tests are being performed:
+
+```js
+const { success, width, height } = await canvasSize.maxArea({
+  // ...
+  onError({ width, height, benchmark }) {
+    console.log('Error', width, height, benchmark);
+  },
+});
+
+if (success) {
+  console.log('Success', width, height, benchmark);
+}
+
+// Error <width> <height> <benchmark>
+// Error <width> <height> <benchmark>
+// Error <width> <height> <benchmark>
+// ...
+// Success <width> <height> <benchmark>
+```
+
 ### Callbacks
 
 Callback functions can be used to access canvas test result instead of or in addition to [promises](#promises). There are three key differences between using `canvasSize` promises and callbacks:
@@ -128,47 +149,50 @@ Callback functions can be used to access canvas test result instead of or in add
 - The `onError` callback function provides canvas test results for each failed test when multiple tests are performed using the `maxArea()`, `maxHeight()`, `maxWidth()`, or `test()` [methods](#methods). A promise only projects a single failed test result after all canvas tests have completed.
 
 ```js
-// Use maxArea(), maxHeight(), maxWidth(), or test()
+// maxArea(), maxHeight(), maxWidth(), or test()
 canvasSize.maxArea({
-  onError: function (width, height, benchmark) {
+  // ...
+  onError({ width, height, benchmark }) {
     console.log('Error', width, height, benchmark);
   },
-  onSuccess: function (width, height, benchmark) {
+  onSuccess({ width, height, benchmark }) {
     console.log('Success', width, height, benchmark);
   },
 });
 
-// Error 16387 16387 0.001
-// Error 16386 16386 0.001
-// Error 16385 16385 0.001
-// Success 16384 16384 0.250
+// Error <width> <height> <benchmark>
+// Error <width> <height> <benchmark>
+// Error <width> <height> <benchmark>
+// ...
+// Success <width> <height> <benchmark>
 ```
 
-Promises and callbacks can be used together:
+Legacy-compatible ES5 syntax:
 
 ```js
-const { success, width, height } = await canvasSize.maxArea({
+// maxArea(), maxHeight(), maxWidth(), or test()
+canvasSize.maxArea({
   // ...
-  onError: function (width, height, benchmark) {
-    console.log('Error', width, height);
+  onError: function(results) {
+    console.log('Error', results.width, results.height, results.benchmark);
+  },
+  onSuccess: function(results) {
+    console.log('Success', results.width, results.height, results.benchmark);
   },
 });
-
-if (success) {
-  console.log('Success', width, height);
-}
 ```
 
 ### Web Workers
 
 Browsers that support [web workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers) and [OffscreenCanvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/OffscreenCanvas) can have canvas tests performed on a separate thread by setting `useWorker:true`. This can prevent the browser from becoming unresponsive while testing on the browser's main thread.
 
-Note: Browsers without support for web workers and OffscreenCanvas will ignore this option and perform tests on the main thread even when `useWorker` us `true`.
+Note: Browsers without support for web workers and OffscreenCanvas will ignore this option and perform tests on the main thread.
 
 ```js
+// maxArea(), maxHeight(), maxWidth(), or test()
 canvasSize.maxArea({
-  useWorker: true,
   // ...
+  useWorker: true,
 });
 ```
 
@@ -233,7 +257,7 @@ Using callbacks instead of [promises](#promises):
 ```js
 // Optimized tests
 canvasSize.maxArea({
-  onSuccess: function (width, height, benchmark) {
+  onSuccess({ width, height, benchmark }) {
     console.log('Success:', width, height, benchmark);
   },
 });
@@ -244,7 +268,7 @@ canvasSize.maxArea({
   min: 1, // default
   step: 1024, // default
   useWorker: true,
-  onSuccess: function (width, height, benchmark) {
+  onSuccess({ width, height, benchmark }) {
     console.log('Success:', width, height, benchmark);
   },
 });
@@ -329,10 +353,10 @@ Using callbacks:
 canvasSize.test({
   height: 16384,
   width: 16384,
-  onError: function (width, height, benchmark) {
+  onError({ width, height, benchmark }) {
     console.log('Error:', width, height);
   },
-  onSuccess: function (width, height, benchmark) {
+  onSuccess({ width, height, benchmark }) {
     console.log('Success:', width, height);
   },
 });
@@ -347,10 +371,10 @@ canvasSize.test({
     [4096, 4096],
   ],
   useWorker: true,
-  onError: function (width, height, benchmark) {
+  onError({ width, height, benchmark }) {
     console.log('Error:', width, height);
   },
-  onSuccess: function (width, height, benchmark) {
+  onSuccess({ width, height, benchmark }) {
     console.log('Success:', width, height);
   },
 });

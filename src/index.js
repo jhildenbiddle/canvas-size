@@ -110,11 +110,11 @@ function handleMethod(settings) {
       const { width, height, benchmark, isTestPass } = e.data;
 
       if (isTestPass) {
-        workerJobs[jobID].onSuccess(width, height, benchmark);
+        workerJobs[jobID].onSuccess({ width, height, benchmark });
 
         delete workerJobs[jobID];
       } else {
-        workerJobs[jobID].onError(width, height, benchmark);
+        workerJobs[jobID].onError({ width, height, benchmark });
       }
     };
   }
@@ -124,7 +124,7 @@ function handleMethod(settings) {
     return new Promise(resolve => {
       const promiseSettings = {
         ...settings,
-        onError(width, height, benchmark) {
+        onError({ width, height, benchmark }) {
           let isLastTest;
 
           // If running on the main thread, an empty settings.sizes
@@ -143,14 +143,14 @@ function handleMethod(settings) {
             isLastTest = width === lastWidth && height === lastHeight;
           }
 
-          onError(width, height, benchmark);
+          onError({ width, height, benchmark });
 
           if (isLastTest) {
             resolve({ success: false, width, height, benchmark });
           }
         },
-        onSuccess(width, height, benchmark) {
-          onSuccess(width, height, benchmark);
+        onSuccess({ width, height, benchmark }) {
+          onSuccess({ width, height, benchmark });
           resolve({ success: true, width, height, benchmark });
         },
       };
