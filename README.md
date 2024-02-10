@@ -8,7 +8,7 @@
 [![jsDelivr](https://data.jsdelivr.com/v1/package/npm/canvas-size/badge)](https://www.jsdelivr.com/package/npm/canvas-size)
 [![Sponsor this project](https://img.shields.io/static/v1?style=flat-square&label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/jhildenbiddle)
 
-Determine the maximum size and custom dimension support of an HTML `<canvas>` element.
+Determine the maximum area, height, width, and custom dimensions of an HTML `<canvas>` element.
 
 - [Demo (CodeSandbox)](https://on690.codesandbox.io): For modern browsers (ES6+)
 - [Demo (JSBin)](https://jsbin.com/megedep/1): For legacy browsers (ES5)
