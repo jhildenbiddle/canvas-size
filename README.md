@@ -22,10 +22,9 @@ This micro-library provides the maximum area, height, and width of an HTML canva
 
 ## Features
 
-- Determine the maximum area, height, and width of a canvas element
-- Test custom canvas dimensions
-- ES6 Promise support
-- Web Worker and OffscreenCanvas support
+- Determine the maximum `<canvas>` area, height, and width
+- Test custom `<canvas>` dimensions
+- Web worker / OffscreenCanvas support
 - UMD and ES6 module available
 - Lightweight (< 1k min+gzip) and dependency-free
 
@@ -51,38 +50,82 @@ import canvasSize from 'canvas-size';
 
 Available on [jsdelivr](https://www.jsdelivr.com/package/npm/canvas-size) (below), [unpkg](https://unpkg.com/browse/canvas-size/), and other CDN services that auto-publish npm packages.
 
-```js
-// ES Module (latest v1.x.x)
-import canvasSize from 'https://cdn.jsdelivr.net/npm/canvas-size@1/dist/canvas-size.esm.min.js';
+```html
+<!-- ES Module (latest v2.x.x) -->
+<script type="module" src="https://cdn.jsdelivr.net/npm/canvas-size@2/dist/canvas-size.esm.min.js"></script>
 ```
 
 ```html
-<!-- Global "canvasSize" (latest v1.x.x) -->
-<script src="https://cdn.jsdelivr.net/npm/canvas-size@1"></script>
+<!-- Global "canvasSize" (latest v2.x.x) -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-size@2"></script>
 ```
 
 > 💡 Note the `@` version lock in the URLs above. This prevents breaking changes in future releases from affecting your project and is therefore the safest method of loading dependencies from a CDN. When a new major version is released, you will need to manually update your CDN URLs by changing the version after the `@` symbol.
 
 ## Usage
 
-**Single tests**
+All [HTML canvas](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas) tests are performed asynchronously. A failed test will return immediately. Successful test times are dependent upon the canvas dimensions, browser, and hardware.
 
-Single tests return a `boolean` to indicate if the specified canvas dimensions are supported by the browser. Failed tests will return almost immediately. Successful test times are dependent upon the browser, hardware, and canvas dimensions used.
+Test results are available using [promises](#promises) and [callbacks](#callbacks).
+
+### Promises
+
+Each `canvasSize()` [method](#methods) returns a [`Promise Object`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) (if supported). The promise will will resolve after the first successful canvas test or after all tests have been completed with the following test result data:
 
 ```js
-var isValidCanvas = canvasSize.test({
-  width: 8192,
-  height: 8192,
-});
-
-console.log(isValidCanvas); // true|false
+{
+	success: boolean,  // Status of last test
+	width: number,     // Width of last canvas
+	height: number,    // Height of last canvas
+	benchmark: number, // Time to complete last test
+}
 ```
 
-**Multiple tests using callbacks**
-
-When multiple tests are performed using `maxArea()`, `maxHeight()`, `maxWidth()`, or `test()` with multiple `sizes` defined, the `onError` callback will be invoked for each failed test until the first successful test invokes the `onSuccess` callback.
+Test results can be obtained after the promise has resolved using a `then` handler:
 
 ```js
+// Use maxArea(), maxHeight(), maxWidth(), or test()
+canvasSize
+  .test({
+    // ...
+	})
+	.then(result => {
+    console.log(result); // { success: <boolean>, ... }
+  });
+```
+
+Alternatively, the [`await`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await) operator can be used to simplify handling asynchronous events. This requires calling `canvasSize` within an [async function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function) or in an environment that supports top-level [`await`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await):
+
+```js
+const result = await canvasSize.test({
+  // ...
+});
+
+console.log(result); // { success: <boolean>, height: <number>, width: <number>, benchark: <number> }
+```
+
+[Destructuring assignment](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) allows for simplified access to test result values:
+
+```js
+const { success, width, height } = await canvasSize.test({
+  // ...
+});
+
+if (success) {
+  console.log (`Created canvas: ${width} x ${height}`);
+}
+```
+
+### Callbacks
+
+Callback functions can be used to access canvas test result instead of or in addition to [promises](#promises). There are three key differences between using `canvasSize` promises and callbacks:
+
+- Legacy browsers without [`Promise Object`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) support must use callbacks.
+- [Promises](#promises) and the [`await`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await) operator simplify asynchronous event handling.
+- The `onError` callback function provides canvas test results for each failed test when multiple tests are performed using the `maxArea()`, `maxHeight()`, `maxWidth()`, or `test()` [methods](#methods). A promise only projects a single failed test result after all canvas tests have completed.
+
+```js
+// Use maxArea(), maxHeight(), maxWidth(), or test()
 canvasSize.maxArea({
   onError: function (width, height, benchmark) {
     console.log('Error', width, height, benchmark);
@@ -98,83 +141,43 @@ canvasSize.maxArea({
 // Success 16384 16384 0.250
 ```
 
-**Multiple tests using Promises**
-
-Browsers with ES6 [Promise](https://www.google.com/search?client=safari&rls=en&q=js+promise&ie=UTF-8&oe=UTF-8) support (native or via polyfill) can set `usePromise:true` to handle test results using `promise.then()` and `promise.catch()` methods instead of using callbacks. Although promises are typically used for asynchronous tasks, canvas tests will still be synchronous when `usePromise` is `true` due to testing requirements, performance implications, and browser compatibility. For asynchronous canvas tests, see the next section.
+Promises and callbacks can be used together:
 
 ```js
-canvasSize
-  .maxArea({
-    usePromise: true,
-  })
-  .then(function (result) {
-    console.log('Success', result);
-  })
-  .catch(function (result) {
-    console.log('Error', result);
-  });
+const { success, width, height } = await canvasSize.maxArea({
+  // ...
+  onError: function (width, height, benchmark) {
+    console.log('Error', width, height);
+  },
+});
 
-// Success { width: 16384, height: 16384, benchmark: 0.250 }
-// or
-// Error { width: 1, height: 1, benchmark: 0.001 }
+if (success) {
+  console.log('Success', width, height);
+}
 ```
 
-**Asynchronous tests using Web Workers & OffscreenCanvas**
+### Web Workers
 
-Browsers that support [web workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers) and [OffscreenCanvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/OffscreenCanvas) can set `useWorker:true` to have canvas tests performed asynchronously on a separate thread. This can prevent the browser from becoming unresponsive while testing on the browser's main thread. Browser without support for web workers and OffscreenCanvas will ignore this option and perform tests synchronously as described above.
+Browsers that support [web workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers) and [OffscreenCanvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/OffscreenCanvas) can have canvas tests performed on a separate thread by setting `useWorker:true`. This can prevent the browser from becoming unresponsive while testing on the browser's main thread. 
 
-Unfortunately, at this time [browser support for OffscreenCanvas](https://caniuse.com/#feat=offscreencanvas) is limited. In addition, canvas tests that fail immediately on the main thread can take significantly more time using the OffscreenCanvas API (most likely a bug during these early days of OffscreenCanvas support). As a result, the `useWorker` option can improve application performance by reducing the workload on the main browser thread, but doing so will result in longer test times if/when tests fail.
-
-Note that if `useWorker` is `true` and the current browser does not support web workers and OffscreenCanvas, tests will be done on the main thread.
+Note: Browsers without support for web workers and OffscreenCanvas will ignore this option and perform tests on the main thread even when `useWorker` us `true`.
 
 ```js
 canvasSize.maxArea({
   useWorker: true,
-  onError(width, height, benchmark) {
-    console.log('Error', width, height, benchmark);
-  },
-  onSuccess(width, height, benchmark) {
-    console.log('Success', width, height, benchmark);
-  },
+  // ...
 });
-
-// Error 16387 16387 0.001
-// Error 16386 16386 0.001
-// Error 16385 16385 0.001
-// Success 16384 16384 0.250
-```
-
-The `useWorker` option can be combined with the `usePromise` option as well.
-
-```js
-canvasSize
-  .maxArea({
-    usePromise: true,
-    useWorker: true,
-  })
-  .then(function (result) {
-    console.log('Success', result);
-  })
-  .catch(function (result) {
-    console.log('Error', result);
-  });
-
-// Success { width: 16384, height: 16384, benchmark: 0.250 }
-// or
-// Error { width: 1, height: 1, benchmark: 0.001 }
 ```
 
 ## Methods
 
 ### maxArea(), maxHeight(), maxWidth()
 
-Determines the maximum area/height/width of an HTML canvas element on the client.
+Determines the maximum area/height/width of an HTML canvas element on the client. Returns a [promise](#promises) or `undefined` in legacy browsers.
 
-When `options.max` is unspecified, an optimized test will be performed using known maximum area/height/width values from previously tested browsers and platforms (see [Test Results](#test-results) for details). This will return the maximum canvas area/height/width for in the shortest amount of time.
+When `options.max` is not specified, an optimized test will be performed using known maximum area/height/width values from previously tested browsers and platforms (see [Test Results](#test-results) for details). This will return the maximum canvas area/height/width in the shortest amount of time.
 
-When `options.max` is specified, the value will be used for the initial area/height/width test, then reduced by the `options.step` value for each subsequent test until a successful test occurs. This is useful for determining the maximum area/height/width of a canvas element for browser/platform combination not listed in the [Test Results](#test-results) section. Note that lower `options.step` values will provide more granular (and therefore potentially more accurate) results, but will require more time to complete due the increased number of tests that will run.
-
-Callbacks are invoked after each test.
+When `options.max` is specified, the value will be used for the initial area/height/width test, then reduced by the `options.step` value for each subsequent test until a successful test occurs. This is useful for determining the maximum area/height/width of a canvas element for browser/platform combination not listed in the [Test Results](#test-results) section. Note that lower `options.step` values will provide more accurate results but will require more time to complete due the increased number of tests that will run.
 
 **Options**
 
@@ -187,9 +190,6 @@ Callbacks are invoked after each test.
 - **step**: Value to subtract from test width/height after each failed test
   - Type: `number`
   - Default: `1024`
-- **usePromise**: Determines if the method call will return an ES6 Promise. The return value for both `resolve()` and `reject()` will be an object containing `width`, `height`, and `benchmark` properties (see onError/onSuccess for value details). Requires ES6 [Promise](https://www.google.com/search?client=safari&rls=en&q=js+promise&ie=UTF-8&oe=UTF-8) support (native or via polyfill for legacy browsers).
-  - Type: `boolean`
-  - Default: `false`
 - **useWorker**: Determines if canvas tests will be performed asynchronously on a separate browser thread. Requires modern browser with [web worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API) and [OffscreenCanvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas) support. If web worker and OffscreenCanvas support is not available, tests will be performed on the main browser thread.
   - Type: `boolean`
   - Default: `false`
@@ -210,89 +210,48 @@ Callbacks are invoked after each test.
 
 The following examples use `maxArea()`. Usage for `maxHeight()` and `maxWidth()` is identical.
 
-Using callbacks:
+```js
+// Optimzed tests
+const { success, width, height } = await canvasSize.maxArea();
+```
 
 ```js
-// Default (optimized sizes)
+// Custom tests with web worker
+const { success, width, height } = await canvasSize.maxArea({
+  max: 16384,
+  min: 1, // default
+  step: 1024, // default
+  useWorker: true,
+});
+```
+
+Using callbacks instead of [promises](#promises):
+
+```js
+// Optimzed tests
 canvasSize.maxArea({
-  onError: function (width, height, benchmark) {
-    console.log('Error:', width, height, benchmark);
-  },
   onSuccess: function (width, height, benchmark) {
     console.log('Success:', width, height, benchmark);
   },
 });
 
-// Custom sizes
+// Custom tests with web worker
 canvasSize.maxArea({
   max: 16384,
   min: 1, // default
   step: 1024, // default
-  onError: function (width, height, benchmark) {
-    console.log('Error:', width, height, benchmark);
-  },
+  useWorker: true,
   onSuccess: function (width, height, benchmark) {
     console.log('Success:', width, height, benchmark);
   },
-});
-
-// Same options for maxHeight() and maxWidth()
-canvasSize.maxHeight({
-  // ...
-});
-
-canvasSize.maxWidth({
-  // ...
-});
-```
-
-Using ES6 Promises & Web Workers:
-
-```js
-// Default (optimized sizes)
-canvasSize
-  .maxArea({
-    usePromise: true,
-    useWorker: true,
-  })
-  .then(({ width, height, benchmark }) => {
-    console.log(`Success: ${width} x ${height} (${benchmark} ms)`);
-  })
-  .catch(({ width, height, benchmark }) => {
-    console.log(`Error: ${width} x ${height} (${benchmark} ms)`);
-  });
-
-// Custom sizes
-canvasSize
-  .maxArea({
-    max: 16384,
-    min: 1, // default
-    step: 1024, // default
-    usePromise: true,
-    useWorker: true,
-  })
-  .then(({ width, height, benchmark }) => {
-    console.log(`Success: ${width} x ${height} (${benchmark} ms)`);
-  })
-  .catch(({ width, height, benchmark }) => {
-    console.log(`Error: ${width} x ${height} (${benchmark} ms)`);
-  });
-
-// Same options for maxHeight() and maxWidth()
-canvasSize.maxHeight({
-  // ...
-});
-
-canvasSize.maxWidth({
-  // ...
 });
 ```
 
 ### test()
 
-Determines if the dimension(s) specified exceed the HTML canvas size limitations of the browser.
+Determines if the dimension(s) specified exceed the HTML canvas size limitations of the browser. Returns a [promise](#promises) or `undefined` in legacy browsers.
 
-To test a single dimension, use `options.width` and `options.height`. A `boolean` will be returned to indicate if the dimensions are within the browser's size limitations. To test multiple dimensions, use `options.sizes` to provide an `array` of `[width, height]` combinations to be tested (see example below). Callbacks are invoked after each test.
+To test a single dimension, use `options.width` and `options.height`. To test multiple dimensions, use `options.sizes` to provide an `array` of `[width, height]` combinations (see example below).
 
 **Options**
 
@@ -302,9 +261,6 @@ To test a single dimension, use `options.width` and `options.height`. A `boolean
   - Type: `number`
 - **sizes**: A two-dimensional array of canvas dimensions to test
   - Type: `array` (see examples below)
-- **usePromise**: Determines if the method call will return an ES6 Promise. The return value for both `resolve()` and `reject()` will be an object containing `width`, `height`, and `benchmark` properties (see onError/onSuccess for value details). Requires ES6 [Promise](https://www.google.com/search?client=safari&rls=en&q=js+promise&ie=UTF-8&oe=UTF-8) support (native or via polyfill for legacy browsers).
-  - Type: `boolean`
-  - Default: `false`
 - **useWorker**: Determines if canvas tests will be performed asynchronously on a separate browser thread. Requires modern browser with [web worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API) and [OffscreenCanvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas) support. If web worker and OffscreenCanvas support is not available, tests will be performed on the main browser thread.
   - Type: `boolean`
   - Default: `false`
@@ -327,26 +283,33 @@ To test a single dimension, use `options.width` and `options.height`. A `boolean
 
 **Examples**
 
-Using return value:
-
 ```js
-// Single dimension
-var isValidCanvasSize = canvasSize.test({
+// Single test
+const { success } = await canvasSize.test({
   height: 16384,
   width: 16384,
+});
+```
+
+```js
+// Multiple tests with web worker
+const { success, width, height } = await canvasSize.test({
+  sizes: [
+    [16384, 16384],
+    [8192, 8192],
+    [4096, 4096],
+    useWorker: true,
+  ],
 });
 ```
 
 Using callbacks:
 
 ```js
-// Multiple dimensions
+// Single test
 canvasSize.test({
-  sizes: [
-    [16384, 16384],
-    [8192, 8192],
-    [4096, 4096],
-  ],
+  height: 16384,
+  width: 16384,
   onError: function (width, height, benchmark) {
     console.log('Error:', width, height);
   },
@@ -356,26 +319,22 @@ canvasSize.test({
 });
 ```
 
-Using ES6 Promises & Web Workers:
-
 ```js
-// Multiple dimensions
-canvasSize
-  .test({
-    sizes: [
-      [16384, 16384],
-      [8192, 8192],
-      [4096, 4096],
-    ],
-    usePromise: true,
-    useWorker: true,
-  })
-  .then(({ width, height, benchmark }) => {
-    console.log(`Success: ${width} x ${height} (${benchmark} ms)`);
-  })
-  .catch(({ width, height, benchmark }) => {
-    console.log(`Error: ${width} x ${height} (${benchmark} ms)`);
-  });
+// Multiple tests with web worker
+canvasSize.test({
+  sizes: [
+    [16384, 16384],
+    [8192, 8192],
+    [4096, 4096],
+  ],
+  useWorker: true,
+  onError: function (width, height, benchmark) {
+    console.log('Error:', width, height);
+  },
+  onSuccess: function (width, height, benchmark) {
+    console.log('Success:', width, height);
+  },
+});
 ```
 
 ## Test Results
