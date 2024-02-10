@@ -80,7 +80,8 @@ Each `canvasSize()` [method](#methods) returns a [`Promise Object`](https://deve
   success: boolean,  // Status of last test
   width: number,     // Width of last canvas
   height: number,    // Height of last canvas
-  benchmark: number, // Time to complete last test
+  testTime: number,  // Time to complete last test
+  totalTime: number, // Time to complete all tests
 }
 ```
 
@@ -104,7 +105,7 @@ const results = await canvasSize.test({
   // ...
 });
 
-console.log(results); // { success: <boolean>, height: <number>, width: <number>, benchmark: <number> }
+console.log(results); // { success: <boolean>, height: <number>, width: <number>, testTime: <number>, totalTime: <number> }
 ```
 
 [Destructuring assignment](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) allows for simplified access to test result values:
@@ -124,20 +125,20 @@ Promises and [callbacks](#callbacks) can be used together to provide individual 
 ```js
 const { success, width, height } = await canvasSize.maxArea({
   // ...
-  onError({ width, height, benchmark }) {
-    console.log('Error', width, height, benchmark);
+  onError({ width, height, testTime, totalTime }) {
+    console.log('Error', width, height, testTime, totalTime);
   },
 });
 
 if (success) {
-  console.log('Success', width, height, benchmark);
+  console.log('Success', width, height, testTime, totalTime);
 }
 
-// Error <width> <height> <benchmark>
-// Error <width> <height> <benchmark>
-// Error <width> <height> <benchmark>
+// Error <width> <height> <testTime> <totalTime>
+// Error <width> <height> <testTime> <totalTime>
+// Error <width> <height> <testTime> <totalTime>
 // ...
-// Success <width> <height> <benchmark>
+// Success <width> <height> <testTime> <totalTime>
 ```
 
 ### Callbacks
@@ -152,19 +153,19 @@ Callback functions can be used to access canvas test result instead of or in add
 // maxArea(), maxHeight(), maxWidth(), or test()
 canvasSize.maxArea({
   // ...
-  onError({ width, height, benchmark }) {
-    console.log('Error', width, height, benchmark);
+  onError({ width, height, testTime, totalTime }) {
+    console.log('Error', width, height, testTime, totalTime);
   },
-  onSuccess({ width, height, benchmark }) {
-    console.log('Success', width, height, benchmark);
+  onSuccess({ width, height, testTime, totalTime }) {
+    console.log('Success', width, height, testTime, totalTime);
   },
 });
 
-// Error <width> <height> <benchmark>
-// Error <width> <height> <benchmark>
-// Error <width> <height> <benchmark>
+// Error <width> <height> <testTime> <totalTime>
+// Error <width> <height> <testTime> <totalTime>
+// Error <width> <height> <testTime> <totalTime>
 // ...
-// Success <width> <height> <benchmark>
+// Success <width> <height> <testTime> <totalTime>
 ```
 
 Legacy-compatible ES5 syntax:
@@ -174,12 +175,18 @@ Legacy-compatible ES5 syntax:
 canvasSize.maxArea({
   // ...
   onError: function(results) {
-    console.log('Error', results.width, results.height, results.benchmark);
+    console.log('Error', results);
   },
   onSuccess: function(results) {
-    console.log('Success', results.width, results.height, results.benchmark);
+    console.log('Success', results);
   },
 });
+
+// Error { width: <number>, height: <number>, testTime: <number>, totalTime: <number> }
+// Error { width: <number>, height: <number>, testTime: <number>, totalTime: <number> }
+// Error { width: <number>, height: <number>, testTime: <number>, totalTime: <number> }
+// ...
+// Success { width: <number>, height: <number>, testTime: <number>, totalTime: <number> }
 ```
 
 ### Web Workers
@@ -225,13 +232,15 @@ When `options.max` is specified, the value will be used for the initial area/hei
   - Arguments:
     1. **width**: Width of canvas element (will be`1` for `maxHeight()`)
     1. **height**: Height of canvas element (will be `1` for `maxWidth()`)
-    1. **benchmark**: Test execution time in milliseconds
+    1. **testTime**: Time to complete last test in milliseconds
+    1. **totalTime**: Time to complete all test in milliseconds
 - **onSuccess**: Callback invoked after each successful test
   - Type: `function`
   - Arguments:
     1. **width**: Width of canvas element (will be`1` for `maxHeight()`)
     1. **height**: Height of canvas element (will be `1` for `maxWidth()`)
-    1. **benchmark**: Test execution time in milliseconds
+    1. **testTime**: Test execution time in milliseconds
+    1. **totalTime**: Time to complete all test in milliseconds
 
 **Examples**
 
@@ -257,8 +266,8 @@ Using callbacks instead of [promises](#promises):
 ```js
 // Optimized tests
 canvasSize.maxArea({
-  onSuccess({ width, height, benchmark }) {
-    console.log('Success:', width, height, benchmark);
+  onSuccess({ width, height, testTime, totalTime }) {
+    console.log('Success:', width, height, testTime, totalTime);
   },
 });
 
@@ -268,8 +277,8 @@ canvasSize.maxArea({
   min: 1, // default
   step: 1024, // default
   useWorker: true,
-  onSuccess({ width, height, benchmark }) {
-    console.log('Success:', width, height, benchmark);
+  onSuccess({ width, height, testTime, totalTime }) {
+    console.log('Success:', width, height, testTime, totalTime);
   },
 });
 ```
@@ -312,13 +321,15 @@ To test a single dimension, use `options.width` and `options.height`. To test mu
   - Arguments:
     1. **width**: width of canvas element
     1. **height**: height of canvas element
-    1. **benchmark**: Test execution time in milliseconds
+    1. **testTime**: Time to complete last test in milliseconds
+    1. **totalTime**: Time to complete all test in milliseconds
 - **onSuccess**: Callback invoked after each successful test
   - Type: `function`
   - Arguments:
     1. **width**: width of canvas element
     1. **height**: height of canvas element
-    1. **benchmark**: Test execution time in milliseconds
+    1. **testTime**: Time to complete last test in milliseconds
+    1. **totalTime**: Time to complete all test in milliseconds
 
 **Returns**
 
@@ -353,11 +364,11 @@ Using callbacks:
 canvasSize.test({
   height: 16384,
   width: 16384,
-  onError({ width, height, benchmark }) {
-    console.log('Error:', width, height);
+  onError({ width, height, testTime, totalTime }) {
+    console.log('Error:', width, height, testTime, totalTime);
   },
-  onSuccess({ width, height, benchmark }) {
-    console.log('Success:', width, height);
+  onSuccess({ width, height, testTime, totalTime }) {
+    console.log('Success:', width, height, testTime, totalTime);
   },
 });
 ```
@@ -371,11 +382,11 @@ canvasSize.test({
     [4096, 4096],
   ],
   useWorker: true,
-  onError({ width, height, benchmark }) {
-    console.log('Error:', width, height);
+  onError({ width, height, testTime, totalTime }) {
+    console.log('Error:', width, height, testTime, totalTime);
   },
-  onSuccess({ width, height, benchmark }) {
-    console.log('Success:', width, height);
+  onSuccess({ width, height, testTime, totalTime }) {
+    console.log('Success:', width, height, testTime, totalTime);
   },
 });
 ```

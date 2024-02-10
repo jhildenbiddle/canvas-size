@@ -138,41 +138,62 @@ function doTests(useWorker) {
           [Number.MAX_SAFE_INTEGER - 1, Number.MAX_SAFE_INTEGER - 1],
           [Number.MAX_SAFE_INTEGER - 2, Number.MAX_SAFE_INTEGER - 2],
         ];
-        const result = await page.evaluate(async sizes => {
-          const errorArr = [];
+        const { errorArr, testTimes, totalTimes } = await page.evaluate(
+          async sizes => {
+            const errorArr = [];
+            const testTimes = [];
+            const totalTimes = [];
 
-          await canvasSize.test({
-            sizes,
-            onError({ width, height, benchmark }) {
-              errorArr.push([width, height]);
-            },
-          });
+            await canvasSize.test({
+              sizes,
+              onError({ width, height, testTime, totalTime }) {
+                errorArr.push([width, height]);
+                testTimes.push(testTime);
+                totalTimes.push(totalTime);
+              },
+            });
 
-          return Promise.resolve(errorArr);
-        }, sizes);
-
-        expect(result).toEqual(sizes);
-      });
-
-      test('triggers onSuccess callback (sizes)', async ({ page }) => {
-        const sizes = [
-          [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER],
-          [1, 1],
-        ];
-        const result = await page.evaluate(
-          sizes =>
-            new Promise(resolve => {
-              canvasSize.test({
-                sizes,
-                onSuccess({ width, height, benchmark }) {
-                  resolve([width, height]);
-                },
-              });
-            }),
+            return Promise.resolve({ errorArr, testTimes, totalTimes });
+          },
           sizes,
         );
 
-        expect(result).toEqual([1, 1]);
+        console.log({ errorArr, testTimes, totalTimes });
+
+        expect(errorArr).toEqual(sizes);
+        testTimes.forEach(testTime =>
+          expect(testTime).toEqual(expect.any(Number)),
+        );
+        totalTimes.forEach(totalTime =>
+          expect(totalTime).toEqual(expect.any(Number)),
+        );
+      });
+
+      test('triggers onSuccess callback (sizes)', async ({ page }) => {
+        const { width, height, testTime, totalTime } = await page.evaluate(
+          async () => {
+            let result = {};
+
+            await canvasSize.test({
+              sizes: [
+                [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER],
+                [1, 1],
+              ],
+              onSuccess({ width, height, testTime, totalTime }) {
+                result = { width, height, testTime, totalTime };
+              },
+            });
+
+            return result;
+          },
+        );
+
+        console.log({ width, height, testTime, totalTime });
+
+        expect(width).toEqual(1);
+        expect(height).toEqual(height);
+        expect(testTime).toEqual(expect.any(Number));
+        expect(totalTime).toEqual(expect.any(Number));
       });
     });
   });

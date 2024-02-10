@@ -21,7 +21,7 @@ function canvasTest(settings) {
   const width = Math.max(Math.ceil(size[0]), 1);
   const height = Math.max(Math.ceil(size[1]), 1);
   const fill = [width - 1, height - 1, 1, 1]; // x, y, width, height
-  const job = Date.now();
+  const testTimeStart = performance.now();
   const isWorker =
     typeof WorkerGlobalScope !== 'undefined' &&
     self instanceof WorkerGlobalScope;
@@ -54,7 +54,7 @@ function canvasTest(settings) {
 
   // Verify image data (Pass = 255, Fail = 0)
   const isTestPass = cropCtx && cropCtx.getImageData(0, 0, 1, 1).data[3] !== 0;
-  const benchmark = Date.now() - job; // milliseconds
+  const testTime = parseInt(performance.now() - testTimeStart);
 
   // Release canvas elements (Safari memory usage fix)
   // See: https://stackoverflow.com/questions/52532614/total-canvas-memory-use-exceeds-the-maximum-limit-safari-12
@@ -68,7 +68,7 @@ function canvasTest(settings) {
     postMessage({
       width,
       height,
-      benchmark,
+      testTime,
       isTestPass,
     });
 
@@ -78,9 +78,9 @@ function canvasTest(settings) {
       }, 0);
     }
   } else if (isTestPass) {
-    settings.onSuccess({ width, height, benchmark });
+    settings.onSuccess({ width, height, testTime });
   } else {
-    settings.onError({ width, height, benchmark });
+    settings.onError({ width, height, testTime });
 
     if (settings.sizes.length) {
       setTimeout(() => {

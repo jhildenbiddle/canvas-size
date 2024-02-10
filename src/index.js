@@ -82,7 +82,10 @@ function handleMethod(settings) {
   const hasCanvasSupport = isBrowser && 'HTMLCanvasElement' in window;
   const hasOffscreenCanvasSupport = isBrowser && 'OffscreenCanvas' in window;
   const jobID = Date.now();
+  const totalTimeStart = performance.now();
   const { onError, onSuccess, ...settingsWithoutCallbacks } = settings;
+
+  const getTotalTime = () => parseInt(performance.now() - totalTimeStart);
 
   let worker = null;
 
@@ -107,14 +110,15 @@ function handleMethod(settings) {
 
     // Listen for messages from worker
     worker.onmessage = function (e) {
-      const { width, height, benchmark, isTestPass } = e.data;
+      const { width, height, testTime, isTestPass } = e.data;
+      const totalTime = getTotalTime();
 
       if (isTestPass) {
-        workerJobs[jobID].onSuccess({ width, height, benchmark });
+        workerJobs[jobID].onSuccess({ width, height, testTime, totalTime });
 
         delete workerJobs[jobID];
       } else {
-        workerJobs[jobID].onError({ width, height, benchmark });
+        workerJobs[jobID].onError({ width, height, testTime, totalTime });
       }
     };
   }
@@ -124,7 +128,9 @@ function handleMethod(settings) {
     return new Promise(resolve => {
       const promiseSettings = {
         ...settings,
-        onError({ width, height, benchmark }) {
+        onError({ width, height, testTime }) {
+          const totalTime = getTotalTime();
+
           let isLastTest;
 
           // If running on the main thread, an empty settings.sizes
@@ -143,15 +149,17 @@ function handleMethod(settings) {
             isLastTest = width === lastWidth && height === lastHeight;
           }
 
-          onError({ width, height, benchmark });
+          onError({ width, height, testTime, totalTime });
 
           if (isLastTest) {
-            resolve({ success: false, width, height, benchmark });
+            resolve({ success: false, width, height, testTime });
           }
         },
-        onSuccess({ width, height, benchmark }) {
-          onSuccess({ width, height, benchmark });
-          resolve({ success: true, width, height, benchmark });
+        onSuccess({ width, height, testTime }) {
+          const totalTime = getTotalTime();
+
+          onSuccess({ width, height, testTime, totalTime });
+          resolve({ success: true, width, height, testTime });
         },
       };
 

@@ -5,6 +5,7 @@
 _Unreleased_
 
 - Add `success` property to promise results
+- Add `testTime` and `totalTime` to callback and promise results
 - Remove `usePromise` option and return promise automatically based on browser support
 - Update promise behavior to always resolve leaving `catch` available for exceptions
 - Update callback function to receive results as object instead of separate arguments
