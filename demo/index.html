@@ -133,14 +133,10 @@
           step: step ? parseInt(step) : undefined,
           useWorker,
           onError(results) {
-            log(
-              `Error   : ${JSON.stringify(results)}`,
-            );
+            log(`Error   : ${JSON.stringify(results)}`);
           },
           onSuccess(results) {
-            log(
-              `Success : ${JSON.stringify(results)}`,
-            );
+            log(`Success : ${JSON.stringify(results)}`);
           },
         };
         const outputElm = $('output');
@@ -152,13 +148,9 @@
         // Clear console
         outputElm.innerHTML = '';
 
-        canvasSize[method](settings).then(
-          (results) => {
-            log(
-              `Complete: ${JSON.stringify(results)}`,
-            );
-          },
-        );
+        canvasSize[method](settings).then(results => {
+          log(`Complete: ${JSON.stringify(results)}`);
+        });
       }
 
       $('button').addEventListener('click', testCanvasSize);
