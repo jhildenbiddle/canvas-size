@@ -4,16 +4,17 @@
 
 _Unreleased_
 
+- ❗️ Breaking: All tests are now performed asynchronously
+- ❗️ Breaking: Fix recursion error in some browsers when testing a large number of canvas sizes
+- ❗️ Breaking: Update promise behavior to always resolve leaving `catch` for exceptions
+- ❗️ Breaking: Update callback functions to receive results object instead of separate arguments
+- ❗️ Breaking: Remove `usePromise` option and return promise automatically if supported
 - Add `success` property to promise results
 - Add `testTime` and `totalTime` to callback and promise results
-- Remove `usePromise` option and return promise automatically based on browser support
-- Update promise behavior to always resolve leaving `catch` available for exceptions
-- Update callback function to receive results as object instead of separate arguments
 - Update ES module build from ES5 to ES2015+ syntax
 - Update test environment and migrate tests to Playwright
 - Update documentation
 - Update CI
-- Fix recursion issue when testing a large number of canvas sizes
 
 ## 1.2.6
 
