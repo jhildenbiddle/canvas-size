@@ -102,15 +102,12 @@
           </label>
         </p>
         <p>
-          <label>
-            <input type="checkbox" name="usepromise" /> usePromise
-          </label>
           <label> <input type="checkbox" name="useworker" /> useWorker </label>
         </p>
 
         <p>
-          <label> <input type="number" name="min" /> min </label>
           <label> <input type="number" name="max" /> max </label>
+          <label> <input type="number" name="min" /> min </label>
           <label> <input type="number" name="step" /> step </label>
         </p>
         <p><button>Test canvasSize</button></p>
@@ -126,17 +123,25 @@
 
       function testCanvasSize(evt) {
         const method = $('input[name="method"]:checked').value;
-        const usePromise = Boolean($('input[name="usepromise"]:checked'));
         const useWorker = Boolean($('input[name="useworker"]:checked'));
-        const min = $('input[name="min"]').value;
         const max = $('input[name="max"]').value;
+        const min = $('input[name="min"]').value;
         const step = $('input[name="step"]').value;
         const settings = {
-          min: min ? parseInt(min) : undefined,
           max: max ? parseInt(max) : undefined,
+          min: min ? parseInt(min) : undefined,
           step: step ? parseInt(step) : undefined,
-          usePromise,
           useWorker,
+          onError(results) {
+            log(
+              `Error   : ${JSON.stringify(results)}`,
+            );
+          },
+          onSuccess(results) {
+            log(
+              `Success : ${JSON.stringify(results)}`,
+            );
+          },
         };
         const outputElm = $('output');
 
@@ -147,25 +152,13 @@
         // Clear console
         outputElm.innerHTML = '';
 
-        if (usePromise) {
-          canvasSize[method](settings)
-            .then(({ width, height, benchmark }) => {
-              log(`Success: ${width} x ${height} (${benchmark} ms)`);
-            })
-            .catch(({ width, height, benchmark }) => {
-              log(`Error: ${width} x ${height} (${benchmark} ms)`);
-            });
-        } else {
-          canvasSize[method]({
-            ...settings,
-            onError(width, height, benchmark) {
-              log(`Error: ${width} x ${height} (${benchmark}ms)`);
-            },
-            onSuccess(width, height, benchmark) {
-              log(`Success: ${width} x ${height} (${benchmark}ms)`);
-            },
-          });
-        }
+        canvasSize[method](settings).then(
+          (results) => {
+            log(
+              `Complete: ${JSON.stringify(results)}`,
+            );
+          },
+        );
       }
 
       $('button').addEventListener('click', testCanvasSize);
