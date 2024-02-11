@@ -153,7 +153,7 @@ function doTests(useWorker) {
               },
             });
 
-            return Promise.resolve({ errorArr, testTimes, totalTimes });
+            return { errorArr, testTimes, totalTimes };
           },
           sizes,
         );
@@ -170,26 +170,97 @@ function doTests(useWorker) {
       test('triggers onSuccess callback (sizes)', async ({ page }) => {
         const { width, height, testTime, totalTime } = await page.evaluate(
           async () => {
-            let result = {};
+            let results = {};
 
             await canvasSize.test({
               sizes: [
                 [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER],
                 [1, 1],
               ],
-              onSuccess({ width, height, testTime, totalTime }) {
-                result = { width, height, testTime, totalTime };
+              onSuccess(r) {
+                results = r;
               },
             });
 
-            return result;
+            return results;
           },
         );
 
         expect(width).toEqual(1);
-        expect(height).toEqual(height);
+        expect(height).toEqual(1);
         expect(testTime).toEqual(expect.any(Number));
         expect(totalTime).toEqual(expect.any(Number));
+      });
+    });
+
+    // Results
+    // -------------------------------------------------------------------------
+    test.describe('results', () => {
+      test('promise resolves with correct results data', async ({ page }) => {
+        const results = await page.evaluate(() =>
+          canvasSize.test({
+            width: 1,
+            height: 1,
+          }),
+        );
+
+        expect(results).toHaveProperty('success', expect.any(Boolean));
+        expect(results).toHaveProperty('width', expect.any(Number));
+        expect(results).toHaveProperty('height', expect.any(Number));
+        expect(results).toHaveProperty('testTime', expect.any(Number));
+        expect(results).toHaveProperty('totalTime', expect.any(Number));
+      });
+
+      test.describe('results', () => {
+        test('onError callback received correct results data', async ({
+          page,
+        }) => {
+          const results = await page.evaluate(async () => {
+            let results = {};
+
+            await canvasSize.test({
+              width: Number.MAX_SAFE_INTEGER,
+              height: Number.MAX_SAFE_INTEGER,
+              onError(r) {
+                results = r;
+              },
+            });
+
+            return results;
+          });
+
+          expect(results).not.toHaveProperty('success');
+          expect(results).toHaveProperty('width', expect.any(Number));
+          expect(results).toHaveProperty('height', expect.any(Number));
+          expect(results).toHaveProperty('testTime', expect.any(Number));
+          expect(results).toHaveProperty('totalTime', expect.any(Number));
+        });
+      });
+
+      test.describe('results', () => {
+        test('onSuccess callback received correct results data', async ({
+          page,
+        }) => {
+          const results = await page.evaluate(async () => {
+            let results = {};
+
+            await canvasSize.test({
+              width: 1,
+              height: 1,
+              onSuccess(r) {
+                results = r;
+              },
+            });
+
+            return results;
+          });
+
+          expect(results).not.toHaveProperty('success');
+          expect(results).toHaveProperty('width', expect.any(Number));
+          expect(results).toHaveProperty('height', expect.any(Number));
+          expect(results).toHaveProperty('testTime', expect.any(Number));
+          expect(results).toHaveProperty('totalTime', expect.any(Number));
+        });
       });
     });
   });

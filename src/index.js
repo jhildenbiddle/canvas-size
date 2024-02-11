@@ -111,14 +111,14 @@ function handleMethod(settings) {
     // Listen for messages from worker
     worker.onmessage = function (e) {
       const { width, height, testTime, isTestPass } = e.data;
-      const totalTime = getTotalTime();
+      const results = { width, height, testTime, totalTime: getTotalTime() };
 
       if (isTestPass) {
-        workerJobs[jobID].onSuccess({ width, height, testTime, totalTime });
+        workerJobs[jobID].onSuccess(results);
 
         delete workerJobs[jobID];
       } else {
-        workerJobs[jobID].onError({ width, height, testTime, totalTime });
+        workerJobs[jobID].onError(results);
       }
     };
   }
@@ -129,7 +129,12 @@ function handleMethod(settings) {
       const promiseSettings = {
         ...settings,
         onError({ width, height, testTime }) {
-          const totalTime = getTotalTime();
+          const results = {
+            width,
+            height,
+            testTime,
+            totalTime: getTotalTime(),
+          };
 
           let isLastTest;
 
@@ -149,17 +154,22 @@ function handleMethod(settings) {
             isLastTest = width === lastWidth && height === lastHeight;
           }
 
-          onError({ width, height, testTime, totalTime });
+          onError(results);
 
           if (isLastTest) {
-            resolve({ success: false, width, height, testTime });
+            resolve({ success: false, ...results });
           }
         },
         onSuccess({ width, height, testTime }) {
-          const totalTime = getTotalTime();
+          const results = {
+            width,
+            height,
+            testTime,
+            totalTime: getTotalTime(),
+          };
 
-          onSuccess({ width, height, testTime, totalTime });
-          resolve({ success: true, width, height, testTime });
+          onSuccess(results);
+          resolve({ success: true, ...results });
         },
       };
 
