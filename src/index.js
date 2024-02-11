@@ -157,7 +157,7 @@ function handleMethod(settings) {
           onError(results);
 
           if (isLastTest) {
-            resolve({ success: false, ...results });
+            resolve({ ...results, success: false });
           }
         },
         onSuccess({ width, height, testTime }) {
@@ -169,7 +169,7 @@ function handleMethod(settings) {
           };
 
           onSuccess(results);
-          resolve({ success: true, ...results });
+          resolve({ ...results, success: true });
         },
       };
 
