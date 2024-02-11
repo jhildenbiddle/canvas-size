@@ -13,7 +13,7 @@ _Unreleased_
 - Update test environment and migrate tests to Playwright
 - Update documentation
 - Update CI
-- Fix recursion issue when large quantity of tests
+- Fix recursion issue when testing a large number of canvas sizes
 
 ## 1.2.6
 
