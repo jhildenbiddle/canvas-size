@@ -14,6 +14,8 @@ Determine the maximum area, height, width, and custom dimensions of an HTML `<ca
 - [Demo (JSBin)](https://jsbin.com/megedep/1): For legacy browsers (ES5)
 - [Test Results](#test-results): HTML `<canvas>` test results for various platforms and browsers
 
+?> Version 2.x contains new features and breaking changes (see the [Changelog](changelog) for details). Documentation for version 1.x is available [on GitHub](https://github.com/jhildenbiddle/canvas-size/blob/v1.2.6/README.md).
+
 ## Why?
 
 The [HTML canvas](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas) element is [widely supported](http://caniuse.com/#feat=canvas) by modern and legacy browsers, but each browser and platform combination imposes [unique size limitations](#test-results) that will render a canvas unusable when exceeded. Unfortunately, browsers do not provide a way to determine what their limitations are, nor do they provide any kind of feedback after an unusable canvas has been created. This makes working with large canvas elements a challenge, especially for applications that support a variety of browsers and platforms.
