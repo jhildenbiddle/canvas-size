@@ -174,10 +174,10 @@ Legacy-compatible ES5 syntax:
 // maxArea(), maxHeight(), maxWidth(), or test()
 canvasSize.maxArea({
   // ...
-  onError: function(results) {
+  onError: function (results) {
     console.log('Error', results);
   },
-  onSuccess: function(results) {
+  onSuccess: function (results) {
     console.log('Success', results);
   },
 });
