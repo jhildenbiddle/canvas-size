@@ -442,18 +442,11 @@ Be aware that test results can vary between mobile devices running the same plat
 
 ## Known Issues
 
-1. **Some browsers become unresponsive during tests**
+**Virtual environments may produce inconsistent results**
 
-   This is a result of the single-threaded nature of JavaScript and the time required to read data from large HTML canvas elements on the client. To accommodate for the brief delay that may occur when testing extremely large canvas sizes, consider the following:
+Tests conducted on virtual machines may produce results that differ from actual hardware. This is to be expected, as the virtualized hardware used in these environments can impose its own unique size limitations separate from the browser.
 
-   - Call the library when tests are least likely to affect the overall user experience.
-   - [Cache test results on the client](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs/Client-side_storage) so that tests only need to be performed once per browser.
-
-1. **Virtual environments may produce inconsistent results**
-
-   Tests conducted on virtual machines may produce results that differ from actual hardware. This is to be expected, as the virtualized hardware used in these environments can impose its own unique size limitations separate from the browser.
-
-   In some virtualized environments (mostly with older browsers), canvas-size may produce inconsistent results or fail all tests when calling `maxArea()`, `maxHeight()`, `maxWidth()`, and `test()` using `options.sizes`. This is a result of the virtual GPU failing after a test canvas exceeds the browser's size limitations, causing all subsequent tests to fail even for canvas dimensions that are actually supported by the browser. The easiest and most reliable way to address these issues is to use a GPU-optimized virtual machine. If this isn't possible and your VM only supports software rendering, avoid iterating over canvas dimensions that exceed the browser's size limitations and instead specify dimensions that are known to be supported by the browser.
+In some virtualized environments (mostly with older browsers), canvas-size may produce inconsistent results or fail all tests when calling `maxArea()`, `maxHeight()`, `maxWidth()`, and `test()` using `options.sizes`. This is a result of the virtual GPU failing after a test canvas exceeds the browser's size limitations, causing all subsequent tests to fail even for canvas dimensions that are actually supported by the browser. The easiest and most reliable way to address these issues is to use a GPU-optimized virtual machine. If this isn't possible and your VM only supports software rendering, avoid iterating over canvas dimensions that exceed the browser's size limitations and instead specify dimensions that are known to be supported by the browser.
 
 ## Sponsorship
 
