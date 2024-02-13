@@ -1,0 +1,6 @@
+- [Documentation](/) <!-- markdownlint-disable-line first-line-heading -->
+- [Changelog](changelog)
+- **Links**
+- [![Github](assets/img/github.svg)Github](https://github.com/jhildenbiddle/canvas-size)
+- [![NPM](assets/img/npm.svg)NPM](https://www.npmjs.com/package/canvas-size)
+- [![Twitter](assets/img/twitter.svg)@jhildenbiddle](http://twitter.com/jhildenbiddle)

@@ -1,8 +1,8 @@
 import { create } from 'browser-sync';
 
 const bsServer = create();
-const demoConfig = {
-  files: ['./demo/**/*.*', './dist/**/*.*'],
+const docsConfig = {
+  files: ['./dist/**/*.*', './docs/**/*.*'],
   port: 3000,
   ghostMode: {
     clicks: false,
@@ -15,17 +15,18 @@ const demoConfig = {
   reloadDebounce: 1000,
   reloadOnRestart: true,
   server: {
-    baseDir: ['./demo/'],
+    baseDir: ['./docs/'],
     routes: {
+      '/CHANGELOG.md': './CHANGELOG.md',
       '/dist': './dist',
     },
   },
 };
 const playwrightConfig = {
-  ...demoConfig,
+  ...docsConfig,
   port: 4000,
   server: {
-    ...demoConfig.server,
+    ...docsConfig.server,
     middleware: [
       // Blank page required for test environment
       {
@@ -42,7 +43,7 @@ const playwrightConfig = {
   watch: false,
 };
 const args = process.argv.slice(2);
-const config = args.includes('--playwright') ? playwrightConfig : demoConfig;
+const config = args.includes('--playwright') ? playwrightConfig : docsConfig;
 const configName = config === playwrightConfig ? 'playwright' : 'demo';
 
 // eslint-disable-next-line no-console
