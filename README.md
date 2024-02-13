@@ -29,15 +29,15 @@ This micro-library provides the maximum area, height, and width of an HTML canva
 
 **Browser Support**
 
-<img src="https://raw.githubusercontent.com/jhildenbiddle/canvas-size/master/docs/assets/img/chrome.svg" valign="middle" alt="Chrome logo"> <span valign="middle">Chrome 4+</span>
+<img src="https://raw.githubusercontent.com/jhildenbiddle/canvas-size/master/docs/assets/img/chrome.svg" valign="middle" alt=""> <span valign="middle">Chrome 4+</span>
 <br>
-<img src="https://raw.githubusercontent.com/jhildenbiddle/canvas-size/master/docs/assets/img/edge.svg" valign="middle" alt="Edge logo"> <span valign="middle">Edge 12+</span>
+<img src="https://raw.githubusercontent.com/jhildenbiddle/canvas-size/master/docs/assets/img/edge.svg" valign="middle" alt=""> <span valign="middle">Edge 12+</span>
 <br>
-<img src="https://raw.githubusercontent.com/jhildenbiddle/canvas-size/master/docs/assets/img/firefox.svg" valign="middle" alt="Firefox logo"> <span valign="middle">Firefox 3.6+</span>
+<img src="https://raw.githubusercontent.com/jhildenbiddle/canvas-size/master/docs/assets/img/firefox.svg" valign="middle" alt=""> <span valign="middle">Firefox 3.6+</span>
 <br>
-<img src="https://raw.githubusercontent.com/jhildenbiddle/canvas-size/master/docs/assets/img/safari.svg" valign="middle" alt="Safari logo"> <span valign="middle">Safari 4+</span>
+<img src="https://raw.githubusercontent.com/jhildenbiddle/canvas-size/master/docs/assets/img/safari.svg" valign="middle" alt=""> <span valign="middle">Safari 4+</span>
 <br>
-<img src="https://raw.githubusercontent.com/jhildenbiddle/canvas-size/master/docs/assets/img/ie.svg" valign="middle" alt="Internet Explorer logo"> <span valign="middle">Internet Explorer 10+</span>
+<img src="https://raw.githubusercontent.com/jhildenbiddle/canvas-size/master/docs/assets/img/ie.svg" valign="middle" alt=""> <span valign="middle">Internet Explorer 10+</span>
 
 ## Installation
 
