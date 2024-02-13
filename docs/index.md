@@ -78,7 +78,7 @@ Available on [jsdelivr](https://www.jsdelivr.com/package/npm/canvas-size) (below
 <script src="https://cdn.jsdelivr.net/npm/canvas-size@2"></script>
 ```
 
-> 💡 Note the `@` version lock in the URLs above. This prevents breaking changes in future releases from affecting your project and is therefore the safest method of loading dependencies from a CDN. When a new major version is released, you will need to manually update your CDN URLs by changing the version after the `@` symbol.
+?> Note the `@` version lock in the URLs above. This prevents breaking changes in future releases from affecting your project and is therefore the safest method of loading dependencies from a CDN. When a new major version is released, you will need to manually update your CDN URLs by changing the version after the `@` symbol.
 
 ## Usage
 
