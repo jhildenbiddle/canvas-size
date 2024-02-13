@@ -218,6 +218,8 @@ canvasSize.maxArea({
 });
 ```
 
+!> At the time of this writing, Firefox and Safari are able to perform canvas tests using a web worker at the same speed or better compared to tests run on the main thread. Unfortunately, Blink-based browsers like Chrome and Edge perform significantly slower when using web workers. This is a long-standing issue and the cause is unknown.
+
 ## Methods
 
 ### maxArea
