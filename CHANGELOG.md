@@ -2,7 +2,7 @@
 
 ## 2.0.0
 
-_Unreleased_
+_2024-02-12_
 
 - ❗️ Breaking: All tests are now performed asynchronously
 - ❗️ Breaking: Fix recursion error in some browsers when testing a large number of canvas sizes
@@ -11,6 +11,7 @@ _Unreleased_
 - ❗️ Breaking: Remove `usePromise` option and return promise automatically if supported
 - Add `success` property to promise results
 - Add `testTime` and `totalTime` to callback and promise results
+- Add new max area limit for Firefox 122+ (23,168 x 23,168)
 - Update ES module build from ES5 to ES2015+ syntax
 - Update test environment and migrate tests to Playwright
 - Update documentation
