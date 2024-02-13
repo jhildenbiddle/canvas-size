@@ -39,15 +39,15 @@ This micro-library provides the maximum area, height, and width of an HTML canva
 
 **Browser Support**
 
-<img src="assets/img/chrome.svg" valign="middle" alt="Chrome logo"> <span valign="middle">Chrome 4+</span>
+<img src="assets/img/chrome.svg" valign="middle" alt=""> <span valign="middle">Chrome 4+</span>
 <br>
-<img src="assets/img/edge.svg" valign="middle" alt="Edge logo"> <span valign="middle">Edge 12+</span>
+<img src="assets/img/edge.svg" valign="middle" alt=""> <span valign="middle">Edge 12+</span>
 <br>
-<img src="assets/img/firefox.svg" valign="middle" alt="Firefox logo"> <span valign="middle">Firefox 3.6+</span>
+<img src="assets/img/firefox.svg" valign="middle" alt=""> <span valign="middle">Firefox 3.6+</span>
 <br>
-<img src="assets/img/safari.svg" valign="middle" alt="Safari logo"> <span valign="middle">Safari 4+</span>
+<img src="assets/img/safari.svg" valign="middle" alt=""> <span valign="middle">Safari 4+</span>
 <br>
-<img src="assets/img/ie.svg" valign="middle" alt="Internet Explorer logo"> <span valign="middle">Internet Explorer 10+</span>
+<img src="assets/img/ie.svg" valign="middle" alt=""> <span valign="middle">Internet Explorer 10+</span>
 
 ## Installation
 
