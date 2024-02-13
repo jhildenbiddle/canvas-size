@@ -11,7 +11,7 @@
 Determine the maximum area, height, width, and custom dimensions of an HTML `<canvas>` element.
 
 - 🚀 [Documentation & Demo](https://jhildenbiddle.github.io/canvas-size/)
-- 🔬 [Test Results](https://jhildenbiddle.github.io/canvas-size/#/?id=test-results): HTML `<canvas>` test results for various platforms and browsers
+- 🔬 [Test Results](https://jhildenbiddle.github.io/canvas-size/#/?id=test-results)
 
 ## Why?
 
