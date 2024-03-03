@@ -4,7 +4,7 @@
   "description": "Determine the maximum area, height, width, and custom dimensions of an HTML canvas element.",
   "author": "John Hildenbiddle <http://hildenbiddle.com>",
   "license": "MIT",
-  "homepage": "https://github.com/jhildenbiddle/canvas-size",
+  "homepage": "https://jhildenbiddle.github.io/canvas-size",
   "repository": {
     "type": "git",
     "url": "git+https://jhildenbiddle@github.com/jhildenbiddle/canvas-size.git"
