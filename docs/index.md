@@ -369,8 +369,8 @@ const { success, width, height } = await canvasSize.test({
     [16384, 16384],
     [8192, 8192],
     [4096, 4096],
-    useWorker: true,
   ],
+  useWorker: true,
 });
 ```
 
